@@ -38,7 +38,10 @@ dojo.declare("pundit.selectors.SelectorBase", pundit.BaseComponent, {
         // Ms to wait after a keystroke before querying the service
         keyInputTimerLength: 500,
         
-        layouts: ['pundit-view-list', 'pundit-view-tile']
+        layouts: ['pundit-view-list', 'pundit-view-tile'],
+
+        sortBy: false,
+        useTypeFilters: false
     },
 
     constructor: function(options) {
@@ -81,6 +84,7 @@ dojo.declare("pundit.selectors.SelectorBase", pundit.BaseComponent, {
         html += '<div id="'+self._id+'" class="pundit-sel-container semlib-panel">';
         html += '   <div><input type="text" placeholder=".. search!" id="'+self._id+'-input" class="pundit-sel-dialog-input" />';
         html += '       <span id="'+self._id+'-message" class="pundit-sel-message"></span>';
+        html += '       <div id="'+self._id+'-filters" class="pundit-sel-filters"></div>';
         html += '       <span class="pundit-sort-items pundit-view-tile"></span><span class="pundit-sort-items pundit-view-list pundit-selected"></span>';
         html += '   </div>';
         html += '   <div class="pundit-items-container">';
@@ -158,6 +162,25 @@ dojo.declare("pundit.selectors.SelectorBase", pundit.BaseComponent, {
                     cMenu.show(e.pageX - window.pageXOffset, e.pageY - window.pageYOffset, item, 'vocabItem');
                 }
             };
+
+        selBeh['.pundit-type-filter'] = {
+            'onclick': function (e) {
+                //TODO stop this event
+                dojo.stopEvent(e);
+                var categorySelected = dojo.attr(this, 'data-category')
+                  , allItems = self.itemsDnD.map;
+
+                dojo.query('#' + self._id + ' .pundit-type-filter').removeClass('pundit-type-filter-selected');
+                dojo.query('#' + self._id + ' li.dojoDndItem').removeClass('pundit-hidden');
+
+                if(categorySelected){
+                    for(var itemId in allItems)
+                        if (allItems[itemId].data.rdftype.indexOf(categorySelected) === -1)
+                            dojo.query('#'+itemId).addClass('pundit-hidden');
+                    dojo.addClass(this, 'pundit-type-filter-selected');
+                }
+            }
+        }
         dojo.behavior.add(selBeh);
         
     }, // initBehaviors()
@@ -208,6 +231,48 @@ dojo.declare("pundit.selectors.SelectorBase", pundit.BaseComponent, {
         self.setLoading(true);
         self.getItemsForTerm(term, 
             function(items) {
+                if (self.opts.sortBy)
+                    items.sort(function(a, b){
+                        var val1 = a.label;
+                        var val2 = b.label;
+                        if (val1 == val2)
+                            return 0;
+                        if (val1 > val2)
+                            return 1;
+                        if (val1 < val2)
+                            return -1;
+                    });
+                if (self.opts.useTypeFilters){
+                    var allTypes = {}
+                      , typesHtml = '';
+
+                    for (var i = items.length; i--;)
+                        for (var j = items[i].rdftype.length; j--; ){
+                            var label = ''
+                              , b = new pundit.TriplesBucket({bucket: items[i].rdfData});
+
+                            if (b.getObject(items[i].rdftype[j], ns.rdfs_label).length > 0)
+                                label = b.getObject(items[i].rdftype[j], ns.rdfs_label)[0];
+                            else
+                                label = ns.getLabelFromUri(items[i].rdftype[j], 'literal');
+
+                            if (allTypes[items[i].rdftype[j]])
+                                allTypes[items[i].rdftype[j]].count++;
+                            else
+                                allTypes[items[i].rdftype[j]] = {
+                                    count: 1,
+                                    label: label
+                                };
+                        }
+
+                    for (var i in allTypes)
+                        typesHtml += '<a class="pundit-type-filter" data-category="' + i + '">'
+                                     + allTypes[i].label + '(' + allTypes[i].count + ')</a>';
+
+                    typesHtml += '<a class="pundit-type-filter">X</a>';
+                    dojo.query('#' + self._id + '-filters').innerHTML(typesHtml);
+                }
+
                 self.itemsDnD.selectAll();
                 self.itemsDnD.deleteSelectedNodes();
                 dojo.removeClass(dojo.query(self._id + ' .pundit-items-container'), 'pundit-lookup-error');
