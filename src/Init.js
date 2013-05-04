@@ -275,6 +275,8 @@ dojo.declare("pundit.Init", pundit.BaseComponent, {
             dojo.require("pundit.selectors.EuropeanaSelector");
             dojo.require("pundit.selectors.EuropeanaEDMSelector");
             dojo.require("pundit.selectors.BibServerSelector");
+            dojo.require("pundit.selectors.DandelionGeoSelector");
+            dojo.require("pundit.selectors.DandelionPOISelector");
         }
 
         // Used for other components initialization

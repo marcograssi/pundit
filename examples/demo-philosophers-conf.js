@@ -55,9 +55,11 @@ var punditConfig = {
         'pundit.CommentTagPanel': { active: true, enableEntitiesExtraction: true },
         
         'selectors': {
-            'Freebase': { active: false },
-            'DBPedia': { active: false },
-            'Wordnet': { active: false }
+            'Freebase': { active: true, sortBy: true, useTypeFilters: true },
+            'DBPedia': { active: true },
+            'Wordnet': { active: true },
+            'DandelionPOI': { active: true, name: "DandelionPOI", label: "Dandelion POIS" },
+            'DandelionGeo': { active: true, name: "DandelionGEO", label: "Dandelion GEO", limit: 999, useTypeFilters: true }
         }
     }
 
