@@ -141,7 +141,7 @@ dojo.declare("pundit.Configuration", pundit.BaseComponent, {
                     "label": "has creator",
                     "description": "The selected text fragment has been created by a specific Person",
                     "domain": ["http://purl.org/pundit/ont/ao#fragment-text", "http://purl.org/pundit/ont/ao#fragment-image", "http://xmlns.com/foaf/0.1/Image"],
-                    "range": ["http://www.freebase.com/schema/people/person", "http://xmlns.com/foaf/0.1/Person"],
+                    "range": ["http://www.freebase.com/schema/people/person", "http://xmlns.com/foaf/0.1/Person", "http://dbpedia.org/ontology/Person"],
                     "value": "http://purl.org/dc/terms/creator"
                 },
                 {
@@ -154,6 +154,7 @@ dojo.declare("pundit.Configuration", pundit.BaseComponent, {
                         "http://purl.org/pundit/ont/ao#fragment-text",
                         "http://www.freebase.com/schema/people/person", 
                         "http://xmlns.com/foaf/0.1/Person",
+                        "http://dbpedia.org/ontology/Person",
                         "http://www.freebase.com/schema/book/written_work",
                         "http://www.freebase.com/schema/book/book"
                     ],
@@ -168,6 +169,7 @@ dojo.declare("pundit.Configuration", pundit.BaseComponent, {
                     "range": [
                         "http://www.freebase.com/schema/people/person", 
                         "http://xmlns.com/foaf/0.1/Person",
+                        "http://dbpedia.org/ontology/Person",
                         "http://www.freebase.com/schema/book/written_work",
                         "http://www.freebase.com/schema/book/book"
                     ],
@@ -203,6 +205,7 @@ dojo.declare("pundit.Configuration", pundit.BaseComponent, {
                         "http://schema.org/Place", 
                         "http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing",
                         "http://www.freebase.com/schema/people/person", 
+                        "http://dbpedia.org/ontology/Person",
                         "http://xmlns.com/foaf/0.1/Person",
                         "http://www.freebase.com/schema/book/written_work",
                         "http://www.freebase.com/schema/book/book"
