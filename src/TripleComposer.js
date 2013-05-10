@@ -454,6 +454,8 @@ dojo.declare("pundit.TripleComposer", pundit.BaseComponent, {
             self.objSuggestionPanel.hide();
             self.propSuggestionPanel.hide();
             self.removeTripleRow(u);
+            if (dojo.query('.pundit-tc-dnd-container').length === 0)
+                self.addDnDTriple();
         });
                 
         // DnD targets clicks highlights only suitable pundit items for the given box
