@@ -100,6 +100,7 @@ dojo.declare("pundit.selectors.VocabSelector", pundit.BaseComponent, {
 
         self.initBehaviorsForVocab(v.result.name);
         dojo.behavior.apply();
+        self.sortVocabTree(v.result.name);
         
     }, // initJsonpVocab()
     
@@ -123,6 +124,13 @@ dojo.declare("pundit.selectors.VocabSelector", pundit.BaseComponent, {
         tree.query_for_root = {
             "nodetype": ns.pundit_VocabCategory
         }
+
+        tree.items = tree.items.sort(function(a, b){
+            var v1 = a.label, v2 = b.label;
+            if (v1 == v2) return 0;
+            if (v1 > v2) return 1;
+            if (v1 < v2) return -1;            
+        });
 
         for (var i=tree.items.length; i--;) {
 
@@ -272,7 +280,7 @@ dojo.declare("pundit.selectors.VocabSelector", pundit.BaseComponent, {
                 return semlibMyItems.uriInItems(item.value);
             },
             onclick: function(item) {
-				//DEBUG Remove item from my items and from page items
+                //DEBUG Remove item from my items and from page items
                 semlibMyItems.removeItemFromUri(item.value);
                 return true;
             }
@@ -298,7 +306,6 @@ dojo.declare("pundit.selectors.VocabSelector", pundit.BaseComponent, {
         var self = this;
             self.vocabs[voc.name] = {};
 
-
         self.vocabs[voc.name].label = voc.tab_name;
         //Add tab
         dojo.query('#pundit-vocabs-container ul.pundit-item-filter-list').append('<li id="'+voc.name+'VocabFilter">'+voc.tab_name+'</li>');
@@ -317,17 +324,12 @@ dojo.declare("pundit.selectors.VocabSelector", pundit.BaseComponent, {
         self.vocabs[voc.name].treeModel = new dijit.tree.ForestStoreModel({
             store: self.vocabs[voc.name].store,
             query: voc.query_for_root,
-            
-            /*{
-                // "nodetype": ns.pundit_VocabCategory
-                'is_root_node': true
-            },*/
             rootId: "root",
             rootLabel: "Things",
             pasteItem: function(){},
             childrenAttrs: ["children"]
         });
-        
+
         //Define the tree
         self.vocabs[voc.name].tree = dijit.Tree({
             // Add the clicked entity to the item list
@@ -356,7 +358,7 @@ dojo.declare("pundit.selectors.VocabSelector", pundit.BaseComponent, {
                 var cItem,
                     label,
                     target = e.target;
-                //DEBUG One for all code. Optimize search?
+                // DEBUG One for all code. Optimize search?
                 while (!dojo.hasClass(dojo.query(target)[0], 'dijitTreeRow')){
                     target = dojo.query(target).parent()[0];
                 }
@@ -364,7 +366,8 @@ dojo.declare("pundit.selectors.VocabSelector", pundit.BaseComponent, {
                 if (typeof label !== 'undefined'){
                     cItem = self.getItemFromLabel(self.vocabs[voc.name].store, label);
                     self.vocabs[voc.name].dndTree.selectNone();
-                    self.selectTreeNodeById(self.vocabs[voc.name].tree, cItem.value[0]);
+                    if (typeof(cItem) !== 'undefined')
+                        self.selectTreeNodeById(self.vocabs[voc.name].tree, cItem.value[0]);
                 }
             },
             //model: self.treeModel,
@@ -375,7 +378,7 @@ dojo.declare("pundit.selectors.VocabSelector", pundit.BaseComponent, {
             }
         }, voc.name+'VocabTreePanel');
         
-        //Make the tree draggable
+        // Make the tree draggable
         self.vocabs[voc.name].dndTree = new dijit.tree.dndSource(/* dijit.Tree */ self.vocabs[voc.name].tree, /* dijit.tree.__SourceArgs */ {
             copyOnly: true,
             dragThreshold: 10,
@@ -389,6 +392,42 @@ dojo.declare("pundit.selectors.VocabSelector", pundit.BaseComponent, {
         dojo.behavior.apply();
         
         self.initTreeItemsPreview(self.vocabs[voc.name].store);
+    },
+    
+    sortVocabTree: function(name) {
+        var self = this,
+            queue = [self.vocabs[name].treeModel.root],
+            node;
+        while (node = queue.pop()) {
+            var len = (typeof(node.children) !== 'undefined') ? node.children.length : 0;
+            if (len > 0) {
+                for (var l=len; l--;)
+                    queue.push(node.children[l]);
+                node.children.sort(function(a, b){
+                    var v1 = a.label[0], v2 = b.label[0];
+                    if (v1 == v2) return 0;
+                    if (v1 > v2) return 1;
+                    if (v1 < v2) return -1;            
+                });
+            }
+        }
+
+        // reset the itemNodes Map
+        self.vocabs[name].tree._itemNodesMap = {};
+
+        // remove the rootNode
+        if (self.vocabs[name].tree.rootNode) {
+            self.vocabs[name].tree.rootNode.destroyRecursive();
+        }
+
+        // Nullify the tree.model's root-children
+        self.vocabs[name].tree.model.root.children = null;
+
+        // reset the state of the rootNode
+        self.vocabs[name].tree.rootNode.state = "UNCHECKED";
+
+        // reload the tree
+        self.vocabs[name].tree._load();
     },
     
     initTreeItemsPreview:function(store){
