@@ -62,7 +62,7 @@ dojo.declare("pundit.FastTextHandler", pundit.BasePanel, {
         // for steps 0 and 1
         
         cMenu.addAction({
-            type: ['textSelectionHelper'],
+            type: ['textSelectionHelper', 'annotatedtextfragment', 'bookmarkedtextfragment'],
             name: 'connectText0',
             label: 'Connect this text to..',
             showIf: function() {
@@ -75,7 +75,7 @@ dojo.declare("pundit.FastTextHandler", pundit.BasePanel, {
         });
 
         cMenu.addAction({
-            type: ['textSelectionHelper'],
+            type: ['textSelectionHelper', 'annotatedtextfragment', 'bookmarkedtextfragment'],
             name: 'connectText1',
             label: 'Connect to previously selected text',
             showIf: function() {
