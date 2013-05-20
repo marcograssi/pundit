@@ -128,7 +128,7 @@ dojo.declare("pundit.TextFragmentHandler", pundit.BaseComponent, {
 
         // Action: annotate text fragment
         cMenu.addAction({
-            type: ['textSelectionHelper'],
+            type: ['textSelectionHelper', 'annotatedtextfragment', 'bookmarkedtextfragment'],
             name: 'AnnotateWithTripleComposer',
             label: 'Annotate text fragment',
             showIf: function(item) { 
