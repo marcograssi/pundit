@@ -1317,7 +1317,7 @@ dojo.declare("pundit.TooltipAnnotationViewer", pundit.BaseComponent, {
                             width: w,
                             height: h
                         });
-                        dojo.style(s.getDOM(),{
+                        dojo.style(s.getContent(),{
                             left: style.marginLeft,
                             top: style.marginTop,
                             position: 'absolute'

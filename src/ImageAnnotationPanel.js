@@ -34,14 +34,16 @@ dojo.declare("pundit.ImageAnnotationPanel", pundit.BasePanel, {
             var h = document.getElementsByTagName('head')[0],
             d = document.createElement('script');
             d.type = 'text/javascript',
-            d.src = 'http://thepund.it/lib/kinetic/kinetic-v4.0.1.js';
+            // d.src = 'http://thepund.it/lib/kinetic/kinetic-v4.0.1.js';
+            d.src = 'http://thepund.it/lib/kinetic/kinetic-v4.5.1.min.js';
             h.appendChild(d);
         })();
         
-        //Zoom and canvas parameters
+        // Zoom and canvas parameters
         self.deltaScale = 0.1;
-        self.dotRadius = 5; //Screen pixel dimension
-        self.strokeWidth = 2; //
+        self.dotRadius = 5; // Screen pixel dimension
+        self.strokeWidth = 10; 
+        self.lineStrokeWidth = 3;
         self.dashArray = [10, 5, 1, 5];
         
         self.crypto = new pundit.Crypto();
@@ -125,7 +127,7 @@ dojo.declare("pundit.ImageAnnotationPanel", pundit.BasePanel, {
         self.layer.finishedDrawingNewLine = false;
         self.newDots = [];
         
-        dojo.connect(self.stage.getDOM(), 'onclick', function(e){
+        dojo.connect(self.stage.getContent(), 'onclick', function(e){
             //Check drawing
             if (!self.isDrawing) 
                 return;
@@ -156,7 +158,7 @@ dojo.declare("pundit.ImageAnnotationPanel", pundit.BasePanel, {
             }
             self.layer.newLine = new Kinetic.Line({
                 dashArray: dashArray,
-                strokeWidth: strokeWidth,
+                strokeWidth: self.lineStrokeWidth,
                 stroke: "#f00",
                 lineCap: "round",
                 alpha: 1,
@@ -182,17 +184,16 @@ dojo.declare("pundit.ImageAnnotationPanel", pundit.BasePanel, {
         });
 
 
-        self.layer.beforeDraw(function() {
+        self.layer.on('beforeDraw', function() {
             if (self.layer.newLine){
                 self.updateNewLine(self.layer);
             }
             if (self.selectedShape !== null){
-            //if (self.modifyingShape){
                 self.updatePoly(self.selectedShape);
             }
         });
         
-        //On background image loaded
+        // On background image loaded
         imageObj.onload = function() {
             //Positionate the image at the center of the canvas
             var scale = 1,
@@ -226,7 +227,7 @@ dojo.declare("pundit.ImageAnnotationPanel", pundit.BasePanel, {
                 self.isPanImg = true;
                 if (iw < self.containerSize.w){
                     //should I this to center canvas
-                    dojo.style(dojo.query(self.stage.getDOM())[0], {
+                    dojo.style(dojo.query(self.stage.getContent())[0], {
                         left: parseInt(0.5 * (self.containerSize.w - iw * scale)),
                         top: parseInt(0.5 * (self.containerSize.h - ih * scale)),
                         width: parseInt(iw * scale),
@@ -240,7 +241,7 @@ dojo.declare("pundit.ImageAnnotationPanel", pundit.BasePanel, {
             }else{
                 self.isPanImg = false;
                 if (ih < self.containerSize.h){
-                    dojo.style(dojo.query(self.stage.getDOM())[0], {
+                    dojo.style(dojo.query(self.stage.getContent())[0], {
                         left: parseInt(0.5 * (self.containerSize.w - iw * scale)),
                         top: parseInt(0.5 * (self.containerSize.h - ih * scale)),
                         width: parseInt(iw * scale),
@@ -329,10 +330,12 @@ dojo.declare("pundit.ImageAnnotationPanel", pundit.BasePanel, {
                 var dots = self.stage.get('.dot-' + self.selectedShape.getId());
                 //for (var i in dots){
                 for (var i = dots.length; i--;){
-                    self.layer.remove(dots[i]);
+                    dots[i].remove();
+                    // self.layer.remove(dots[i]);
                 }
                 
-                self.layer.remove(self.selectedShape);
+                // self.layer.remove(self.selectedShape);
+                self.selectedShape.remove();
                 
                 for (var i = self.createdShapes.length; i--;){
                     if (self.createdShapes[i].getId() === self.selectedShape.getId())
@@ -410,7 +413,7 @@ dojo.declare("pundit.ImageAnnotationPanel", pundit.BasePanel, {
         
     },
     //Build an anchor point of the polygon (when creating the polygon)
-    buildAnchor:function(layer, x, y) {
+    buildAnchor: function(layer, x, y) {
 
         var self= this,
             len,
@@ -421,25 +424,24 @@ dojo.declare("pundit.ImageAnnotationPanel", pundit.BasePanel, {
                 y: y,
                 radius: radius,
                 stroke: "#666",
-                fill: "#ddd",
+                fill: "#fc0",
                 strokeWidth: strokeWidth,
                 draggable: false,
                 name: 'dot'
             });
         
-        //Add special behavior for the first dot to close the line and draw the polygon
+        // Add special behavior for the first dot to close the line and draw the polygon
         len = self.newDots.length;
         if (len === 0) {
             // add hover styling
             anchor.on("mouseover", function(evt) {
                 document.body.style.cursor = "pointer";
-                this.setStrokeWidth((self.strokeWidth + 1)/ self.stage.getScale().x);
+                this.setStrokeWidth((self.strokeWidth + 1) / self.stage.getScale().x);
             });
 
             anchor.on("mouseout", function() {
                 document.body.style.cursor = "default";
                 this.setStrokeWidth(self.strokeWidth / self.stage.getScale().x);
-                //console.log('anchor out');
                 layer.draw();
             });
             
@@ -466,9 +468,9 @@ dojo.declare("pundit.ImageAnnotationPanel", pundit.BasePanel, {
                 strokeWidth = self.strokeWidth / self.stage.getScale().x;
                 poly = new Kinetic.Polygon({
                     points: points,
-                    fill: '#00D2FF',
+                    fill: '#ff0000',
                     stroke: 'black',
-                    strokeWidth: strokeWidth,
+                    strokeWidth: self.lineStrokeWidth,
                     opacity: 0.3
                 });
                 
@@ -479,24 +481,23 @@ dojo.declare("pundit.ImageAnnotationPanel", pundit.BasePanel, {
                 
                 //Make a function for this!
                 dots = self.newDots;
-                //for (var i in dots){
                 for (var i = dots.length; i--;){
-                    self.layer.remove(dots[i]);
+                    // self.layer.remove(dots[i]);
+                    dots[i].remove();
                 }
                 self.newDots = [];
                 
                 //Make a function for this
                 lines = self.stage.get('.tempLine');
-                //for (var i in lines){
                 for (var i = lines.length; i--;){
-                    self.layer.remove(lines[i]);
+                    // self.layer.remove(lines[i]);
+                    lines[i].remove();
                 }
                   
                 poly.on('click', function(e){
                     e.cancelBubble = true;
                     
                     if (typeof self.selectedShape === 'undefined' || self.selectedShape !== this){
-                    //if (!self.modifyingShape){
                         self.selectShape(this);
                     }
                     self.layer.draw();
@@ -506,9 +507,10 @@ dojo.declare("pundit.ImageAnnotationPanel", pundit.BasePanel, {
                     //self.modifyingShape = false;
                     self.selectedShape = null;
                     var dots = self.stage.get('.dot-' + this.getId());
-                    //for (var i in dots){
                     for (var i = dots.length; i--;){
-                        self.layer.remove(dots[i]);
+                        // self.layer.remove(dots[i]);
+                        
+                        dots[i].remove();
                     }
                     self.layer.draw();
                 });
@@ -517,7 +519,6 @@ dojo.declare("pundit.ImageAnnotationPanel", pundit.BasePanel, {
                     self.selectedShape = this;
                     var pos = this.getPosition(),
                         dots = this.getPoints();
-                    //for (var i in dots){
                     for (var i = dots.length; i--;){
                         self.dragPoints.push(self.buildTempAnchor(self.layer, this.getId(), dots[i].x + pos.x, dots[i].y + pos.y));
                     }
@@ -577,8 +578,8 @@ dojo.declare("pundit.ImageAnnotationPanel", pundit.BasePanel, {
             x: x,
             y: y,
             radius: radius,
-            stroke: "#666",
-            fill: "#ddd",
+            stroke: "#fc0",
+            fill: "#ff0000",
             strokeWidth: strokeWidth,
             draggable: true,
             name: 'dot-' + classId
@@ -700,8 +701,9 @@ dojo.declare("pundit.ImageAnnotationPanel", pundit.BasePanel, {
             var anchors = self.layer.get('.dot-' + self.selectedShape.getId());
             //for (var i in anchors){
             for (var i = anchors.length; i--;){
-                var anchor = anchors[i];
-                self.layer.remove(anchor);   
+                // var anchor = anchors[i];
+                // self.layer.remove(anchor);   
+                anchors[i].remove()
             }
             self.selectedShape.setDraggable(false);
         }
@@ -737,20 +739,20 @@ dojo.declare("pundit.ImageAnnotationPanel", pundit.BasePanel, {
     centerCanvasContainer:function(){
         var self = this;
         if (self.stage.getWidth() < self.containerSize.w){
-            dojo.style(dojo.query(self.stage.getDOM())[0], {
+            dojo.style(dojo.query(self.stage.getContent())[0], {
                 left: 0.5 * (self.containerSize.w - self.stage.getWidth())
             });
         }else{
-            dojo.style(dojo.query(self.stage.getDOM())[0], {
+            dojo.style(dojo.query(self.stage.getContent())[0], {
                 left: 0
             });
         }           
         if (self.stage.getHeight() < self.containerSize.h){
-            dojo.style(dojo.query(self.stage.getDOM())[0], {
+            dojo.style(dojo.query(self.stage.getContent())[0], {
                 top: 0.5 * (self.containerSize.h - self.stage.getHeight())
             });
         }else{
-            dojo.style(dojo.query(self.stage.getDOM())[0], {
+            dojo.style(dojo.query(self.stage.getContent())[0], {
                 top: 0
             });
         }

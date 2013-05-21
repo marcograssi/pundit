@@ -193,7 +193,8 @@ dojo.declare('pundit.Previewer', pundit.BaseComponent, {
                 width: w,
                 height: h
             });
-            dojo.style(s.getDOM(),{
+            // dojo.style(dojo.byId('pundit-preview-image-container'), {
+            dojo.style(s.getContent(), {
                 left: style.marginLeft,
                 top: style.marginTop,
                 position: 'absolute'
@@ -201,11 +202,9 @@ dojo.declare('pundit.Previewer', pundit.BaseComponent, {
             var l = new Kinetic.Layer();
             s.add(l);
             
-            //for (var i in item.selectors){
             for (var i = item.selectors.length; i--;){
                 points = [];
                 if (item.selectors[i].type === 'polygon'){
-                    //for (var j in item.selectors[i].points){
                     for (var j = item.selectors[i].points.length; j--;){
                         points.push({
                             x : item.selectors[i].points[j].x * parseInt(w),
@@ -214,18 +213,16 @@ dojo.declare('pundit.Previewer', pundit.BaseComponent, {
                     }
                     
                     var p = [];
-                    //for (var k in points){
                     for (var k = points.length; k--;){
                         p = p.concat([points[k].x, points[k].y]);
                     }
                     p = p.concat([points[0].x, points[0].y]);
-                    //points.concat([points[0].x, points[0].y]);
                     var poly = new Kinetic.Polygon({
                         points: p,
-                        fill: '#00D2FF',
+                        fill: '#FFCC00',
                         stroke: 'black',
-                        strokeWidth: 2,
-                        opacity: 0.3
+                        strokeWidth: 3,
+                        opacity: 0.75
                     });
                     l.add(poly);
                     s.draw();
