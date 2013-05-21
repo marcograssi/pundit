@@ -162,6 +162,7 @@ div.pundit-fp *
 }
 #pundit-gui.pundit-hidden #pundit-gui-left {
     opacity: 0;
+    overflow: hidden;
 }
 #pundit-gui.pundit-shown #pundit-gui-left {
     opacity: 1.0;
