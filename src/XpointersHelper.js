@@ -406,6 +406,41 @@ dojo.declare("pundit.XpointersHelper", pundit.BaseComponent, {
             return false;
         }
     },
+    
+    isValidXPointer: function(xp) {
+        var self = this,
+            splittedString,
+            ret = {},
+            foo,
+            startNode, endNode;
+
+        // Split the xpointer two times, to extract a string 
+        // like //xpath1[n1],'',o1,//xpath2[n2],'',o2
+        // where o1 and o2 are the offsets
+        splittedString = xp.split("#xpointer(start-point(string-range(")[1].split("))/range-to(string-range(");
+        
+        // Then extract xpath and offset of the starting point
+        foo = splittedString[0].split(",'',");
+        ret.startxpath = foo[0];
+        ret.startoffset = foo[1];
+
+        // .. and of the ending point of the xpointer
+        foo = splittedString[1].substr(0, splittedString[1].length - 3).split(",'',");
+        ret.endxpath = foo[0];
+        ret.endoffset = foo[1];
+            
+        console.log('Start: ', ret.startxpath);
+        startNode = self.getNodeFromXpath(ret.startxpath);
+        console.log('Start: ', startNode, ret.startoffset);
+        
+        console.log('End: ', ret.endxpath);
+        endNode = self.getNodeFromXpath(ret.endxpath);
+        console.log('End: ', endNode, ret.endoffset);
+        
+        console.log('Valid start end', startNode, endNode);
+        console.log('Valid: ', self.isValidRange(startNode, ret.startoffset, endNode, ret.endoffset));
+        
+    },
 
     // Returns the DOM Node pointed by the xpath. Quite confident we can always get the 
     // first result of this iteration, the second should give null since we dont use general
@@ -537,7 +572,6 @@ dojo.declare("pundit.XpointersHelper", pundit.BaseComponent, {
             return false;
 
         var i, c = self.opts.ignoreClasses;
-        //for (i in c)
         for (i = c.length; i--;)
             if (dojo.hasClass(node, c[i])) 
                 return true;

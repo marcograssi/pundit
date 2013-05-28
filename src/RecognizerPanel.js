@@ -261,7 +261,7 @@ dojo.declare("pundit.RecognizerPanel", pundit.ResourcesPanel, {
                 tooltip_viewer.tempXpointers.push(self.target);
                 //tooltip_viewer.refreshAnnotations();
                 // DEBUG: not sure we can avoid the refreshAnnotations() process
-                //tooltip_viewer.consolidate();   
+                tooltip_viewer.consolidate();   
         }
         
         tooltip_viewer.highlightByXpointer(self.target);

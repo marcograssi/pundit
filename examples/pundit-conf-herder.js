@@ -20,25 +20,21 @@
 
 var punditConfig = {
 
-    debugAllModules: true,
+    debugAllModules: false,
 
-    annotationServerBaseURL : 'http://demo.as.thepund.it:8088/annotationserver/',
+    annotationServerBaseURL : 'http://as.thepund.it:8080/annotationserver/',
 
-    // witt: 81, rest: 84
     vocabularies: [
-        // "http://korbo.netseven.it/88?jsonp=_PUNDIT.vocab.initJsonpVocab",
-        // "http://korbo.netseven.it/91?jsonp=_PUNDIT.vocab.initJsonpVocab"
-        // "https://dl.dropbox.com/u/769042/net7/Bur-Relations-130301.pundit.jsonp"
-        "http://korbo.netseven.it/84?jsonp=_PUNDIT.vocab.initJsonpVocab",
+        //"http://korbo.netseven.it/92?jsonp=_PUNDIT.vocab.initJsonpVocab",
+        //"http://korbo.netseven.it/91?jsonp=_PUNDIT.vocab.initJsonpVocab"
     ],
-
     useBasicRelations: true,
 
     modules: {
 
-        'pundit.TooltipAnnotationViewer': {
-            debug: false
-        },
+        'pundit.TooltipAnnotationViewer': { debug: true },
+        'pundit.XpointersHelper': { debug: true },
+        'pundit.TextFragmentHandler': { debug: true},
         'pundit.NamedContentHandler': {
             debug: false
         },
@@ -46,7 +42,7 @@ var punditConfig = {
         'pundit.Help': {
             introductionFile: 'example-introduction.html',
             introductionWindowTitle: 'Welcome to Pundit examples! :)',
-            showIntroductionAtLogin: true
+            showIntroductionAtLogin: false
         },
         
         'pundit.ContactHelper': {
@@ -61,7 +57,7 @@ var punditConfig = {
         
 
         'pundit.NotebookManager': {
-            active: false
+            active: true
         },
         'pundit.ImageFragmentHandler': {
             active: true
