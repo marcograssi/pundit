@@ -89,9 +89,10 @@ dojo.declare("pundit.TextFragmentHandler", pundit.BaseComponent, {
             }
 
             self.lastSelectedRange = range;
+            
             xp = self.getCleanSelectedXpointer();
             if (xp === null) {
-                self.log("ERROR: trying to create a new item from with null xpointer?");
+                self.log("ERROR: trying to create a new item with null xpointer?");
                 _PUNDIT.cMenu.hide(e);
                 return false;
             }
@@ -183,6 +184,7 @@ dojo.declare("pundit.TextFragmentHandler", pundit.BaseComponent, {
         item.rdfData = semlibItems.createBucketForTextFragment(item).bucket;
         
         self.log('Created an item from range with label: '+content_short);
+        self.log('Clean xpointer is: '+xp);
         return item;
     }, // createItemFromRange()
     
@@ -290,10 +292,10 @@ dojo.declare("pundit.TextFragmentHandler", pundit.BaseComponent, {
         }
 
         range = window.getSelection().getRangeAt(0);
-	
+
         // If the selected range is empty (this happens when the user clicks on something)...
         if  (range !== null && (range.startContainer === range.endContainer) && (range.startOffset === range.endOffset)) {
-            self.log("Range is not null, but start/end containers and offsets match: no selected range.")
+            self.log("Range is not null, but start/end containers and offsets match: no selected range.");
             return null;
         }
 
@@ -312,25 +314,36 @@ dojo.declare("pundit.TextFragmentHandler", pundit.BaseComponent, {
 
         var self = this,
         cleanRange = {};
-			
-        self.log("dirtyRange2cleanRange: DIRTY is "+range.startOffset+" "+range.endOffset);
 
-        cleanRange.startContainer = range.startContainer;
-        cleanRange.endContainer = range.endContainer;
+        self.log("dirty2cleanRange DIRTY is: "+
+            range.startContainer.nodeName+"["+range.startOffset+"] > "+
+            range.endContainer.nodeName+"["+range.endOffset+"]");
 
-        cleanRange.cleanStartNumber = self.calculateCleanNodeNumber(range.startContainer);
-        cleanRange.cleanEndNumber = self.calculateCleanNodeNumber(range.endContainer);
+        // cleanRange.startContainer = range.startContainer;
+        // cleanRange.endContainer = range.endContainer;
 
-        cleanRange.startOffset = self.calculateCleanOffset(range.startContainer, range.startOffset);
-        cleanRange.endOffset = self.calculateCleanOffset(range.endContainer, range.endOffset);
+        // cleanRange.cleanStartNumber = self.calculateCleanNodeNumber(range.startContainer);
+        // cleanRange.cleanEndNumber = self.calculateCleanNodeNumber(range.endContainer);
+
+        var foos = self.calculateCleanOffset(range.startContainer, range.startOffset),
+            fooe = self.calculateCleanOffset(range.endContainer, range.endOffset);
+
+        cleanRange.startContainer = foos.cleanContainer;
+        cleanRange.startOffset = foos.cleanOffset;
+        
+        cleanRange.endContainer = fooe.cleanContainer;
+        cleanRange.endOffset = fooe.cleanOffset;
+
+        cleanRange.cleanStartNumber = self.calculateCleanNodeNumber(cleanRange.startContainer);
+        cleanRange.cleanEndNumber = self.calculateCleanNodeNumber(cleanRange.endContainer);
        
-        self.log("dirtyRange2cleanRange is returning a CLEAN (invalid?) range: "+
+        self.log("dirty2cleanRange CLEAN (invalid?) range: "+
             cleanRange.startContainer.nodeName+"["+cleanRange.startOffset+"] > "+
             cleanRange.endContainer.nodeName+"["+cleanRange.endOffset+"]");
         
         return cleanRange;
     }, // dirtyRange2cleanRange()
-	
+
     correctXPathFinalNumber: function(xpath, clean_number) {
         return xpath.replace(/\[[0-9]+\]$/, '['+clean_number+']');
     },
@@ -341,7 +354,7 @@ dojo.declare("pundit.TextFragmentHandler", pundit.BaseComponent, {
             nodeName = self.getXPathNodeName(node),
             parentNode = dojo.query(node).parent()[0],
             last_node = (self.helper.isWrapNode(parentNode)) ? parentNode : node;
-	
+
         if (self.helper.isTextNode(node)) {
             // If it's a text node: skip ignore nodes, count text/element nodes
             clean_n = 1;
@@ -355,7 +368,7 @@ dojo.declare("pundit.TextFragmentHandler", pundit.BaseComponent, {
             // If it's an element node, count the siblings skipping ignore nodes
             clean_n = 1;
             while (current_node = last_node.previousSibling) {
-                if (self.getXPathNodeName(current_node) === nodeName && !self.helper.isIgnoreNode(current_node)) 
+                if (self.getXPathNodeName(current_node) === nodeName && !self.helper.isIgnoreNode(current_node))
                     clean_n++;
                 last_node = current_node;
             }
@@ -364,28 +377,41 @@ dojo.declare("pundit.TextFragmentHandler", pundit.BaseComponent, {
         return clean_n;
     },
 
-    calculateCleanOffset: function(node, dirty_offset) {
+    // TODO: tests to do:
+    // - clean dom, should remain the same?
+    // - consolidated dom, over an annotation:
+    //       - intersection before and after
+    //       - inclusion New in Old and Old in New
+    //       - leaving the mouse over the yellow icon (dirty A, clean text)
+    calculateCleanOffset: function(dirtyContainer, dirtyOffset) {
         var self = this,
-            parentNode = dojo.query(node).parent()[0];
-        clean_offset = dirty_offset;
+            parentNode = dojo.query(dirtyContainer).parent()[0],
+            node = dirtyContainer,
+            offset = dirtyOffset;
 
-        if (self.helper.isElementNode(node) && !self.helper.isIgnoreNode(node))
-            return dirty_offset;
+        if (self.helper.isElementNode(dirtyContainer) && !self.helper.isIgnoreNode(dirtyContainer))
+            return { cleanContainer: node, cleanOffset: offset };
 
-        if (self.helper.isTextNode(node) && self.helper.isWrapNode(parentNode)) 
+        if (self.helper.isTextNode(dirtyContainer) && self.helper.isWrapNode(parentNode))
             node = parentNode;
 
-        while (current_node = node.previousSibling) {
-            if (!self.helper.isIgnoreNode(current_node) && self.helper.isElementNode(current_node) && !self.helper.isWrapNode(current_node))
-                return clean_offset;
-            if (self.helper.isTextNode(current_node))
-                clean_offset += current_node.length;
-            else if (self.helper.isWrapNode(current_node)) 
-                clean_offset += current_node.firstChild.length;
-            node = current_node;
+        while (currentNode = node.previousSibling) {
+            if (!self.helper.isIgnoreNode(currentNode) && self.helper.isElementNode(currentNode) && !self.helper.isWrapNode(currentNode))
+                if (self.helper.isTextNode(dirtyContainer) && self.helper.isWrapNode(parentNode))
+                    return { cleanContainer: dirtyContainer, cleanOffset: offset };
+                else
+                    return { cleanContainer: node, cleanOffset: offset };
+            if (self.helper.isTextNode(currentNode))
+                offset += currentNode.length;
+            else if (self.helper.isWrapNode(currentNode)) 
+                offset += currentNode.firstChild.length;
+            node = currentNode;
         }
 
-        return clean_offset;
+        if (self.helper.isTextNode(dirtyContainer) && self.helper.isWrapNode(parentNode))
+            return { cleanContainer: dirtyContainer, cleanOffset: offset };
+        else
+            return { cleanContainer: node, cleanOffset: offset };
     },
 
     getXPathNodeName : function(node) {
@@ -402,14 +428,14 @@ dojo.declare("pundit.TextFragmentHandler", pundit.BaseComponent, {
         var parentNode = dojo.query(node).parent()[0];
         if (!node)
             return partial_xpath;
-		
+
         var self = this,
         nodeName = self.getXPathNodeName(node);
 
         if (self.helper.isContentNode(node)) 
             if (typeof(partial_xpath) !== 'undefined') 
                 return "//DIV[@about='" + dojo.attr(node, 'about') + "']/" + partial_xpath;
-            else	
+            else
                 return "//DIV[@about='" + dojo.attr(node, 'about') + "']";
 
         if (nodeName === 'BODY' || nodeName === 'HTML')
@@ -422,7 +448,6 @@ dojo.declare("pundit.TextFragmentHandler", pundit.BaseComponent, {
         // Skip wrap nodes into the final XPath!
         if (self.helper.isWrapNode(node)) 
             return self.calculateCleanXPath(node.parentNode, partial_xpath);
-
 
         var num = 1,
         current_node = node;
@@ -442,8 +467,6 @@ dojo.declare("pundit.TextFragmentHandler", pundit.BaseComponent, {
         return self.calculateCleanXPath(parentNode, partial_xpath);
     },
 
-
-    // TODO: this function is also present in xp7lib
     // Will return an object with startxpath, startoffset, endxpath, endoffset
     // splitting the given xpointer. A 'valid' field will be true if the given 
     // xpointer is valid and not empty in the current DOM
@@ -488,7 +511,6 @@ dojo.declare("pundit.TextFragmentHandler", pundit.BaseComponent, {
         return xpointer.split("#xpointer(start-point(string-range(")[0];
     }, // getURLFromXpointer()
 
-    // TODO: this function is also present in xp7lib
     // Returns the DOM Node pointed by the xpath. Quite confident we can always get the 
     // first result of this iteration, the second should give null since we dont use general
     // purpose xpaths 
