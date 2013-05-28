@@ -147,7 +147,7 @@ dojo.declare("pundit.BaseComponent", null, {
         var foo = this.opts.debug;
         
         // If there's an user supplied object and it says not to log, dont log.
-        if (typeof(punditConfig) !== 'undefined' && punditConfig.debugAllModules === true)
+        if (typeof(_PUNDIT.config) !== 'undefined' && _PUNDIT.config.debugAllModules === true)
             foo = true;
 
         if (foo === false) return;
