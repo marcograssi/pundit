@@ -1,3 +1,7 @@
+0.15.1-HatchedEgg
+* Tackled a nasty bug on xpointers creation
+* Supporting freebase again, using the new APIs
+
 0.15-HatchedEgg
 * Added licensing informations, pundit is now officially open source!
 * New EDM selector, using Europeana v2 API
