@@ -190,9 +190,9 @@ dojo.declare("pundit.Items", pundit.BaseComponent, {
             typesLabels = [];
             
         for (var j=Math.min(item.rdftype.length, _PUNDIT.items.opts.itemTypesNumber); j--;) {
-            if (b.getObject(item.rdftype[j], ns.rdfs_label).length > 0)
+            if (b.getObject(item.rdftype[j], ns.rdfs_label).length > 0) 
                 typesLabels.push(b.getObject(item.rdftype[j], ns.rdfs_label)[0]);
-            else
+            else 
                 typesLabels.push(item.rdftype[j]);
             
             // TODO: this should be configurable
@@ -202,7 +202,6 @@ dojo.declare("pundit.Items", pundit.BaseComponent, {
         }
         
         rdftype = typesLabels.join(', ');
-        
         
         // TODO: this check is wrong, what if an item comes with no rdftype but
         // it's a proper item? It gets shown as literal ...

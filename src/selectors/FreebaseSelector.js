@@ -16,7 +16,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     See LICENSE.TXT or visit http://thepund.it for the full text of the license.
-*//**
+*/
+/**
   * @class pundit.selectors.FreebaseSelector
   * @extends pundit.selectors.SelectorBase
   * @description 
@@ -33,24 +34,20 @@ dojo.declare("pundit.selectors.FreebaseSelector", pundit.selectors.SelectorBase,
         keyInputTimerLength: 500,
         keywordMinimumLength: 3,
         
-        freebaseReconURL: 'http://data.labs.freebase.com/recon/query',
+        freebaseSearchURL: 'https://www.googleapis.com/freebase/v1/search',
         freebaseSchemaBaseURL: 'http://www.freebase.com/schema',
-        freebaseImagesBaseURL: 'http://api.freebase.com/api/trans/image_thumb',
-        freebaseMQLReadURL: 'https://api.freebase.com/api/service/mqlread',
-        freebaseBlurbURL: 'http://api.freebase.com/api/trans/blurb/guid/',
-        freebaseItemsBaseURL: 'http://rdf.freebase.com/ns/',
-
-        // Artificial timeout for atypical 404 freebase answers
-        blurbTimeoutMS: 5000,
+        freebaseImagesBaseURL: 'https://usercontent.googleapis.com/freebase/v1/image',
+        freebaseTopicURL: 'https://www.googleapis.com/freebase/v1/topic',
+        freebaseMQLReadURL: 'https://www.googleapis.com/freebase/v1/mqlread',
+        freebaseItemsBaseURL: 'http://www.freebase.com',
+        freebaseAPIKey: 'AIzaSyCJjAj7Nd2wKsZ8d7XQ9ZvUwN5SF0tZBsE',
         
         // TODO: let the user configure the freebase query somehow? 
-        
         layouts: ['list', 'tile']
     },
 
     constructor: function(options) {
         var self = this;
-        
         self.requests = {};
         self.log('Selector '+self.name+' up and running.');
     }, // constructor()
@@ -63,8 +60,7 @@ dojo.declare("pundit.selectors.FreebaseSelector", pundit.selectors.SelectorBase,
         self.requests[term] = {
             f: func, 
             items: [], 
-            done: 0,
-            blurbTimers: {}
+            done: 0
         };
         
         // Add function for error
@@ -74,15 +70,16 @@ dojo.declare("pundit.selectors.FreebaseSelector", pundit.selectors.SelectorBase,
         self.requests[term].jobId = _PUNDIT.loadingBox.addJob('Freebase query: '+term);
 
         dojo.io.script.get({
-            callbackParamName: "jsonp",
-            url: self.opts.freebaseReconURL,
+            callbackParamName: "callback",
+            url: self.opts.freebaseSearchURL,
             content: {
-                q: dojo.toJson({ "/type/object/name": term}),
+                key: self.opts.freebaseAPIKey,
+                query: term,
                 limit: self.opts.limit
             },
             load: function(r) {
-                self.requests[term].len = r.length;
-                if (r.length === 0) {
+                self.requests[term].len = r.result.length;
+                if (r.hits === 0) {
                     _PUNDIT.loadingBox.setJobOk(self.requests[term].jobId);
                     self._itemRequestDone(term);
                 } else {
@@ -91,7 +88,6 @@ dojo.declare("pundit.selectors.FreebaseSelector", pundit.selectors.SelectorBase,
             },
             error: function(response, ioArgs) {
                 self.log(self.name+' getItemsForTerm got an error :(');
-                // TODO: what to do with passed function??
                 if (typeof self.requests[term].ef !== 'undefined')
                     self.requests[term].ef();
                 func([]);
@@ -103,129 +99,136 @@ dojo.declare("pundit.selectors.FreebaseSelector", pundit.selectors.SelectorBase,
     
     _getItemsFromFreebaseResults: function (r, term) {
         var self = this, 
-            len = r.length,
-            result = [];
-            
+            len, ar;
+        
         // Request has been canceled    
         if (typeof(self.requests[term]) === 'undefined')
             return;
+    
+        ar = r.result;
+        len = ar.length;
+
+        self.log('Getting details for '+len+ 'items');
         
         for (var i=0; i<len; i++) {
 
-            var rdf_types = [], 
-                item;
-            
-            for (var j = r[i].type.length; j--;)
-                rdf_types.push(self.opts.freebaseSchemaBaseURL + r[i].type[j])
-
-            item = {
+            // The item borns as half empty, will get filled up
+            // by later calls.
+            var item = {
                 type: ['subject'],
-                rdftype: rdf_types,
-                label: r[i].name[0], 
-                value: r[i].id.replace("/guid/", ""),
-                description: '',
-                desc_types: r[i].type,
-                desc_guid: r[i].id.replace("/guid/", ""),
-                altLabel: r[i].name.join(', '),
-                image: self.opts.freebaseImagesBaseURL + r[i].id
+                label: ar[i].name,
+                mid: ar[i].mid,
+                freebaseId: ar[i].id,
+                image: self.opts.freebaseImagesBaseURL + ar[i].mid,
+                // placehold values to get filled by async calls laters
+                description: -1,
+                value: -1
             };
 
             self.requests[term].items.push(item);
-            self._getItemDescription(item, term);
+            self._getItemDetails(item, term);
         };
-
-        return result;
         
     }, // _getItemsFromFreebaseResults(r, func)
     
-    _getItemDescription: function(item, term) {
+    // Two ajax calls:
+    // - MQL read to get id, types
+    // - TOPIC call to get the description
+    _getItemDetails: function(item, term) {
         var self = this;
         
         dojo.io.script.get({
             callbackParamName: "callback",
             url: self.opts.freebaseMQLReadURL,
             content: {
-                query : dojo.toJson({
-                    'query': { 
-                        "guid": '#'+ item.desc_guid,
-                        "id": null,
-                        "mid": null ,
-                        "name": null
-                    }
+                query: dojo.toJson({
+                    "id": null,
+                    "mid": item.mid,
+                    "type": [{}],
                 }),
-                limit: self.opts.limit 
+                limit: self.opts.limit,
+                key: self.opts.freebaseAPIKey
             },
             load: function(r) {
-                item.value = self.opts.freebaseItemsBaseURL + r.result.id.substring(1).replace(/\//g,'.');
+                self.log('MQL read for '+item.mid+' done');
+                
+                // Put some stuff into the item
+                item.value = self.opts.freebaseItemsBaseURL + r.result.mid;
+                item.typeLabels = [];
+                item.rdftype = [];
+                
+                // Take the types labels for the bucket
+                for (var l=r.result.type.length; l--;) {
+                    var o = r.result.type[l],
+                        uri = self.opts.freebaseSchemaBaseURL + o.id;
+                    item.rdftype.push(uri);
+                    item.typeLabels.push({uri: uri, label: o.name });
+                }
 
-                // Description is not '': this call is the last one, we're done
-                if (item.description !== '') {
-                    item.rdfData = semlibItems.createBucketForItem(item).bucket;
+                // Description is not -1: this call is the last one, we're done
+                if (item.description !== -1) {
+                    self.log('MQL was last, calling itemRequestDone for item '+item.label);
+                    item.rdfData = self._finalizeBucket(item);
                     self._itemRequestDone(term);
                 }
             }
         }); // dojo.io.script.get()
 
-        // Freebase allows an onfail guid to display in case the requested one
-        // doesnt have a blurb. Instead of a 404, it sends a Location Header.
-        // Redirect it and supply a callback to be called.
         dojo.io.script.get({
             callbackParamName: "callback",
-            url: self.opts.freebaseBlurbURL + item.desc_guid,
-            content: {onfail: '9202a8c04000641f8000000000e6bc61?callback=_notfound'+item.desc_guid},
+            url: self.opts.freebaseTopicURL + item.mid,
+            content: {
+                key: self.opts.freebaseAPIKey,
+                filter: '/common/topic/description'
+            },
             failOk: false,
             load: function(r) { 
-                clearTimeout(self.requests[term].blurbTimers[item.desc_guid]);
-                item.description = r.result.body;
+                self.log('TOPIC description for '+item.mid+' done');
 
-                // Value != desc_guid: this call is the last one, we're done
-                if (item.value !== item.desc_guid) {
-                    item.rdfData = semlibItems.createBucketForItem(item).bucket;
+                if (typeof(r.property) !== 'undefined' && r.property['/common/topic/description'].values.length > 0)
+                    item.description = r.property['/common/topic/description'].values[0].value;
+                else
+                    item.description = item.label;
+
+                // Value != -1: this call is the last one, we're done
+                if (item.value !== -1) {
+                    self.log('TOPIC was last, calling itemRequestDone for item '+item.label);
+                    item.rdfData = self._finalizeBucket(item);
                     self._itemRequestDone(term);
                 }
             },
             error: function(e) {
-                clearTimeout(self.requests[term].blurbTimers[item.desc_guid]);
                 item.description = item.label;
 
-                // Value != desc_guid: this call is the last one, we're done
-                if (item.value !== item.desc_guid) {
-                    item.rdfData = semlibItems.createBucketForItem(item).bucket;
+                // Value != -1: this call is the last one, we're done
+                if (item.value !== -1) {
+                    item.rdfData = self._finalizeBucket(item);
                     self._itemRequestDone(term);
                 }
                 return false;
             }
-
         });
-
-        // If this gets called, no description was found
-        window['_notfound'+item.desc_guid] = function() {
-            clearTimeout(self.requests[term].blurbTimers[item.desc_guid]);
-            item.description = item.label;
-            // Value != desc_guid: this call is the last one, we're done
-            if (item.value !== item.desc_guid) {
-                item.rdfData = semlibItems.createBucketForItem(item).bucket;
-                self._itemRequestDone(term);
-            }
-        };
         
-        // Bizarre case: some guid returns a different 404, not the one we're
-        // handling with the onfail parameter
-        // (eg: http://api.freebase.com/api/trans/blurb/guid/9202a8c04000641f800000000ab11253)
-        self.requests[term].blurbTimers[item.desc_guid] = setTimeout(function() {
-            self.log('Atypical 404 timed out for guid ' + item.desc_guid);
-            window['_notfound'+item.desc_guid]();
-        }, self.opts.blurbTimeoutMS)
-        
-    }, // _getItemDescription()
+    }, // _getItemDetails()
+    
+    _finalizeBucket: function(item) {
+        // Update the bucket to set types labels
+        var b = semlibItems.createBucketForItem(item);
+        for (var l=item.typeLabels.length; l--;) 
+            b.updateTripleObject(item.typeLabels[l].uri, ns.items.label, item.typeLabels[l].label, 'literal');
+        return b.bucket;
+    },
+    
     
     _itemRequestDone: function(term) {
         var self = this,
             req = self.requests[term];
         
         // Request has been canceled
-        if (typeof(req.canceled) !== 'undefined')
+        if (typeof(req.canceled) !== 'undefined') {
+            self.log('Request was canceled, returning');
             return;
+        }
 
         req.done += 1;
         self.log('Query: '+term+', done: '+req.done+'/'+req.len);
@@ -234,7 +237,7 @@ dojo.declare("pundit.selectors.FreebaseSelector", pundit.selectors.SelectorBase,
             return;
 
         self.log('Done loading items for term '+term+'.. calling the function.');
-        req.f(req.items,term);
+        req.f(req.items, term);
 
         _PUNDIT.loadingBox.setJobOk(req.jobId);
 

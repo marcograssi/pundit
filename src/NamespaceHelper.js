@@ -147,8 +147,10 @@ dojo.declare("pundit.NamespaceHelper", pundit.BaseComponent, {
         var label;
         
         // Freebase custom labels
-        if (uri.match(/http:\/\/www.freebase.com\/schema\//)) 
-            return uri.substring(31).replace(/\//g, ': ').replace(/_/g, ' ');
+        if (uri.match(/http:\/\/www\.freebase\.com\/schema\//)) {
+            label = uri.substring(31).replace(/\//g, ': ').replace(/_/g, ' ');
+            return label;
+        }
         
         // All other label types, take the last part
         label = uri.substring(uri.lastIndexOf('/') + 1);
