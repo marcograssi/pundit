@@ -378,7 +378,7 @@ dojo.declare("pundit.Configuration", pundit.BaseComponent, {
                 showFilteringOptions: true,
                 defaultFilteringOption: 'all', // valid options: 'all' | 'active'
                 activateFromAnnotations: false,
-                askBaseURL: 'http://demo.ask.thepund.it/#/myNotebooks/'
+                askBaseURL: 'http://demo.ask.thepund.it/#/myNotebooks/',
                 debug: false
             },
 
