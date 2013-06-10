@@ -41,9 +41,9 @@ dojo.declare("pundit.Configuration", pundit.BaseComponent, {
          * @type string
          * @description Absolute base URL of the Pundit server side APIs, ending
          * with /
-         * @default http://metasound.dibet.univpm.it/annotationserver/
+         * @default http://demo.as.thepund.it:8088/annotationserver/
          */
-        annotationServerBaseURL: 'http://metasound.dibet.univpm.it/annotationserver/',
+        annotationServerBaseURL: 'http://demo.as.thepund.it:8088/annotationserver/',
 
         /**
          * @property punditConfig.debugAllModules
@@ -319,7 +319,7 @@ dojo.declare("pundit.Configuration", pundit.BaseComponent, {
                     name: 'europeana', label: 'Europeana', active: false
                 },
                 'EuropeanaEDM': {
-                    name: 'europeanaedm', label: 'Europeana EDM', active: false
+                    name: 'europeanaedm', label: 'Europeana EDM', active: true
                 },
                 // DEBUG: not ready for prime time, keep it active = false !
                 'BibServer': {
@@ -378,6 +378,7 @@ dojo.declare("pundit.Configuration", pundit.BaseComponent, {
                 showFilteringOptions: true,
                 defaultFilteringOption: 'all', // valid options: 'all' | 'active'
                 activateFromAnnotations: false,
+                askBaseURL: 'http://demo.ask.thepund.it/#/myNotebooks/'
                 debug: false
             },
 
