@@ -31,8 +31,9 @@ dojo.declare("pundit.selectors.EuropeanaEDMSelector", pundit.selectors.SelectorB
         keyInputTimerLength: 500,
         keywordMinimumLength: 3,
 
-        europeanaKey: 'a7f76YYh8',
-        europeanaSearchURL: "http://preview.europeana.eu/api/v2/search.json?",
+        europeanaKey: 'RjMQqtwpP',
+        // europeanaSearchURL: "http://preview.europeana.eu/api/v2/search.json?",
+        europeanaSearchURL: "http://www.europeana.eu/api/v2/search.json?",
         europeanaPortalURL: "http://europeana.eu/portal/record/",
         europeanaPortalFileExt: ".html",
         europeanaSchemaBaseURL: 'http://thepund.it/fake-namespace/europeana/',
