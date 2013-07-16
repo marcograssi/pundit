@@ -22,7 +22,7 @@ var punditConfig = {
 
     debugAllModules: true,
 
-    annotationServerBaseURL : 'http://demo.as.thepund.it:8088/annotationserver/',
+    annotationServerBaseURL : 'http://demo.as.thepund.it:8080/annotationserver/',
 
     // witt: 81, rest: 84
     vocabularies: [
