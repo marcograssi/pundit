@@ -98,9 +98,11 @@ dojo.declare("pundit.selectors.VocabSelector", pundit.BaseComponent, {
             return;
         }
 
-        self.initBehaviorsForVocab(v.result.name);
-        dojo.behavior.apply();
-        self.sortVocabTree(v.result.name);
+        if (v.result.vocab_type !== "predicates") {
+            self.initBehaviorsForVocab(v.result.name);
+            dojo.behavior.apply();
+            self.sortVocabTree(v.result.name);
+        }
         
     }, // initJsonpVocab()
     
@@ -238,7 +240,6 @@ dojo.declare("pundit.selectors.VocabSelector", pundit.BaseComponent, {
         //TODO fire an event when all vocabs have been initialized
         //If no vocabs are loaded fire the event directly now
 
-        //for (var i in vocabs) {
         for (var i = vocabs.length; i--;) {
             self.vocabState[vocabs[i]] = false;
             self.reader.getVocabularyFromJsonp(vocabs[i]);
@@ -398,6 +399,7 @@ dojo.declare("pundit.selectors.VocabSelector", pundit.BaseComponent, {
         var self = this,
             queue = [self.vocabs[name].treeModel.root],
             node;
+        
         while (node = queue.pop()) {
             var len = (typeof(node.children) !== 'undefined') ? node.children.length : 0;
             if (len > 0) {
