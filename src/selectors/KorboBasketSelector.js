@@ -34,8 +34,8 @@ dojo.declare("pundit.selectors.KorboBasketSelector", pundit.selectors.SelectorBa
         // Minimum number of characters to trigger a query to the server 
         keywordMinimumLength: 3,
 
-        korboBasketReconURL: 'http://korbo.netseven.it/api.php/basket/reconcile/',
-        korboBasketMetadataURL: 'http://korbo.netseven.it/',
+        korboBasketReconURL: 'http://manager.korbo.org/api.php/basket/reconcile/',
+        korboBasketMetadataURL: 'http://manager.korbo.org/',
         korboItemsBaseURL: 'http://purl.org/net7/korbo',
         korboSchemaBaseURL: 'http://purl.org/net7/korbo/type/',
         
