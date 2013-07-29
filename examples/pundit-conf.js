@@ -39,6 +39,9 @@ var punditConfig = {
             introductionWindowTitle: 'Welcome to Pundit examples! :)',
             showIntroductionAtLogin: true
         },
+        'pundit.NamedContentHandler': {
+            active: false
+        },
         
         'selectors': {},
         'annotators': {}

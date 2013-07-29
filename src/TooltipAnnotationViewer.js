@@ -1100,30 +1100,32 @@ dojo.declare("pundit.TooltipAnnotationViewer", pundit.BaseComponent, {
             // Mouse click on the RDF icon
             dojo.connect(dojo.byId(id), 'onclick', (function(_c, _x) { 
                 return function (e) {
-					
-					// If the annotation window is open, it might be the case where
+
+                    // If the annotation window is open, it might be the case where
                     // another fragment own an annotation in which this fragment is involved.
-					// This line recalls the annotation near the clicked fragment
-					if (semlibWindow.isAnnotationWindowOpen()) {
+                    // This line recalls the annotation near the clicked fragment
+                    if (semlibWindow.isAnnotationWindowOpen()) {
                         var panels = semlibWindow.getOpenedPanelsByXpointer(_x);
                         for (var j=panels.length; j--;) 
                             semlibWindow.setPositioningXpointer(panels[j].id, _x);
                     }
 	
-					e.preventDefault();
+                    e.preventDefault();
                     self.fireOnAnnotationIconMouseClick(_x);
                     
                     var item = _PUNDIT['items'].getItemByUri(_x);
                     
                     
-                    //TODO: hack to show annotations of image fragments: TO BE REMOVED!
+                    // TODO: hack to show annotations of image fragments: TO BE REMOVED!
                     if (typeof(item) === 'undefined') {
                         // get the element corresponding to the XPointer
                         var helper = new pundit.XpointersHelper();
                         var xpath = helper.getXPathsFromXPointers([_x]).xpaths[_x].startxpath;
                         var el = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+
                         //look into the element for images
-                        var imgsInEl = dojo.query(el).children().children('img');
+                        var imgsInEl = dojo.query('img', el);
+                        // var imgsInEl = dojo.query(el).children().children('img');
                         for (var imgsi=0; imgsi<imgsInEl.length; imgsi++) {
                             var imgUrl = imgsInEl[imgsi].src;
                             item = _PUNDIT['items'].getItemsFromParentItem(imgUrl)[0];
