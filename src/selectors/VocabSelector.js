@@ -27,7 +27,11 @@
  */
 dojo.provide("pundit.selectors.VocabSelector");
 dojo.declare("pundit.selectors.VocabSelector", pundit.BaseComponent, {
-	
+
+    opts : {
+        sortVocabolaries: true
+    },    
+    
     constructor: function(options) {
         var self = this;
         self.vocabs = {};
@@ -101,7 +105,8 @@ dojo.declare("pundit.selectors.VocabSelector", pundit.BaseComponent, {
         if (v.result.vocab_type !== "predicates") {
             self.initBehaviorsForVocab(v.result.name);
             dojo.behavior.apply();
-            self.sortVocabTree(v.result.name);
+            if (self.opts.sortVocabolaries)
+                self.sortVocabTree(v.result.name);
         }
         
     }, // initJsonpVocab()
@@ -127,12 +132,13 @@ dojo.declare("pundit.selectors.VocabSelector", pundit.BaseComponent, {
             "nodetype": ns.pundit_VocabCategory
         }
 
-        tree.items = tree.items.sort(function(a, b){
-            var v1 = a.label, v2 = b.label;
-            if (v1 == v2) return 0;
-            if (v1 > v2) return 1;
-            if (v1 < v2) return -1;            
-        });
+        if (self.opts.sortVocabolaries)
+            tree.items = tree.items.sort(function(a, b){
+                var v1 = a.label, v2 = b.label;
+                if (v1 == v2) return 0;
+                if (v1 > v2) return 1;
+                if (v1 < v2) return -1;            
+            });
 
         for (var i=tree.items.length; i--;) {
 
