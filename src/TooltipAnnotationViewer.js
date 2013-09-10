@@ -19,11 +19,11 @@
 */dojo.provide("pundit.TooltipAnnotationViewer");
 dojo.declare("pundit.TooltipAnnotationViewer", pundit.BaseComponent, {
 
-
     opts: {
         hideMouseLeaveMS: 500,
         enableHighlightingMode: true,
         highlightingMode: false,
+        showInvalidXPointers: false
     },
 
     constructor: function(options) {
@@ -41,9 +41,9 @@ dojo.declare("pundit.TooltipAnnotationViewer", pundit.BaseComponent, {
         self.hideTimer = [];
         self.highlightCount = [];
         
-        self.helper = new pundit.XpointersHelper({debug: self.opts.debug});
-        self.reader = new pundit.AnnotationReader({debug: self.opts.debug});
-        self.writer = new pundit.AnnotationWriter({debug: self.opts.debug});
+        self.helper = new pundit.XpointersHelper();
+        self.reader = new pundit.AnnotationReader();
+        self.writer = new pundit.AnnotationWriter();
         self.jobId = null;
         
         self.initReader();
@@ -1035,6 +1035,7 @@ dojo.declare("pundit.TooltipAnnotationViewer", pundit.BaseComponent, {
         foo = self.helper.getXPathsFromXPointers(self.xpointers);
         self.xpointers = foo.xpointers;
         self.xpaths = foo.xpaths;
+        self.invalidXpointers = foo.invalidXpointers;
         
         for (var i = self.xpointers.length; i--;) {
             var uri = self.xpointers[i];
@@ -1155,7 +1156,7 @@ dojo.declare("pundit.TooltipAnnotationViewer", pundit.BaseComponent, {
             self.colors = self.backup.colors;
             self.usedColors = self.backup.usedColors;
         }
-		
+
         for (var xp in self.xpointersColors) {
             var cl = self.xpointersClasses[xp].join('');
             dojo.query('span.'+cl).addClass(self.xpointersColors[xp]);
@@ -1166,8 +1167,29 @@ dojo.declare("pundit.TooltipAnnotationViewer", pundit.BaseComponent, {
         }
         
         self.fireOnConsolidate();
-        self.log("Consolidate() is done.")
 
+        if (self.opts.showInvalidXPointers === true) {
+            console.log('-----------------------------------------------')
+            console.log('BROKEN ANNOTATIONS FOR '+self.invalidXpointers.length+' XPOINTERS');
+            for (var i in self.invalidXpointers) {
+                var xp = self.invalidXpointers[i],
+                    anns = self.xpointersAnnotationsId[xp];
+                for (var j in anns) {
+                    var id = anns[j],
+                        meta = self.annotations[id].metadata,
+                        author = meta[_PUNDIT.ns.pundit_authorName][0].value,
+                        date = meta[_PUNDIT.ns.pundit_annotationDate][0].value,
+                        nb = meta[_PUNDIT.ns.pundit_isIncludedIn][0].value.substr(41, 8),
+                        label = 'No content retrieved';
+                    try {
+                        label = self.annotations[id].items[xp][_PUNDIT.ns.items.label][0].value;
+                    } catch(e) {}
+                    console.log('BROKEN ANN '+id+' ('+author+', '+date+', nb '+nb+'): '+label);
+                }
+            }
+        }
+        
+        self.log("Consolidate() is done.")
     }, // consolidate()
 
     highlightByXpointer: function(xp) {

@@ -341,6 +341,7 @@ dojo.declare("pundit.XpointersHelper", pundit.BaseComponent, {
     // Extracts the xpaths from the xpointers, and sets the array
     getXPathsFromXPointers: function (xpArray) {
         var self = this,
+            invalidXpointers = [],
             xpointers = [],
             xpaths = {};
 
@@ -356,12 +357,17 @@ dojo.declare("pundit.XpointersHelper", pundit.BaseComponent, {
             } else {
                 self.log("REMOVING "+xp+" from xpointers, it's not valid :(");
                 xpointers = self.removeFromArray(xpointers, [xp]);
+                invalidXpointers.push(xp);
             }
         } // for i
 
         self.log("# Consolidating "+xpointers.length+" valid xpointers out of "+xpArray.length+" passed in.");
 
-        return {xpaths: xpaths, xpointers: xpointers};
+        return {
+            invalidXpointers: invalidXpointers,
+            xpaths: xpaths, 
+            xpointers: xpointers
+        };
     }, // getXPathsFromXPointers()
 
     // Will return an object with startxpath, startoffset, endxpath, endoffset
