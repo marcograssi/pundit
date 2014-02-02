@@ -903,6 +903,7 @@ div.pundit-statement .pundit-moreinfo-subpanel.pundit-hidden {
 	height: 0px; 
 	overflow: hidden;
 	margin: 0px;
+    display: block;
 }
 div.pundit-statement ul {
 	margin: 0px; 
@@ -2862,4 +2863,8 @@ ul.pundit-vertical-list li{
 #pundit-fp-commentTag {
     z-index:1999;
     text-align: left;
+}
+
+.pundit-fp-content-list.pundit-horizontal-list{
+    overflow-y: auto;
 }

@@ -1,0 +1,208 @@
+<!DOCTYPE HTML>
+<html dir="ltr" lang="en">
+    <head>
+        <title>SemTube: Semantic YouTube Video Annotation</title>
+
+        <!-- Get SEMLib + Dojo, Init! -->
+        <link rel="stylesheet" href="../css/pundit.css" type="text/css" media="screen" title="no title" charset="utf-8">
+        <script src="../dojo/dojo/dojo.js.uncompressed.js" type="text/javascript" charset="utf-8"></script>
+        <script src="pundit-conf.js" type="text/javascript" charset="utf-8"></script>
+        <script>
+            semtubeEnabled = true;
+            dojo.registerModulePath("pundit", "../../src"); 
+            dojo.require('pundit.Init');
+        </script>
+        <link type="text/css" href="../semtube/css/semtube.css" rel="stylesheet"/>
+        <link type="text/css" href="../semtube/css/positioning.css" rel="stylesheet"/>
+        <script type="text/javascript" src="../semtube/js/swfobject.js"></script>
+        <script src="http://www.google.com/jsapi" type="text/javascript"></script> 
+
+        <style>
+            span.easy_RDFa_bookmarklet a {
+                font-size: 14px;
+                font-family: "Candara", "Lucida Grande", "Trebuchet MS", sans-serif;
+                background: #BFB1B1 url(http://metasound.dibet.univpm.it/swnweb/images/Annotate-icon.png) no-repeat 0px 50%;
+                color: #2E2C2C;
+                padding: 8px 8px 8px 30px;
+                text-align:right;
+                border: 1px #ccc solid;
+                text-decoration: none;
+                line-height: 30px;
+            }
+        </style>
+        <!-- LAZY LOAD THIS AND THE TIMELINE -->
+        <script type="application/javascript" src="iscroll.js"></script>
+    </head>
+    
+    <!--Fix bookmarklet bug which happen for some url-->
+    <body class="disable_annotation">
+        <div id="content" class="content">
+            <div id="header" class="horizontalCenter" style="display:none">
+                <ul class="horizontal">
+                    <li><img id="semtubeLogo" src="../semtube/SemTubeLogo.png"/></li>
+                    <li><input id="inputMediaUri" type="text" style="display: inline;width:350px" /><input id="btnLoad" type="button" style="display:inline;margin-left:10px" value="Load"/></li>
+                    <li>
+                        <span class="easy_RDFa_bookmarklet">
+                            <a title="Bookmark this link" href="javascript:(function(){
+						var videoId='';
+                               var loc = 'http://metasound.dibet.univpm.it/asclient/semtube/examples/semtube.html';
+						var a=document.location.href;
+                                                    if(a.indexOf('www.youtube.com') !=-1){
+							if(a.indexOf('?') !=-1){
+							addrParts = a.split('?');
+								queryPart = addrParts[1];
+								var params = new Array();
+								params =  queryPart.split('&amp;');
+								for (i=0; i< params.length; i++)
+								{
+									var s= String(params[i]);
+									if (s.substr(0,2) =='v='){
+										videoId = s.substring(2);
+									}
+
+								}
+									if (videoId != ''){
+										window.location = loc + '?id=' + videoId;
+									}else{
+										window.location = loc;
+									}
+
+								}else{
+									window.location = loc;
+									}
+
+							}else{
+								window.location = loc;	
+								}
+
+						})()"> 
+                                <!-- Se sono su una pagina non di youtube vado su semtube
+					 Se sono in una pagina di youtube invece devo anche caricare il video
+				     Bisogna mettere la funzionee che permette di prendere l'id del video e naviga nella nostra pagina
+					 Per prenderlo splittare l'uri della pagina secondo il "?" 
+					 Poi splittare la parte a destra secondo & per prendere i parametri
+					 Questo vale partendo da youtube, potrebbe non valere in altri casi
+					 Ad esempio non vale per l'uri di per l'embedd che è del tipo: 
+					 http://www.youtube.com/embed/8e6zIeCaxxU
+					 E nemmeno per l'url di riferimento (credo sia quello stabile)
+					 http://www.youtube.com/v/8e6zIeCaxxU
+				 -->
+                                <span>SemTube</span>
+                            </a>
+                        </span>
+                    </li>
+                </ul>
+
+
+
+
+            </div>
+
+            <div>
+                <h1 id="videoTitle"></h1>
+            </div>
+
+            <figure id="containerPlayer" class="THCContent pundit-disable-annotation" about="http://metasound.dibet.univpm.it/release_bot/build/examples/dante-1.html">
+                <div id="videoDiv" style="background:black;margin-left:3px" > 
+				  You need Flash player 9+ and JavaScript enabled to view this video.
+                </div>
+
+                <!-- <div width="640" height="360">
+                    <canvas id="canvas" width="640" height="360" style=" position:absolute; top:0px; left:0px; z-index: 12;"></canvas>
+                    <canvas width="640" height="360" id="ghostcanvas" style="position:absolute; top:0px; left:0px; z-index: 10;"></canvas>
+                    <canvas width="640" height="360" id="canvasAnnotation" style="position:absolute; top:0px; left:0px; z-index: 9;"></canvas>
+                    <canvas id="gcanvas" width="640" height="360" style=" position:absolute; top:0px; left:0px; z-index: 11;"></canvas>
+                </div> -->
+            </figure>
+            <div class="pundit-disable-annotation" style="display:none;" >
+                <!-- <div id='progressBar' class="lateralBord" style="margin-left:auto;margin-right:auto;">
+                    <img id="playerLoaded"  class="playerImage" src="../semtube/playerico/loaded.jpg"/>
+                    <img id="playerCursor" class="playerImage" src="../semtube/playerico/cursore.jpg"/>
+                </div> -->
+                <div id="annotationBar" class="lateralBord hidden" style="margin-left:auto;margin-right:auto;"></div>
+                <div id='controlBar' class="bordBottom" style="height:50px;">
+                    <!-- <ul class="horizontal" >
+                        <li>
+                            <div id="play">
+                                <img title="play/pause" class="play" src="../semtube/playerico/play.png">
+                                <img title="play/pause" class="pause" src="../semtube/playerico/pause.png">
+                            </div>
+                        </li>
+                        <li style="float:right"><div id="videoCurrentTime">--:--</div></li>
+                    </ul> -->
+                </div>
+            </div>
+        </div>
+        <!-- TODO Ad style to css -->
+        <div id="pundit-timeline-box" class="pundit-disable-annotation">
+            <div id="semtube-timeline-action-bar" class="horizontal">
+                <div id="semtube-timeline-control">
+                    <div id="semtube-timeline-tools" class="semtube-tool-container">
+                        <span id="pundit-timeline-zoom" class="semtube-icon-zoom-in semtube-timeline-tool" style="margin-left:5px;"></span>
+                        <span id="pundit-timeline-pan" class="semtube-icon-zoom-out semtube-timeline-tool"></span>
+                    </div>
+                </div>
+                <div id="semtube-player-control">
+                    <div class="semtube-tool-container" style="width:600px;height:40px;margin-left:auto;margin-right:auto;">
+                        <ul class="horizontal" style="width:600px;height:40px">
+                                <li style="float:left;">
+                                    <div id="play" style="width:30px;float:left;">
+                                        <img title="play/pause" class="play" src="../semtube/playerico/play.png" style="width:40px;">
+                                        <img title="play/pause" class="pause" src="../semtube/playerico/pause.png" style="width:40px;">
+                                    </div>
+                                </li>
+                                <li style="float:left; margin-left:30px"><div id="videoCurrentTime">--:--</div></li>
+                                <li>
+                                    <div id='progressBar' style="margin-left:auto;margin-right:auto;width:450px;">
+                                        <img id="playerLoaded"  class="playerImage" src="../semtube/playerico/loaded.jpg"/>
+                                        <img id="playerCursor" class="playerImage" src="../semtube/playerico/cursore.jpg"/>
+                                    </div>
+                                </li>
+                                <li style="float:right; margin-right:10px"><div id="videoTotalTime">--:--</div></li>
+                            </ul>
+                    </div>
+                </div>
+
+                <div id="semtube-annotation-control">
+                    <div id="semtube-annotation-tools" class="semtube-tool-container">
+                        <span id="annotate" class="semtube-select-fragment-icon semtube-timeline-tool" style="margin-left:5px;"></span>
+                        <!-- <span id="selRegion" class="pundit-draw-polygon-icon-medium semtube-timeline-tool"></span> -->
+                        <span id="deleteSelected" class="pundit-delete-icon-medium semtube-timeline-tool semtube-disabled"></span>
+                        <span id="saveMarker" class="pundit-favorite-icon-medium semtube-timeline-tool semtube-disabled"></span>
+                        <span id="addTag" class="pundit-tag-icon-medium semtube-timeline-tool semtube-disabled"></span>
+                    </div>
+                </div>
+            </div>
+            <!-- <div id="annotate" class="semtube-tool" style="float:left;diplay:inline-block">
+                        <span class="semtube-select-fragment-icon semtube-tool-icon"></span>
+                        <span class="semtube-tool-text">Select Fragment</span>     
+                    </div>
+                    <div id="selRegion" class="semtube-tool" style="diplay:inline-block">
+                        <span class="pundit-draw-polygon-icon semtube-tool-icon"></span>
+                        <span class="semtube-tool-text">Draw Polygon</span>
+                    </div>
+                    <div id="deleteSelected" class="semtube-tool" style="diplay:inline-block">
+                        <span class="pundit-delete-icon semtube-tool-icon"></span>
+                        <span class="semtube-tool-text">Delete Selected</span>
+                    </div>    
+                    <div id="saveMarker" class="semtube-tool" style="diplay:inline-block">
+                        <span class="pundit-favorite-icon semtube-tool-icon"></span>
+                        <span class="semtube-tool-text">Add to My Item</span>
+                    </div>
+                    <div id="addTag" class="semtube-tool" style="diplay:inline-block">
+                        <span class="pundit-tag-icon semtube-tool-icon"></span>
+                        <span class="semtube-tool-text">Add Comment/Tag</span>
+                    </div>   -->
+            
+            <div id="wrapper">
+                <div id="pundit-timeline-scroller" style="position:absolute;top:50px;width:100%;height:100px;background:#f1f1f1; overflow-x: auto, z-index:1000000000;">
+                    <span id="semtube-timeline-time-marker" style="position:absolute;top:0px;display:block;background:red;width:3px;height:200px;z-index:1000000011;left:-1px"></span>
+                    <span id="semtube-timeline-loaded-marker" style="position:absolute;top:0px;display:block;background:black;width:0px;height:20px;z-index:1000000001;left:-0px"></span>
+                    <div id="pundit-timeline-scale" style="background:darkgrey;position:absolute;top:0px;height:20px;z-index:1000000010;opacity:0.9;width:100%;">
+                    </div>
+                    <div id="pundit-timeline-container" style="position:absolute;top:20px;left:0px;width:100%;height:200px;background:#f1f1f1; overflow-x: auto, z-index:10000000000000000;"></div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html> 

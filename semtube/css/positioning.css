@@ -1,0 +1,333 @@
+body {
+    background: #f1f1f1;
+}
+#content {
+    position:relative;
+/*    background: #CCC;*/
+    width: 100%;
+    margin-left: auto ;
+    margin-right: auto ;
+    min-height: 800px;
+} 
+#containerPlayer{
+    text-align: center;
+/*    position:relative;
+    margin-top:0px;
+    width:640px;
+    height:360px;
+    margin-left: auto;
+    margin-right: auto;*/
+}
+#progressBar{
+    position:relative;
+    background:#111;
+    opacity: 0.9;
+    height:20px;
+    width:640px;
+    text-align: start;
+    margin-top: 10px;
+}
+#annotationBar{
+    position:relative;
+/*    background: #303030; */
+    background: black;
+    height:20px;
+    width:640px;
+}
+#controlBar{
+    position:relative;
+/*    background: #303030;*/
+    background: black;
+    height:40px;
+    width:640px;
+    -webkit-padding-start: 0px;
+    margin-left: auto;
+    margin-right: auto;
+}
+#controlBar ul{
+    width:640px;
+    
+}
+#controlBar img{
+    position:relative;
+    width:40px;
+    height:40px;
+}
+
+#videoCurrentTime,
+#videoTotalTime{
+    margin-left: 0px;
+    margin-top:12px;
+    font-size: 12px;
+    color: lightgray;
+}
+#playerLoaded{
+    position:absolute;
+    border-radius: 5px;
+}
+#playerCursor{
+    position:absolute;
+}
+
+#imgPlaySmall{
+    width: 15px;
+    height: 15px;
+}
+
+#user{
+    position:absolute;
+    top:105px;
+    right:30px;
+    width:324px;
+    height:30px;
+}
+
+#tabset{
+    position:absolute;
+    top:140px;
+    right:30px;
+    width:320px;
+    /*	height:50px;*/
+}
+
+#tabset div{
+    position:relative;
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
+#tabAnnotation{
+    position:absolute;
+    top:500px;
+    left:40px;
+    width:480px;
+
+}
+
+#tableStatement{
+    table-layout:fixed;
+    width:300px;
+    padding: 5px;
+}
+#tableStatement td{
+    width:33%;
+    overflow:hidden;
+    padding : 5px;
+    /* 	padding-right: 15px; */
+}
+#saveNote{
+    position:relative;
+    height:20px;
+}
+#buttonSaveNote{
+    position:absolute;
+    top:5px;
+    right:0px;
+}
+
+
+#divNote{
+    position:relative;
+    /* left:;
+	top:;
+	width:;
+    */	
+    /* width:478px; */
+    background: white;
+
+}
+#divButtonSave{
+    position:relative;
+    height:25px;
+}
+#tags{
+    position:relative;
+}
+#comment{
+    margin-left:1px;
+}
+#userDiv{
+    position: absolute;
+    top: 15px;
+}
+#numberAnnotations{
+    color: gray;
+}
+#noteWholeVideo{
+    color: gray;
+}
+
+.tabDiv{
+    position:relative;
+    width:300px;
+    left:-16px;
+}
+
+.divClass{
+    font-size:0.8em;
+}
+
+.customHeaderDiv{
+    padding:2px;
+    width:460px;
+    margin-left:0px;
+}
+
+.customDivBody{
+    display: none;
+    width:464px;
+    margin-left:0px;
+    background-color: #F0F0F0;
+}
+.customDivBody div{
+    overflow:hidden;
+    padding:5px;
+}
+
+
+.prova{
+    color: #00FF00; 
+    font-family:arial; 
+    font-size: 20px; 
+} 
+.buttonHide{
+    position:absolute;
+    right:4px;
+    top:2px;
+}
+
+.custom-button-write{
+    position:absolute;
+    right:60px;
+}
+.custom-button-cancel{
+    position:absolute;
+    right:0px;
+}
+
+.custom-image-reload{
+    width:25px;
+    height:25px;
+    vertical-align: middle;
+
+}
+
+
+.custom-image-ok{
+    width:25px;
+    height:25px;
+    vertical-align: middle;
+
+}
+.custom-image-no{
+    width:25px;
+    height:25px;
+    vertical-align: middle;
+}
+
+
+
+.verticalCenter{
+    vertical-align: middle;
+}
+.verticalTop{
+    margin-top:28px;
+    vertical-align: top;
+}
+.bordClass{
+    border-top: solid black 3px;
+    border-bottom: none;
+    border-right: solid black 3px;
+    border-left: solid black 3px;
+}
+.bordBottom{
+    border-top: none;
+    border-bottom: solid black 3px;
+    border-right: solid black 3px;
+    border-left: solid black 3px;
+}
+.lateralBord{
+    border-bottom: none;
+    border-right: solid black 3px;
+    border-left: solid black 3px;
+}
+.bordClass2{
+    border: solid 3px;
+    border-color:gray;
+    color:gray;
+    margin-left: 5px ;
+    margin-right: 5px ;
+}
+.bordClassCenter{
+    vertical-align: top;
+    border: solid 3px;
+    border-color:gray;
+}
+.bordTop{
+    border-top: solid 3px;
+    border-bottom: none;
+    border-right: none;
+    border-left: none;
+    border-color:gray;
+}
+.highlight{
+    background-color: yellow;
+}
+
+.verticalList{
+    list-style: none;
+    margin: 2px;
+    padding-left: 0;
+    padding: 0;
+    vertical-align:middle;
+}
+.verticalList li{
+    display: block;
+    list-style-type: none;
+    padding: 0;
+    margin-left: 0;
+    vertical-align:middle;
+    /* padding-right: 20px; */
+}
+
+
+
+/* Change image for ajax and query */
+li.autocomplete.image{
+    width :20px;
+    height : 20px;
+} 
+li.autocomplete.image img{
+    display:inline;;
+    width: 20px;
+    height: 20px;
+}
+li.autocomplete input{
+    width: 180px;
+}
+
+
+li.autocomplete.image.unchecked img.checked {
+    display: none;
+}
+li.autocomplete.image.unchecked img.unchecked {
+    visibility: visible;
+}
+li.autocomplete.image.checked img.checked {
+    visibility: visible;
+}
+li.autocomplete.image.checked img.unchecked {
+    display: none;
+}
+ul.loading li.autocomplete.image img.loading {
+    display: block;
+}
+ul li.autocomplete.image img.loading {
+    display: none;
+}
+ul.loading li.autocomplete.image img.checked {
+    display: none;
+}
+ul.loading li.autocomplete.image img.unchecked {
+    display: none;
+}

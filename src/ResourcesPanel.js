@@ -166,7 +166,7 @@ dojo.declare("pundit.ResourcesPanel", pundit.BasePanel, {
             
             c += '              <div class="pundit-rp-date-panel pundit-hidden">';
             c += '                  <div class="puntid-rp-container-date">';
-            c += '                      <span class="class="pundit-pane-title" pundit-rp-subtitle">Date in "YYYY-MM-DD" format: </span><br/>';
+            c += '                      <span class="class="pundit-pane-title" pundit-rp-subtitle">Date in "MM/DD/YYYY H:MM:SS" format: </span><br/>';
             c += '                      <input type="text" class="pundit-rp-date-input" required pattern="[0-9]{4}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))"/>';
             c += '                      <div class="pundit-rp-date-validation"></div>';
             c += '                      <div class="pundit-rp-panel-buttons">';
@@ -758,12 +758,12 @@ dojo.declare("pundit.ResourcesPanel", pundit.BasePanel, {
     checkDate: function(e) {
         var self = this;
         
-        if (dojo.query('#' + self._id + ' .pundit-rp-date-input')[0].checkValidity()) {
-            dojo.attr(dojo.query('#' + self._id + ' .pundit-rp-date-panel-done')[0], 'disabled', false);
-        } else {
-            dojo.attr(dojo.query('#' + self._id + ' .pundit-rp-date-panel-done')[0], 'disabled', true);
-        }
-        
+        // if (dojo.query('#' + self._id + ' .pundit-rp-date-input')[0].checkValidity()) {
+        //     dojo.attr(dojo.query('#' + self._id + ' .pundit-rp-date-panel-done')[0], 'disabled', false);
+        // } else {
+        //     dojo.attr(dojo.query('#' + self._id + ' .pundit-rp-date-panel-done')[0], 'disabled', true);
+        // }
+        dojo.attr(dojo.query('#' + self._id + ' .pundit-rp-date-panel-done')[0], 'disabled', false);
     },
     
     showDatePanel: function(panelEnabled, showPanelOnly) {

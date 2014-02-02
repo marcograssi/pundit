@@ -69,6 +69,12 @@ dojo.declare("pundit.BasePanel", pundit.BaseComponent, {
         **/
         self.preview = options.preview || false;
         
+        /**
+            Provide a css selector for the container to which the panel is places
+            @property container
+            @type String
+        **/
+        self.container = options.container || 'body';
 
         self.width = options.width || '400';
         self.height = options.height;
@@ -141,7 +147,7 @@ dojo.declare("pundit.BasePanel", pundit.BaseComponent, {
         c += '  </ul>';
         c += '</div>';
         
-        dojo.query('body').append(c);
+        dojo.query(self.container).append(c);
     },
     
     initBaseBehaviors:function(){
@@ -229,6 +235,7 @@ dojo.declare("pundit.BasePanel", pundit.BaseComponent, {
                     left:x,
                     top:y }
                 );
+            
         }
         setTimeout(function(){dojo.style(dojo.query('#' + self._id + '.pundit-fp')[0], 'opacity',1);},10);
         

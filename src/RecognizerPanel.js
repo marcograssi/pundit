@@ -79,19 +79,7 @@ dojo.declare("pundit.RecognizerPanel", pundit.ResourcesPanel, {
     */
     constructor:function(options){
         var self = this;
-        //Handle saving
-        self.saver = new pundit.AnnotationWriter({debug: self.opts.debug});
-        self.saver.onSaveItems(function(annotationID) {
-            self.log('onSaveItems: Saver answered with '+ annotationID);
-            self.saved = true;
-                    // On close, remove the highlight, and avoid an opening highlight
-            self.hide();
-            tooltip_viewer.refreshAnnotations();
-        });
-        self.saver.onSave(function(m){
-            self.log('onSave: Saver answered with '+m);
-            self.saveItems(m);
-        });
+        
         //DEBUG Use callback instead of a function
         self.onItemAdded(self.addItem);
         

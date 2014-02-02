@@ -135,6 +135,12 @@ dojo.require("pundit.Configuration");
 dojo.require("pundit.annotators.AnnotatorsConductor");
 dojo.require("pundit.annotators.AnnotatorsBase");
 
+//SEMTUBE
+// SemlibVideoPlayer
+dojo.require("pundit.YouTubePlayer");
+dojo.require("pundit.SemlibVideoPlayer");
+dojo.require("pundit.SemlibVideoAnnotationViewer");
+dojo.require("pundit.TimelineAnnotationPanel");
 
 /**
  * @class pundit.Init
@@ -376,7 +382,22 @@ dojo.declare("pundit.Init", pundit.BaseComponent, {
             dojo.require("pundit.ContactHelper");
             p['contact'] = new pundit.ContactHelper();
         }
-        
+
+        // SEMTUBE CODE
+        if (typeof semtubeEnabled !== 'undefined'){
+            semlibVideoPlayer = new pundit.SemlibVideoPlayer({debug: this.debug});
+            semlibVideoAnnotationViewer = new pundit.SemlibVideoAnnotationViewer({dubug: this.debug}); 
+            // TODO: move 600,400 to component defaults, ready to be overridden
+            annotationPanel = new pundit.TimelineAnnotationPanel({
+                name: 'timelineAnnotationPanel',
+                title: 'Annotations',
+                width: 300,
+                height: 300,
+                drag: true,
+                container: '#pundit-timeline-container'
+            });
+            p['annotationPanel'] = annotationPanel;
+        }
         // TODO: x Marco do we have to do this here? Is it related to annotation view? Consolidation?
         // Something else? NOT HERE.
         // Fix problem in case of html and body position set to relative

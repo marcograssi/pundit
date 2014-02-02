@@ -1142,6 +1142,15 @@ dojo.declare("pundit.TripleComposer", pundit.BaseComponent, {
                         if (dojo.indexOf(od.rdftype, ns.fragments.image) !== -1){
                             targets.push(ov);
                         }
+
+                        //Handle video fragment
+                        //TODO Fix the namespace
+                        if (dojo.indexOf(sd.rdftype, ns.video_fragment) !== -1){
+                            targets.push(sv);
+                        }
+                        if (dojo.indexOf(od.rdftype, ns.video_fragment) !== -1){
+                            targets.push(ov);
+                        }
                         
                         //Handle page annotations
                         if (dojo.indexOf(sd.rdftype, ns.page) !== -1){

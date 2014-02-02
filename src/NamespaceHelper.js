@@ -39,6 +39,11 @@ dojo.declare("pundit.NamespaceHelper", pundit.BaseComponent, {
         //self.image_fragment = "http://purl.org/pundit/ont/fragment-image";
         self.annotation = "http://www.openannotation.org/ns/Annotation";
 
+        //TODO SEMTUBE Move somewhere else???
+        self.video_fragment = "http://www.semlibproject.eu/vocab/video-fragment";
+        self.video_fragment_region = "http://www.semlibproject.eu/vocab/video-fragment-region";
+        self.video = "http://www.semlibproject.eu/vocab/video";
+
         self.pundit_annotationId = "http://purl.org/pundit/ont/ao#id";
         self.pundit_annotationDate = "http://purl.org/dc/terms/created";
         self.pundit_authorName = "http://purl.org/dc/elements/1.1/creator";
@@ -108,7 +113,8 @@ dojo.declare("pundit.NamespaceHelper", pundit.BaseComponent, {
         self.fragments = {
             image: "http://purl.org/pundit/ont/ao#fragment-image",
             text: "http://purl.org/pundit/ont/ao#fragment-text",
-            named: "http://purl.org/pundit/ont/ao#named-content"
+            named: "http://purl.org/pundit/ont/ao#named-content",
+            videoFragment: "http://purl.org/pundit/ont/ao#named-content",
         },
         
         
@@ -122,6 +128,11 @@ dojo.declare("pundit.NamespaceHelper", pundit.BaseComponent, {
                 vale: "http://purl.org/pundit/ont/ao#selector-rectangle",
                 label: "Rectangular Selector",
                 description: "A polygonal selection described by the coordinates of the top left vertex, width and height normalized according to the resource image and width"
+            },
+            timeFragment: {
+                value: "http://purl.org/pundit/ont/ao#selector-timeFragment",
+                label: "Time fragment",
+                description: "A temporal fragment of audio or video"
             }
         }
         

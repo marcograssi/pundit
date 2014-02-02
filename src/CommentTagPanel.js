@@ -109,6 +109,22 @@ dojo.declare("pundit.CommentTagPanel", pundit.RecognizerPanel, {
                 self.entityExtractor = new pundit.Civet();	
             }
         }
+
+        self.createCallback(["SaveItems"]);
+        //Handle saving
+        self.saver = new pundit.AnnotationWriter({debug: self.opts.debug});
+        self.saver.onSaveItems(function(annotationID) {
+            self.log('onSaveItems: Saver answered with '+ annotationID);
+            self.saved = true;
+            // On close, remove the highlight, and avoid an opening highlight
+            self.hide();
+            // tooltip_viewer.refreshAnnotations();
+            self.fireOnSaveItems(annotationID);
+        });
+        self.saver.onSave(function(m){
+            self.log('onSave: Saver answered with '+m);
+            self.saveItems(m);
+        });
         
     },
     initHTML: function(){

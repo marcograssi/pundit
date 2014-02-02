@@ -34,6 +34,7 @@ dojo.declare("pundit.Items", pundit.BaseComponent, {
         si += '<li id="pundit-tab-filter-' + this.name + '-entities">Terms</li>';
         si += '<li id="pundit-tab-filter-' + this.name + '-pages">Pages</li>';
         si += '<li id="pundit-tab-filter-' + this.name + '-named">Named Content</li>';
+        si += '<li id="pundit-tab-filter-' + this.name + '-video-fragment">Video Fragment</li>';
 
         // DEBUG Do we still need Suggestions here?
         si += '<li id="pundit-tab-filter-' + this.name + '-suggestions" class="pundit-hidden"><span class="suggestionNumber"></span> Suggestions</li>';
@@ -84,6 +85,8 @@ dojo.declare("pundit.Items", pundit.BaseComponent, {
         tabs['#pundit-tab-filter-' + this.name + '-images-fragment'] = function() {return self.getNodesWhereTypeIs(ns.fragments.image)};
         tabs['#pundit-tab-filter-' + this.name + '-pages'] = function() {return self.getNodesWhereTypeIs(ns.page)};
         tabs['#pundit-tab-filter-' + this.name + '-named'] = function() {return self.getNodesWhereTypeIs(ns.fragments.named)};
+
+        tabs['#pundit-tab-filter-' + this.name + '-video-fragment'] = function() {return self.getNodesWhereTypeIs(ns.video_fragment)};
         
             
         // DEBUG: provide a way for other components to add filters
@@ -788,6 +791,49 @@ dojo.declare("pundit.Items", pundit.BaseComponent, {
         }
 
         b.addTriple(d.value, ns.items.prefLabel, d.label, 'literal');
+        return b;
+    },
+
+    createBucketForVideo: function(item){
+        var self = this,
+            b = new pundit.TriplesBucket(),
+            d = item.data;
+            
+        b.addTriple(d.value, ns.items.label, d.label, 'literal');
+        //b.addTriple(d.value, ns.items.altLabel, d.altLabel, 'literal');
+        b.addTriple(d.value, ns.items.description, d.description, 'literal');
+        b.addTriple(d.value, ns.items.image, d.depiction, 'uri');
+        
+        if (typeof d.parentItemXP !== 'undefined')
+            b.addTriple(d.value, ns.items.parentItemXP, d.parentItemXP, 'uri');
+            
+        if (typeof d.isPartOf !== 'undefined')
+            b.addTriple(d.value, ns.items.isPartOf, d.isPartOf, 'uri');
+        
+        for (var i in d.rdftype) {
+            var typeURI = d.rdftype[i]
+            b.addTriple(d.value, ns.items.type, typeURI, 'uri');
+            b.addTriple(typeURI, ns.items.label, typeURI.substring(typeURI.lastIndexOf('/') + 1), 'literal')
+        }
+        
+        //Add selector for video
+        if (typeof d.selectors !== 'undefined'){
+            
+            for (var i = d.selectors.length; i--;){    
+                var selectorUri = ns.selectorBaseUri + d.selectors[i].type + '/' + self.crypto.hex_md5(d.image + dojo.toJson(d.selectors[i]));
+
+                b.addTriple(d.value, ns.items.selector, selectorUri, 'uri');
+                b.addTriple(selectorUri, ns.items.type, ns.selectors[d.selectors[i].type].value, 'uri');
+                b.addTriple(ns.selectors[d.selectors[i].type].value, ns.items.label, ns.selectors[d.selectors[i].type].label, 'literal');
+                b.addTriple(ns.selectors[d.selectors[i].type].value, ns.items.description, ns.selectors[d.selectors[i].type].description, 'literal');
+
+                b.addTriple(selectorUri, ns.rdf_value, dojo.toJson(d.selectors[i]), 'literal');
+            }  
+        }
+        
+        if (d.rdftype[0] === ns.video_fragment_region){
+            b.addTriple(d.value, ns.items.shapes, dojo.toJson(d.shapes), 'literal');
+        }
         return b;
     },
     

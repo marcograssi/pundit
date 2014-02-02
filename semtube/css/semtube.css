@@ -1,0 +1,471 @@
+/* 
+    Document   : semtube
+    Created on : Nov 11, 2011, 6:16:06 PM
+    Author     : marco
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/* 
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+
+root { 
+    display: block;
+}
+
+#semtubeLogo{
+    width:224px;
+    height:69px;
+}
+
+.horizontalCenter{
+    width:900px;
+    margin-left:auto;
+        margin-right:auto;
+}
+
+#header{
+    position: relative;
+}
+#header ul{
+    min-width: 800px;
+}
+
+ul.horizontal {
+    position: relative;
+    display: block;
+    list-style: none;
+    margin: 0px;
+    padding: 0px;
+    vertical-align:middle;
+    margin-left:auto;
+    margin-right:auto;
+    width: 800px;
+}
+ul.horizontal li{
+    display: inline-block;
+    list-style-type: none;
+    padding: 10px;
+    margin-left: 0px;
+    vertical-align:middle;
+}
+#videoTitle{
+    margin-top:40px; 
+    text-align:center;
+    font-style:arial, sans-serif;
+    font-size:24px;
+}
+
+/********************************************************************
+ANNOTATION BAR
+********************************************************************/
+#annotationBar {
+    height: 20px;
+    -webkit-transition-property: height;
+    -webkit-transition-duration: 1s;
+}
+#annotationBar.hidden{
+    height: 0px;
+}
+
+/********************************************************************
+BUTTONS
+********************************************************************/
+#play img.play{
+    display:block;
+}
+#play img.pause{
+    display:none;
+}
+#play.playing img.play{
+    display:none;
+}
+#play.playing img.pause{
+    display:block;
+}
+
+.my-widget-header { border: 1px solid #aaaaaa; background: #cccccc url(ui-bg_highlight-soft_75_cccccc_1x100.png) 50% 50% repeat-x; color: #222222; font-weight: bold; }
+.my-widget-header a { color: #222222; }
+
+/************************************/
+/** video_annotation_icon **/
+.video_annotation_icon {
+    width: 12px;
+    height: 20px;
+    text-indent: -9999px;
+    display: inline-block;
+    border: 0;
+    background: url(img/marker12x20lightgray.png) top left no-repeat;
+}
+.video_annotation_icon:hover {
+    cursor: pointer;
+}
+
+/****************TOOL*********/
+ul.semtube-video{
+    width:780px;
+    margin-left: auto;
+    margin-right: auto;
+}
+li.semtube-tool-box{
+    width:85px;
+    background: gray;
+    float: left;
+    -webkit-border-radius: 10px 0px 0px 10px;
+    -moz-border-radius: 10px 0px 0px 10px;
+}
+li.semtube-tool-box div{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+span.semtube-tool-icon{
+    display:block;
+    width:24px;
+    height:24px;
+    margin-left:auto;
+    margin-right:auto;    
+}
+span.semtube-tool-text{
+    display:block;
+    text-align:center;
+    font-family: 'Rambla', sans-serif;
+    font-size: 12px;
+}
+ul.semtube-video li.semtube-player-box{
+    overflow: hidden;
+}
+
+/*TOOLS ICONS*/
+span.semtube-select-fragment-icon{
+    background: url('img/video24x24.png') no-repeat 0px 0px;    
+}
+span.semtube-icon-zoom-in{
+    background: url('img/magnifier-zoom-in.png') no-repeat 0px 0px;    
+}
+span.semtube-icon-zoom-out{
+    background: url('img/magnifier-zoom-out.png') no-repeat 0px 0px;    
+}
+
+body .pundit-tag-icon-medium {
+    background: url('img/tag24x24.png') no-repeat 0px 0px;
+}
+body .pundit-favorite-icon-medium {
+    background: url('img/star24x24.png') no-repeat 0px 0px;
+}
+body .pundit-delete-icon-medium {
+    /*background: url('img/bin-metal24x24.png') no-repeat 0px 0px;*/
+    background: url('img/eraser.png') no-repeat 0px 0px;
+}
+body .pundit-draw-polygon-icon-medium {
+    background: url('img/layer-shape-polygon24x24.png') no-repeat 0px 0px;
+}
+
+.semtube-timeline-tool{
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    margin-top: 3px;
+}
+
+
+/************ TIMELINE ************************/
+
+.semtube-timeline-scale-level-0{
+    position:absolute; 
+    z-index:100000000000; 
+    top:17px;
+    height:3px;
+    width:1px;
+    background:black;
+}
+.semtube-timeline-scale-level-1{
+    position:absolute; 
+    z-index:1000000000000; 
+    top:15px;
+    height:5px;
+    width:1px;
+    background:black;
+}
+.semtube-timeline-scale-level-2{
+    position:absolute; 
+    z-index:1000000000001; 
+    top:12px;
+    height:8px;
+    width:1px;
+    background:black;
+}
+.semtube-timeline-scale-level-3{
+    position:absolute; 
+    z-index:1000000000002; 
+    top:8px;
+    height:12px;
+    width:1px;
+    background:black;
+}
+.semtube-timeline-scale-level-4{
+    position:absolute; 
+    z-index:1000000000003; 
+    top:4px;
+    height:16px;
+    width:1px;
+    background:black;
+}
+.semtube-timeline-time-level-0{
+    position:absolute; 
+    z-index:1000000000013; 
+    top:0px;
+    height:10px;
+    width:10px;
+    font-size: 8px;
+    text-align: center;
+}
+.semtube-timeline-time-level-1{
+    position:absolute; 
+    z-index:1000000000013; 
+    top:0px;
+    height:10px;
+    width:10px;
+    font-size: 8px;
+    text-align: center;
+}
+.semtube-timeline-time-level-2{
+    position:absolute; 
+    z-index:1000000000013; 
+    top:0px;
+    height:10px;
+    width:10px;
+    font-size: 8px;
+    text-align: center;
+}
+.semtube-timeline-time-level-3{
+    position:absolute; 
+    z-index:1000000000013; 
+    top:0px;
+    height:10px;
+    width:10px;
+    font-size: 8px;
+    text-align: center;
+}
+.semtube-timeline-time-level-4{
+    position:absolute; 
+    z-index:1000000000013; 
+    top:0px;
+    height:10px;
+    width:10px;
+    font-size: 8px;
+    text-align: center;
+}
+
+.semtube-tool-container{
+    background: rgb(69, 69, 69);
+    border-radius: 7px 7px 7px 7px;
+    -webkit-border-radius: 7px 7px 7px 7px;
+    -moz-border-radius: 7px 7px 7px 7px;
+    box-shadow: 0 1px 1px 0 rgba(0,0,0,0.05),inset 0 1px 0 0 rgba(255,255,255,0.2);
+    border: solid 1px #111;
+}
+
+#annotationBar{
+    display: none;
+}
+
+/********************** TIMELINE ANNOTATION PANEL ***************/
+#pundit-fp-timelineAnnotationPanel {
+    z-index: 100000000000000;
+    -webkit-transition-property: opacity;
+    -webkit-transition-duration: 1s;
+    border: 1px solid rgb(99, 99, 99);
+}
+#pundit-fp-timelineAnnotationPanel.pundit-smooth{
+    -webkit-transition-property: top, left;
+    -webkit-transition-duration: 1s, 1s;
+
+}
+ 
+#pundit-fp-timelineAnnotationPanel.pundit-hidden{
+    -webkit-transition-property: top, left;
+    -webkit-transition-duration: 0s, 0s;
+}
+#pundit-fp-timelineAnnotationPanel:after {
+    bottom: -37px;
+    left: -4px;
+    content: '';
+    width: 36px;
+    height: 36px;
+    background: url("img/triangle36x36.png") no-repeat;
+    position: absolute;
+    display: block;
+}
+#pundit-fp-timelineAnnotationPanel.pundit-right-panel:after{
+    bottom: -37px;
+    left: 268px;
+    content: '';
+    width: 36px;
+    height: 36px;
+    background: url("img/triangle36x36.png") no-repeat;
+    position: absolute;
+    display: block;
+}
+
+#pundit-fp-timelineAnnotationPanel.pundit-smooth .pundit-fp-content-list{
+    -webkit-transition-property: height, min-height;
+    -webkit-transition-duration: 1s, 1s;
+}
+
+#pundit-fp-timelineAnnotationPanel div.pundit-fp-header{
+    background: rgb(99, 99, 99);
+    color: #eee;    
+}
+
+
+#pundit-fp-timelineAnnotationPanel div.semtube-annotation{
+    background: #e0e0e0;
+    border: 1px solid darkgray;
+    box-shadow: white;
+    margin-top: 5px;
+}
+
+#pundit-fp-timelineAnnotationPanel div.pundit-metadata{
+    background: darkgray;
+}
+#pundit-fp-timelineAnnotationPanel div.pundit-statement{
+    border-top: none;
+}
+
+.timelineFragment{
+    -webkit-transition-property: left, width;
+    -webkit-transition-duration: 1s, 1s;
+}
+
+#pundit-timeline-box{
+    position:fixed; 
+    left:0px; 
+    bottom:0px; 
+    width:100%; 
+    height:250px; 
+    background: #333; 
+    z-index:10000;
+}
+
+/********************** TIMELINE ACTION BOX *****************/
+#semtube-timeline-action-bar{
+    width:100%;
+    height:50px;
+    text-align: center;
+    padding-top: 3px;
+    background: #2c2c2c;
+}
+#semtube-timeline-control{
+    display:inline-block;
+    width:200px;
+    margin-left: 10px;
+    float:left;
+}
+#semtube-timeline-tools{
+    float:left;
+    height: 30px;
+    margin-top: 5px;
+    float: left;
+}
+#semtube-annotation-tools{
+    height: 30px;
+    margin-top: 5px; 
+    float: right; 
+}
+#semtube-player-control{
+    display:inline-block; 
+    width:600px;
+    box-shadow: 0 1px 0 0 rgba(255,255,255,0.05),inset 0 1px 0 0 rgba(0,0,0,0.2);
+}
+#semtube-player-control * div{
+    border-radius: 7px 7px 7px 7px;
+    -webkit-border-radius: 7px 7px 7px 7px;
+    -moz-border-radius: 7px 7px 7px 7px;
+}
+#semtube-player-control ul li{
+    height: 30px;
+    padding: 0px;
+}
+#semtube-annotation-control{
+    display:inline-block;
+    width:200px;
+    float:right;
+    margin-right: 10px;
+}
+
+#semtube-annotation-control div.semtube-tool{
+    float: right;
+}
+#semtube-annotation-control div.semtube-tool{
+    float: right;
+}
+
+/********************** MARKER *********************/
+
+span.markRight{
+    /*background: url('../playerico/Marker.png') no-repeat 0px 0px;*/
+    background: darkred;
+    border-radius: 0px 10px 10px 0px;
+    -webkit-border-radius: 0px 10px 10px 0px;
+    -moz-border-radius: 0px 10px 10px 0px;  
+    position:absolute;
+    z-index:99999999;
+    height:20px;
+    width:10px;
+    overflow: visible;
+    right:0px;
+}
+span.markLeft{
+    position:absolute;
+    background: darkred;
+    border-radius: 10px 0px 0px 10px;
+    -webkit-border-radius: 10px 0px 0px 10px;
+    -moz-border-radius: 10px 0px 0px 10px;
+    /*background: url('../playerico/MarkerL.png') no-repeat 0px 0px;*/
+    z-index:99999999;
+    height:20px;
+    width:10px;
+    overflow: visible;
+    left:0px;
+}
+span.segment{
+    z-index:99999999;
+    position:absolute;
+    height:12px;
+    top:4px;
+    background:darkred;
+}
+
+#semtube-timeline-fragment-marker{
+    height:14px;
+    margin-top: 3px;
+    background: darkred;
+    opacity: 1;
+}
+#semtube-timeline-fragment-marker span.markLeft{
+    left:-10px;
+    margin-top: -3px;
+}
+#semtube-timeline-fragment-marker span.markRight{
+    right:-10px;
+    margin-top: -3px;
+}
+/*********** PANEL ****************/
+body #pundit-fp-commentTag{
+    z-index:100000;
+}
+
+span.semtube-disabled{
+    opacity: 0.5;
+}
+body div.pundit-fp{
+    border: 1px solid darkgrey;
+    -webkit-box-shadow: 0 5px 10px #adadad;
+}
+/****************/
+span.pundit-moreinfo,
+span.pundit-moreinfo-subpanel{
+    display:block;
+}
