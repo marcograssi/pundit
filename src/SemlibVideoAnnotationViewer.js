@@ -240,13 +240,14 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
             },
             //TODO The click event are added by tooltip annotation viewer so here we just update the annoation panel...
             //Find a better way to do this
-            '#pundit-fp-timelineAnnotationPanel div.pundit-statement span.pundit-moreinfo': {
-                'onclick': function(e) {
-                    setTimeout(function() {
-                        annotationPanel.update();
-                        },100);
-                }
-            }
+            // '#pundit-fp-timelineAnnotationPanel div.pundit-statement span.pundit-moreinfo': {
+            //     'onclick': function(e) {
+
+            //         setTimeout(function() {
+            //             annotationPanel.update();
+            //         },100);
+            //     }
+            // }
         });
         dojo.behavior.apply();
         

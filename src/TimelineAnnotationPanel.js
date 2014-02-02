@@ -50,7 +50,7 @@ dojo.declare("pundit.TimelineAnnotationPanel", pundit.BasePanel, {
         dojo.style(self._id, 'min-height', h + 20 +'px');
         dojo.style(self._id, 'max-height', self.maxHeight + 'px');
         dojo.style(dojo.query('#' + self._id + ' .pundit-fp-content-list.pundit-horizontal-list')[0], 'height', h +'px');    
-        dojo.style(self._id, 'top', y - 34 - h + 'px');
+        dojo.style(self._id, 'top', y - 15 - h + 'px');
         if (x < dojo.window.getBox().w/2){
             dojo.removeClass(self._id, 'pundit-right-panel');
             dojo.style(self._id, 'left', x - 16 + 'px');
@@ -80,12 +80,13 @@ dojo.declare("pundit.TimelineAnnotationPanel", pundit.BasePanel, {
             panelposY = dojo.style(self._id, 'top'),
             p = dojo.position(dojo.query('#' + self._id + ' .pundit-fp-content-container')[0]);
 
+        //TODO Fix top because something goes wrong when expanding the panel
         if (p.h >= 280){
             dojo.style(dojo.query('#' + self._id + ' .pundit-fp-content-list')[0], 'height', '280px');
-            dh = 306 - panelpos.h;
+            dh = 300 - panelpos.h;
         }else{
             dojo.style(dojo.query('#' + self._id + ' .pundit-fp-content-list')[0], 'height', p.h + 'px');
-            dh = p.h + 26 - panelpos.h;
+            dh = p.h + 20 - panelpos.h;
         }
         dojo.style(self._id, 'top', panelposY - dh  + 'px');
     },

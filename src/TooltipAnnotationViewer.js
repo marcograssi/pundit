@@ -1379,7 +1379,7 @@ dojo.declare("pundit.TooltipAnnotationViewer", pundit.BaseComponent, {
             
                     }
                     
-                    
+                    annotationPanel.update();
                     semlibWindow.positionPanels();
                 }
             },

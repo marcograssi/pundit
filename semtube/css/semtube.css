@@ -276,7 +276,7 @@ body .pundit-draw-polygon-icon-medium {
     z-index: 100000000000000;
     -webkit-transition-property: opacity;
     -webkit-transition-duration: 1s;
-    border: 1px solid rgb(99, 99, 99);
+    border: none;
 }
 #pundit-fp-timelineAnnotationPanel.pundit-smooth{
     -webkit-transition-property: top, left;
@@ -289,24 +289,42 @@ body .pundit-draw-polygon-icon-medium {
     -webkit-transition-duration: 0s, 0s;
 }
 #pundit-fp-timelineAnnotationPanel:after {
-    bottom: -37px;
+/*    bottom: -37px;
     left: -4px;
     content: '';
     width: 36px;
     height: 36px;
     background: url("img/triangle36x36.png") no-repeat;
     position: absolute;
-    display: block;
+    display: block;*/
+  content: "";
+  display: block; /* reduce the damage in FF3.0 */
+  position: absolute;
+  bottom: -15px;
+  left: 0px;
+  width: 0;
+  border-width: 15px 15px 0;
+  border-style: solid;
+  border-color: #f2f2f2 transparent;
 }
 #pundit-fp-timelineAnnotationPanel.pundit-right-panel:after{
-    bottom: -37px;
+/*    bottom: -37px;
     left: 268px;
     content: '';
     width: 36px;
     height: 36px;
     background: url("img/triangle36x36.png") no-repeat;
     position: absolute;
-    display: block;
+    display: block;*/
+    content: "";
+  display: block; /* reduce the damage in FF3.0 */
+  position: absolute;
+  bottom: -15px;
+  left: 270px;
+  width: 0;
+  border-width: 15px 15px 0;
+  border-style: solid;
+  border-color: #f2f2f2 transparent;
 }
 
 #pundit-fp-timelineAnnotationPanel.pundit-smooth .pundit-fp-content-list{
