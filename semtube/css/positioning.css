@@ -64,9 +64,15 @@ body {
 #playerLoaded{
     position:absolute;
     border-radius: 5px;
+    height:20px;
+    z-index:0;
+    opacity:0.15;
 }
 #playerCursor{
     position:absolute;
+    margin-left:-3px;
+    height:20px;
+    z-index:2;
 }
 
 #imgPlaySmall{

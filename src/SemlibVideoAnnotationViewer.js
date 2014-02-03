@@ -55,7 +55,30 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
             self.resizeTimeout = setTimeout(function(){
                 self.resizeTimeline();
                 semlibVideoPlayer.resizeVideo();
+                self.addTimelineScale();
+                // if (dojo.exists('semtube-timeline-fragment-marker')){
+                //     var times = semlibVideoPlayer.getFragmentTime();
+
+
+                //     var markerPosition = w * (times[0] / duration); //dovrebbe andare indietro di 10
+                //     // var w = w * (timeEnd - timeStart) / duration;
+                    
+                    
+                //     //Positionate the div and the image
+                //     dojo.style(dojo.query('#' + name)[0],'left', markerPosition + 'px');
+                    
+                    
+                //     w = w * (times[1]- times[0]) / duration;
+                //     // var ls = mleftX +10;
+                //     // var lr = ls + w;
+                    
+                //     dojo.style('semtube-timeline-fragment-marker',{
+                //         left: markerPosition + 'px',
+                //         width: w + 'px'
+                //     });    
+                // }
             }, 1000);
+
         }
 
         // self.wipe();
@@ -1058,6 +1081,7 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
             });
         } 
         
+        //TODO Make of this a function
         if (dojo.exists('semtube-timeline-fragment-marker')){
             var times = semlibVideoPlayer.getFragmentTime();
 

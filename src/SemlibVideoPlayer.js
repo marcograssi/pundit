@@ -9,10 +9,8 @@ dojo.declare("pundit.SemlibVideoPlayer", pundit.BaseComponent, {
         this.initContextMenu();
         this.initBehaviors();
         
-        //M**** Pass this parameters as options
-        //this.videoId = 'e1-DV1A_tlw';
+        //TODO Pass this parameters as options
         this.videoId = 'm3dV8a0MZ7g';
-        //this.videoWidth = 640;
         this.videoWidth = dojo.style('progressBar','width');
         this.videoHeight = 360;
         
@@ -26,19 +24,16 @@ dojo.declare("pundit.SemlibVideoPlayer", pundit.BaseComponent, {
         this.movingMarkLeft;
         this.movingMarkRight;
         this.movingSegment;
-        
-        // this.videoRatioSet = false;
-        // this.playerLoaded = false;
 
+        this.timelineHeight = 250;
+
+        //TODO Is this fired somewhere
         self.createCallback([
             'VideoPlayerReady'
         ]);
 
         this.ann = {};
 
-        _PUNDIT.init.onInitDone(function() {
-            // Fire some event when
-        });
         _PUNDIT['commentTag'].onSaveItems(function(){
             dojo.destroy('tempMark');
             dojo.destroy('semtube-timeline-fragment-marker');
@@ -73,8 +68,8 @@ dojo.declare("pundit.SemlibVideoPlayer", pundit.BaseComponent, {
                 return true;
             },
             onclick: function(item) {
-                //DEBUG Youtube doesn't fully support media fragment but can 
-                //reprduce video starting from second x with paramenter t=x
+                //Youtube doesn't fully support media fragment but can 
+                //reproduce video starting from second x with paramenter t=x
                 //Should redirect in the youtube page otherwise some content 
                 //could be blocked
                 var uri = item.value,
@@ -164,12 +159,8 @@ dojo.declare("pundit.SemlibVideoPlayer", pundit.BaseComponent, {
             self.InsertFrameAnnotation(e);
         });
         
+        //TODO This is not used anymore
         dojo.connect(dojo.byId('selRegion'), 'onclick', function(){
-            //semlibWindow.show_tabRegions();
-            // semlibRegionSelector.show(200, 100, {
-            //     title: 'draw',
-            //     target: null //DEBUG Pass it in another way?
-            // });
             if (dojo.query('#tempMark').length > 0){
                 if (dojo.hasClass(dojo.query('#tempMark')[0], 'unsaved')){
                     dojo.query('#canvasTools button').forEach(function(item){
@@ -189,11 +180,6 @@ dojo.declare("pundit.SemlibVideoPlayer", pundit.BaseComponent, {
                 'onmousedown': function(e){
                     self.fmarkerMouseDown(e);
                 }
-            },
-            //Currently not used
-            'canvas':{
-                'onclick':function(e){
-                }
             }
         });
         
@@ -208,9 +194,9 @@ dojo.declare("pundit.SemlibVideoPlayer", pundit.BaseComponent, {
         
         dojo.connect(dojo.byId('addTag'), 'onclick', function(){
             var itemInfo = self.getFragmentInfo(),
-                //target = self.getFragmentInfo().value,
                 selectors = [],
-                parentItemXP = 'http://www.youtube.com/v/' + itemInfo.isPartOf;
+                parentItemXP = 'http://www.youtube.com/v/' + itemInfo.isPartOf,
+                item = {};
                 
                 selectors.push({
                     sTime : itemInfo.sTime,
@@ -218,13 +204,10 @@ dojo.declare("pundit.SemlibVideoPlayer", pundit.BaseComponent, {
                     type : 'timeFragment'
                 });
                 
-                
             if (typeof(itemInfo) !== 'undefined'){
                 dojo.query('#canvasTools button').forEach(function(item){
                     item.disabled = true;
                 });
-                //dojo.destroy('tempMark');
-                var item = {};
                 item.data = itemInfo;
                 item.data.selectors = selectors;
                 item.data.parentItemXP = parentItemXP;
@@ -232,20 +215,17 @@ dojo.declare("pundit.SemlibVideoPlayer", pundit.BaseComponent, {
                 previewer.buildPreviewForItem(item.data);
                 semlibItems.addItem(item.data);
             }
-                console.log(item.data)
                 _PUNDIT['commentTag'].initPanel(item.data, 'Comment Tag');
-
         });
         
-        
         dojo.connect(dojo.byId('saveMarker'), 'onclick', function(){
-            var fragmentInfo = self.getFragmentInfo();
+            var fragmentInfo = self.getFragmentInfo(),
+                item = {};
             if (typeof(fragmentInfo) !== 'undefined'){
                 dojo.query('#canvasTools button').forEach(function(item){
                     item.disabled = true;
                 });
                 dojo.destroy('tempMark');
-                var item = {};
                 item.data = fragmentInfo;
                 item.data.rdfData = semlibItems.createBucketForVideo(item).bucket;
                 previewer.buildPreviewForItem(item.data);
@@ -257,18 +237,14 @@ dojo.declare("pundit.SemlibVideoPlayer", pundit.BaseComponent, {
             dojo.destroy('tempMark');
             dojo.destroy('semtube-timeline-fragment-marker');
         });
-
-
-
     },
 
     resizeVideo:function(){
         var self= this,
             video = dojo.query("object")[0],
             vs = dojo.window.getBox(),
-            ///TODO remove this hardcoded
-            h = vs.h - 100 - 250,
-            //ratio = this.vWidth / this.vHeight;
+            h = vs.h - 100 - self.timelineHeight,
+            //TODO We use fixed ratio as it is not available from YouTube
             ratio = 16 / 9;
         
         dojo.attr(video, {
@@ -297,12 +273,12 @@ dojo.declare("pundit.SemlibVideoPlayer", pundit.BaseComponent, {
     getFragmentTime:function(){
         if(dojo.query("#tempMark").length>0){
             var fragmentInfo = {},
-            ml = dojo.query('#tempMark span.markLeft')[0],
-            mr = dojo.query('#tempMark span.markRight')[0],
-            pb = dojo.byId('progressBar'),
-            l = Math.round(dojo.position(ml, false).x - dojo.position(pb,false).x + 9),
-            c = Math.round(dojo.position(mr, false).x - dojo.position(pb,false).x);
-            var st = parseInt(this.pos2time(l) * 100),
+                ml = dojo.query('#tempMark span.markLeft')[0],
+                mr = dojo.query('#tempMark span.markRight')[0],
+                pb = dojo.byId('progressBar'),
+                l = Math.round(dojo.position(ml, false).x - dojo.position(pb,false).x + 9),
+                c = Math.round(dojo.position(mr, false).x - dojo.position(pb,false).x),
+                st = parseInt(this.pos2time(l) * 100),
                 st = st / 100,
                 et = parseInt(this.pos2time(c) * 100),
                 et = et / 100;
@@ -312,7 +288,7 @@ dojo.declare("pundit.SemlibVideoPlayer", pundit.BaseComponent, {
         }
     },
 
-    //M**** Remove all this boxes and terrible shape containers...
+    //TODO
     //Reuse and extend image annotation
     //Review the format used to save fragments :(
     getFragmentInfo:function(){
@@ -322,15 +298,12 @@ dojo.declare("pundit.SemlibVideoPlayer", pundit.BaseComponent, {
             mr = dojo.query('#tempMark span.markRight')[0],
             pb = dojo.byId('progressBar'),
             l = Math.round(dojo.position(ml, false).x - dojo.position(pb,false).x + 9),
-            c = Math.round(dojo.position(mr, false).x - dojo.position(pb,false).x);
-            
-            var st = parseInt(this.pos2time(l) * 100),
-                st = st / 100;
-                et = parseInt(this.pos2time(c) * 100),
-                et = et / 100;
-            
-            // TODO Restore video info
-            var title = this.videoInfo.entry.title.$t;
+            c = Math.round(dojo.position(mr, false).x - dojo.position(pb,false).x),
+            st = parseInt(this.pos2time(l) * 100),
+            st = st / 100;
+            et = parseInt(this.pos2time(c) * 100),
+            et = et / 100,
+            title = this.videoInfo.entry.title.$t,
             fragmentInfo = {
                 sTime: st,
                 eTime: et,
@@ -344,19 +317,10 @@ dojo.declare("pundit.SemlibVideoPlayer", pundit.BaseComponent, {
                 depiction: this.videoInfo.entry.media$group.media$thumbnail[0].url,
                 description: this.videoInfo.entry.media$group.media$description.$t
             };
-            
-            //Add type and shape info
-            // if (s.length > 0){
-            //     fragmentInfo.shapes = s;
-            //     fragmentInfo.rdftype = [ns.video_fragment_region];
-            //     fragmentInfo.label= 'VFR: ' + title + ' [' + st + ',' + et + ']';
-            //     return fragmentInfo;
-            // }else{
-                fragmentInfo.rdftype = [ns.video_fragment];
-                fragmentInfo.label= 'VF: ' + title + ' [' + st + ',' + et + ']';
-                return fragmentInfo;
-            // }
-            
+            //TODO Handle different type of fragment video region and entire video
+            fragmentInfo.rdftype = [ns.video_fragment];
+            fragmentInfo.label= 'VF: ' + title + ' [' + st + ',' + et + ']';
+            return fragmentInfo;
         }else {
             return {
                 uri: 'http://www.youtube.com/v/' + this.videoId,
@@ -380,7 +344,8 @@ dojo.declare("pundit.SemlibVideoPlayer", pundit.BaseComponent, {
     },
     playFragment:function(mediaFragment){
         var self=this,
-        times = semlibVideoAnnotationViewer.getAnnotationTime(mediaFragment);
+            times = semlibVideoAnnotationViewer.getAnnotationTime(mediaFragment),
+            pos_x;
         
         //Remove the current player marker
         if (dojo.query('.mark.playing').length > 0){
@@ -397,7 +362,6 @@ dojo.declare("pundit.SemlibVideoPlayer", pundit.BaseComponent, {
             ytPlayer.play();
             pos_x = (times.startTime)* this.videoWidth / ytPlayer.getDuration();
             this.realOffsetLoaded = pos_x;
-            
         }else{
             ytPlayer.seekTo(0, true);
             ytPlayer.play();
@@ -407,10 +371,10 @@ dojo.declare("pundit.SemlibVideoPlayer", pundit.BaseComponent, {
     },
     
     InsertFrameAnnotation:function(){
-        var self  = this;
+        var self  = this,
+            time;
         if (typeof(ytPlayer) !== 'undefined'){
-            var time = ytPlayer._player.getCurrentTime();
-            //prova.inputFrameTime.value=time;
+            time = ytPlayer._player.getCurrentTime();
             self.insertMarker(time, time);
             semlibVideoAnnotationViewer.insertTimelineMarker(time, time);
             dojo.addClass(dojo.byId('tempMark'), 'unsaved');
@@ -430,38 +394,33 @@ dojo.declare("pundit.SemlibVideoPlayer", pundit.BaseComponent, {
     },
     
     init:function(){
-        var self = this;
+        var self = this,
+            address = document.location.href,
+            videoInfo = this.parseUri(address);
         //Marker file path
-        this.srcMarker = "../semtube/playerico/Marker";
-        this.srcMarkerL = "../semtube/playerico/MarkerL";
-        this.srcSelected = "../semtube/playerico/selected";
+        // this.srcMarker = "../semtube/playerico/Marker";
+        // this.srcMarkerL = "../semtube/playerico/MarkerL";
+        // this.srcSelected = "../semtube/playerico/selected";
 
         this.isFirstAnn=true;
         this.isRdfVisible=false;
         this.isMovingLeftMarker = false;
         this.fake=false;
         this.markerMouseDown=false;
-	
-        
-        //M*** Converted into dojo
-        //TODO Convert to dojo position?
-//        off = $("#progressBar").offset();
-//        this.pbOffLeft = off.left;
+
         this.pbOffLeft = dojo.position(dojo.byId("progressBar")).x
 
         this.playerCursor=document.getElementById('playerCursor');
-        var attributesPlayerCursor = "position:absolute;visibility:visible;margin-left:-3px;height:20px;z-index:2;offsetTop:" + this.pbTop + "px;offsetLeft:" + this.pbLeft + "px"; 
-        this.playerCursor.setAttribute('style', attributesPlayerCursor);
+        //CHANGE
+        // var attributesPlayerCursor = "; 
+        // this.playerCursor.setAttribute('style', attributesPlayerCursor);
         
         this.segmentWidth='1px';
         this.markerMouseDown = false;
 	
-        var address = document.location.href;
-	
         if (this.isMediaFragment(address)==true){
-            var videoInfo = this.parseUri(address);
             if (videoInfo !== null){
-                if (typeof(videoInfo.videoId) != 'undefined'){
+                if (typeof(videoInfo.videoId) !== 'undefined'){
                     
                     this.videoId = videoInfo.videoId;
                     
@@ -479,6 +438,7 @@ dojo.declare("pundit.SemlibVideoPlayer", pundit.BaseComponent, {
             ytPlayer = new pundit.YouTubePlayer("videoDiv");
             ytPlayer.loadPlayer(this.videoId);
         }
+        //TODO This is useless... does not provide the right dimension but always 4/3 ratio...
         dojo.io.script.get({
             callbackParamName: "callback",
             url: "http://noembed.com/embed?url=http%3A//www.youtube.com/watch%3Fv%3DbDOYN-6gdRE",
@@ -489,7 +449,6 @@ dojo.declare("pundit.SemlibVideoPlayer", pundit.BaseComponent, {
             },
             error: function(response, ioArgs) {
                 self.log("youtube info got an error :(" + error);
-                
             }
         });
 
@@ -510,49 +469,49 @@ dojo.declare("pundit.SemlibVideoPlayer", pundit.BaseComponent, {
     },
   
     loadVideoFromInput:function(e){  	
-        var vId = "";	
-        var location = ns.semtubeUri;	
-        //var uri = $("#inputMediaUri").val();
-        var uri = dojo.byId("inputMediaUri").value
+        var vId = "",	
+            location = ns.semtubeUri,
+            uri = dojo.byId("inputMediaUri").value;
+            uriParts, queryPart, params,
+            s;
         if (uri.indexOf('www.youtube.com') != -1){		
             if(uri.indexOf('?') != -1){			
-                var uriParts = uri.split('?');			
-                var queryPart = uriParts[1];			
-                var params = new Array();			
+                uriParts = uri.split('?');			
+                queryPart = uriParts[1];			
+                params = new Array();			
                 params =  queryPart.split('&');			
                 for (var i=0; i< params.length; i++){				
-                    var s= String(params[i]);				
+                    s = String(params[i]);				
                     if (s.substr(0,2) =='v='){					
                         vId = s.substring(2);				
                     }			
                 }					
             }		
-            
             window.location.href = window.location.href.split('?')[0] + '?id=' + vId;
-            
         }else{
             alert("URI is not correct");
         }
     },
     
     //M*** Check if is used somewhere
-    wholeVideo:function(e){
-        ytPlayer.seekTo(0, true);
-        ytPlayer.playVideo();
-    },
+    // wholeVideo:function(e){
+    //     ytPlayer.seekTo(0, true);
+    //     ytPlayer.playVideo();
+    // },
 
-    //Rivedere assolutamente
     parseUri:function(uri){
-        var videoInfo = {};
-        var arrayUri = uri.split('?');
+        var videoInfo = {},
+            arrayUri = uri.split('?'),
+            videoParams,
+            timeArray =[];
         if  (arrayUri.length == 2){
-            var videoParams = arrayUri[1].split('&');
+            videoParams = arrayUri[1].split('&');
             for (var i = videoParams.length -1 ; i>=0; i--){
                 if (videoParams[i].indexOf('id=') == 0){
                     videoInfo.videoId = videoParams[i].substring(3);
                 }
                 if (videoParams[i].indexOf('t=') == 0){
-                    var timeArray = videoParams[i].substring(2).split(',');
+                    timeArray = videoParams[i].substring(2).split(',');
                     if  (arrayUri.length == 2){
                         videoInfo.ti = timeArray[0];
                         videoInfo.tf = timeArray[1];
@@ -573,6 +532,7 @@ dojo.declare("pundit.SemlibVideoPlayer", pundit.BaseComponent, {
     },
     
     isMediaFragment:function(uri){
+        //Todo use construct
         //controlla se contine un media fragment
         if (uri.indexOf("?") == -1) return false;
         else return true;
@@ -590,50 +550,47 @@ dojo.declare("pundit.SemlibVideoPlayer", pundit.BaseComponent, {
     
     upDateProgressBarBarLoaded:function(bytesTotal, startBytes, bytesLoaded){
         var percentageLoad,
-            attributesPlayerLoaded;
+            attributesPlayerLoaded,
+            w,
+            offsetLoad;
         if (bytesLoaded>0){
             if (startBytes>0){
                 if (typeof(realOffsetLoaded) !== 'undefined')
                     this.offsetLoad = this.realOffsetLoaded;
-
                 else
                     this.offsetLoad = this.videoWidth * startBytes / bytesTotal;
-                percentageLoad =  (this.videoWidth - this.offsetLoad) * bytesLoaded / (bytesTotal - startBytes);
-                
-            }
-            else{
+                    percentageLoad =  (this.videoWidth - this.offsetLoad) * bytesLoaded / (bytesTotal - startBytes);
+            }else{
                 this.offsetLoad = this.videoWidth * startBytes / bytesTotal;
                 percentageLoad =  (this.videoWidth - this.offsetLoad) * bytesLoaded / bytesTotal;
             }
-            //var attributes= 'background:red;height:20px;width:' + percentualeLoad + 'px;margin-left:' + offsetLoad + 'px;';
-            //attributesPlayerLoaded = "position:absolute;visibility:visible;margin-left:0px;height:20px;width:100px;z-index:0;offsetTop:" + pbTop + "px;offsetLeft:" + pbLeft + "px";;
-            attributesPlayerLoaded = "position:absolute;visibility:visible;" +
-            "height:20px;z-index:0;offsetTop:" + this.pbTop + "px;offsetLeft:" + this.pbLeft + "px;" +
-            "width:" + percentageLoad + "px;margin-left:" + this.offsetLoad + "px;opacity:0.15";
-            dojo.attr('playerLoaded', 'style', attributesPlayerLoaded);
 
-            var w = dojo.position("pundit-timeline-container").w,
-                offsetLoad = w * bytesLoaded / bytesTotal;
+            dojo.style('playerLoaded',{
+                "width": percentageLoad + "px",
+                "margin-left": this.offsetLoad + "px"
+            });
+
+            w = dojo.position("pundit-timeline-container").w,
+            offsetLoad = w * bytesLoaded / bytesTotal;
             dojo.style("semtube-timeline-loaded-marker", 'width', offsetLoad + "px");
         }
     },
+
     upDateProgressBarBarPlay:function(duration, currentTime){
         if (currentTime>0){
-            var offset =  (this.videoWidth)*(currentTime / duration);
-            var attributesPlayerCursor = "position:absolute;visibility:visible;" +
-            "z-index:2;offsetTop:" + this.pbTop + "px;offsetLeft:" + this.pbLeft + 
-            "px;margin-left:" + offset + "px";
-            dojo.attr('playerCursor', 'style', attributesPlayerCursor);
+            var offset =  (this.videoWidth)*(currentTime / duration),
+                w = dojo.position("pundit-timeline-container").w,
+                left = w*(currentTime / duration);;
+
+            dojo.style('playerCursor', 'margin-left', offset + "px")
 
             //Update Timeline
-            var w = dojo.position("pundit-timeline-container").w,
-                left = w*(currentTime / duration);
             dojo.style('semtube-timeline-time-marker', 'left', left + "px");
         }
     },
 
     secToTimeString:function(s){
-        var h,m,
+        var h,m,s,
             timeStr = "";
 
         if (s >= 3600){
@@ -664,19 +621,19 @@ dojo.declare("pundit.SemlibVideoPlayer", pundit.BaseComponent, {
         }
         return timeStr;
     },
+
     updatePlayTime:function(s){
         var self = this;
         dojo.byId('videoCurrentTime').innerHTML = self.secToTimeString(s);
     },
-  
+
     movePlayerCursor:function(e){
-        var pos_x = e.pageX - dojo.position('progressBar',false).x;
-        var time = (pos_x/this.videoWidth * ytPlayer.getDuration()) | 0;
+        var pos_x = e.pageX - dojo.position('progressBar',false).x,
+            time = (pos_x/this.videoWidth * ytPlayer.getDuration()) | 0;
         ytPlayer.seekTo(time, true);
         this.realOffsetLoaded = pos_x;
     },
-    
-    
+
     pos2time:function(pos){
         var time = (pos/this.videoWidth * ytPlayer.getDuration());
         return time;
@@ -692,16 +649,16 @@ dojo.declare("pundit.SemlibVideoPlayer", pundit.BaseComponent, {
             zin = 10;
             
         //TODO move this in a css
-        var srcMarker, srcMarkerL, srcSelected;
-        if (typeof(color) === 'undefined'){
-            srcMarker = this.srcMarker + '.png';
-            srcMarkerL = this.srcMarkerL + '.png';
-            srcSelected = this.srcSelected + '.png';
-        }else{
-            srcMarker = this.srcMarker + '_' + color + '.png';
-            srcMarkerL = this.srcMarkerL +  '_'  + color + '.png';
-            srcSelected = this.srcSelected + '_' + color + '.png';
-        }
+        // var srcMarker, srcMarkerL, srcSelected;
+        // if (typeof(color) === 'undefined'){
+        //     srcMarker = this.srcMarker + '.png';
+        //     srcMarkerL = this.srcMarkerL + '.png';
+        //     srcSelected = this.srcSelected + '.png';
+        // }else{
+        //     srcMarker = this.srcMarker + '_' + color + '.png';
+        //     srcMarkerL = this.srcMarkerL +  '_'  + color + '.png';
+        //     srcSelected = this.srcSelected + '_' + color + '.png';
+        // }
         
         if (typeof classname === 'undefined'){
             classname = "";
@@ -709,12 +666,10 @@ dojo.declare("pundit.SemlibVideoPlayer", pundit.BaseComponent, {
             zin = 9;
         }
             
-        
         if (typeof(name) === 'undefined'){
             //nascondo eventuali altri marker
             dojo.destroy('tempMark');
             name = 'tempMark';
-            
         }else{
             name = name + Math.floor(Math.random()*1000);
         }
@@ -826,7 +781,6 @@ dojo.declare("pundit.SemlibVideoPlayer", pundit.BaseComponent, {
                 //Update the position of the fragment on the scrollbar
                 semlibVideoAnnotationViewer.updateSelectedFragment(self.getFragmentTime());
             }
-
         }
     },
     
@@ -836,7 +790,7 @@ dojo.declare("pundit.SemlibVideoPlayer", pundit.BaseComponent, {
         self.isMovingLeftMarker = false;
         self.isMovingRightMarker = false;
     },
-//    TODO BUG annotationsArray ??? is global
+//  TODO Fix BUG annotationsArray ??? is global
     upDateCurrentAnnotations:function(currentTime){
         var currentAnnotations = [],
             annotationsWholeVideo = [],
@@ -845,29 +799,20 @@ dojo.declare("pundit.SemlibVideoPlayer", pundit.BaseComponent, {
             annotationsWholeVideo.push(annotationsArray[i]);
         }else{
             var idNote = annotationsArray[i].id;
-            
             if(annotationsArray[i].endTime < currentTime || annotationsArray[i].startTime > currentTime){
-//                    diveToHighlight = $("#tabAnnotation #" + idNote);
-//                    diveToHighlight.children().addClass('ui-widget-header').removeClass('highlight');
                 //M**** Check if this is working
                 diveToHighlight = dojo.query("#tabAnnotation #" + idNote).children();
                 dojo.removeClass("highlight", diveToHighlight);
                 dojo.addClass("my-widget-header", diveToHighlight);
-                
-                
             }
             if(annotationsArray[i].startTime < currentTime && annotationsArray[i].endTime > currentTime){
                 currentAnnotations.push(annotationsArray[i]);
-//                    diveToHighlight = $("#tabAnnotation #" + idNote);
-//                    diveToHighlight.children().removeClass('ui-widget-header').addClass('highlight');
                 //M**** Check if this is working
                 diveToHighlight = dojo.query("#tabAnnotation #" + idNote).children();
                 dojo.removeClass("my-widget-header", diveToHighlight);
                 dojo.addClass("highlight", diveToHighlight);
-
             }
         }
-//         this.displayCurrentAnnotations(currentAnnotations,annotationsWholeVideo);
     },
     updateSelectedFragment:function(times){
         var self = this;
