@@ -173,11 +173,13 @@ dojo.declare("pundit.SemlibVideoPlayer", pundit.BaseComponent, {
         dojo.behavior.add({
             '#progressBar div span.markLeft': {
                 'onmousedown': function(e){
+                    console.log("left mouse down");
                     self.fmarkerLeftMouseDown(e);
                 }
             },
             '#progressBar div span.markRight': {
                 'onmousedown': function(e){
+                    console.log("right mouse down");
                     self.fmarkerMouseDown(e);
                 }
             }
@@ -397,10 +399,6 @@ dojo.declare("pundit.SemlibVideoPlayer", pundit.BaseComponent, {
         var self = this,
             address = document.location.href,
             videoInfo = this.parseUri(address);
-        //Marker file path
-        // this.srcMarker = "../semtube/playerico/Marker";
-        // this.srcMarkerL = "../semtube/playerico/MarkerL";
-        // this.srcSelected = "../semtube/playerico/selected";
 
         this.isFirstAnn=true;
         this.isRdfVisible=false;
@@ -411,9 +409,6 @@ dojo.declare("pundit.SemlibVideoPlayer", pundit.BaseComponent, {
         this.pbOffLeft = dojo.position(dojo.byId("progressBar")).x
 
         this.playerCursor=document.getElementById('playerCursor');
-        //CHANGE
-        // var attributesPlayerCursor = "; 
-        // this.playerCursor.setAttribute('style', attributesPlayerCursor);
         
         this.segmentWidth='1px';
         this.markerMouseDown = false;
@@ -492,12 +487,6 @@ dojo.declare("pundit.SemlibVideoPlayer", pundit.BaseComponent, {
             alert("URI is not correct");
         }
     },
-    
-    //M*** Check if is used somewhere
-    // wholeVideo:function(e){
-    //     ytPlayer.seekTo(0, true);
-    //     ytPlayer.playVideo();
-    // },
 
     parseUri:function(uri){
         var videoInfo = {},
@@ -643,23 +632,11 @@ dojo.declare("pundit.SemlibVideoPlayer", pundit.BaseComponent, {
         return this.videoWidth/ytPlayer.getDuration() * time;
     },
     
-    insertMarker:function(timeStart,timeEnd, name, color, classname){
+    insertMarkerOld:function(timeStart,timeEnd, name, color, classname){
         var self = this,
-            tempMarkDiv,
-            zin = 10;
-            
-        //TODO move this in a css
-        // var srcMarker, srcMarkerL, srcSelected;
-        // if (typeof(color) === 'undefined'){
-        //     srcMarker = this.srcMarker + '.png';
-        //     srcMarkerL = this.srcMarkerL + '.png';
-        //     srcSelected = this.srcSelected + '.png';
-        // }else{
-        //     srcMarker = this.srcMarker + '_' + color + '.png';
-        //     srcMarkerL = this.srcMarkerL +  '_'  + color + '.png';
-        //     srcSelected = this.srcSelected + '_' + color + '.png';
-        // }
-        
+            tempMarkDiv;
+
+        //TODO This is not used anymore
         if (typeof classname === 'undefined'){
             classname = "";
         }else{
@@ -705,9 +682,50 @@ dojo.declare("pundit.SemlibVideoPlayer", pundit.BaseComponent, {
         });
         dojo.behavior.apply();
     },
+
+    insertMarker:function(timeStart,timeEnd, name, color, classname){
+        var self = this,
+            tempMarkDiv,
+            name ="tempMark",
+            duration = ytPlayer.getDuration(),
+            w = this.videoWidth * (timeEnd - timeStart) / duration,
+            markerPosition = this.videoWidth * (timeStart / duration); //dovrebbe andare indietro di 10????
+
+        //TODO This is not used anymore
+        // if (typeof classname === 'undefined'){
+        //     classname = "";
+        // }else{
+        //     zin = 9;
+        // }
+            
+        // if (typeof(name) === 'undefined'){
+        //     //nascondo eventuali altri marker
+        //     dojo.destroy('tempMark');
+        //     name = 'tempMark';
+        // }else{
+        //     name = name + Math.floor(Math.random()*1000);
+        // }
+        dojo.destroy(name);
+
+        tempMarkDiv  = '<div id="' + name + '" class="mark" style="position:absolute; z-index:9">';
+        tempMarkDiv += '<div style="position:relative;width:100%">';
+        tempMarkDiv += '<span class="markLeft"></span>';
+        tempMarkDiv += '<span class="markRight"></span>';
+        tempMarkDiv += '</div></div>';
+        
+        //Positionate the div and the image
+        dojo.place(tempMarkDiv, dojo.byId('progressBar'), 'first');
+        dojo.style(dojo.query('#' + name)[0],'left', markerPosition + 'px');
+
+        dojo.style(name,{
+            left: markerPosition + 'px',
+            width: w + 'px'
+        });
+        dojo.behavior.apply();
+    },
     
     fmarkerMouseDown:function(e){
-        if (dojo.attr(dojo.query(e.target).parent(Element.id)[0],'id') === 'tempMark'){
+        if (dojo.attr(dojo.query(e.target).parent().parent()[0],'id') === 'tempMark'){
             //DOMhelp.stopDefault(e);
             this.markerMouseDown = true;
             this.isMovingRightMarker = true;
@@ -719,7 +737,7 @@ dojo.declare("pundit.SemlibVideoPlayer", pundit.BaseComponent, {
     },
     
     fmarkerLeftMouseDown:function(e){
-        if (dojo.attr(dojo.query(e.target).parent(Element.id)[0],'id') === 'tempMark'){
+        if (dojo.attr(dojo.query(e.target).parent().parent()[0],'id') === 'tempMark'){
             //DOMhelp.stopDefault(e);
             this.markerMouseDown = true;
             this.startMouseDown = e.pageX;
@@ -736,44 +754,35 @@ dojo.declare("pundit.SemlibVideoPlayer", pundit.BaseComponent, {
 
             var direction = 1,
                 deltaX = 0,
-                mrLeft = dojo.position(this.movingMarkRight,true).x,
-                mlLeft = dojo.position(this.movingMarkLeft,true).x,
-                // TODO improve this. Avoid query all the time
-                divLeft = dojo.position(dojo.query('#tempMark')[0]).x,   
-                pbLeft = dojo.position(dojo.query('#progressBar')[0]).x;
                 // TODO is this cross browser?
-                this.currMouseDown = e.pageX;
-                if (this.currMouseDown < this.startMouseDown){
-                    direction = -1;
-                }
-            var deltaX = Math.abs(this.startMouseDown - this.currMouseDown),
-                deltaXTimeline = deltaX * dojo.position('progressBar').w / dojo.position("pundit-timeline-scroller").w;
-
+                
+                mrLeft = dojo.position("tempMark",true).x + dojo.position("tempMark",true).w,
+                mlLeft = dojo.position("tempMark",true).x,
+                // TODO improve this. Avoid query all the time
+                divLeft = dojo.position('tempMark').x,   
+                pbLeft = dojo.position('progressBar').x;
+            this.currMouseDown = e.pageX;
+            deltaX = Math.abs(this.startMouseDown - this.currMouseDown);
+            if (this.currMouseDown < this.startMouseDown){
+                direction = -1;
+            }
                 
             if (this.isMovingRightMarker === true){
-                
-
-                if ((mrLeft + deltaX*direction < pbLeft + this.videoWidth) && (mrLeft + deltaX*direction > mlLeft + 10)){
-                    dojo.style(this.movingMarkRight, {
-                        left: mrLeft - divLeft + deltaX*direction + 'px'
+                if ((mrLeft + deltaX*direction < pbLeft + this.videoWidth) && (mrLeft + deltaX*direction > mlLeft)){
+                    dojo.style("tempMark", {
+                        width: dojo.position('tempMark').w+ deltaX*direction + 'px'
                     });
-                    dojo.style(this.movingSegment, {
-                        width: dojo.position(dojo.query('#tempMark span.markRight')[0]).x - dojo.position(dojo.query('#tempMark span.markLeft')[0]).x - 10 + 'px'
-                    });
-
                 }
                 this.startMouseDown = this.currMouseDown;
                 //Update the position of the fragment on the scrollbar
                 semlibVideoAnnotationViewer.updateSelectedFragment(self.getFragmentTime());
             }
             if (this.isMovingLeftMarker == true){
-                if ((mlLeft + deltaX*direction + 10 > pbLeft) && (mlLeft + deltaX*direction + 10 < mrLeft)){
-                    dojo.style(this.movingMarkLeft, {
-                        left: mlLeft - divLeft + deltaX*direction + 'px'
-                    });
-                    dojo.style(this.movingSegment, {
-                        left: dojo.position(dojo.query('#tempMark span.markLeft')[0]).x - divLeft + 10 + 'px',
-                        width: dojo.position(dojo.query('#tempMark span.markRight')[0]).x - dojo.position(dojo.query('#tempMark span.markLeft')[0]).x -10 + 'px'
+                if ((mlLeft + deltaX*direction > pbLeft) && (mlLeft + deltaX*direction < mrLeft)){
+                    console.log(dojo.position('tempMark',true).x)
+                    dojo.style("tempMark", {
+                        left: dojo.position('tempMark',true).x - pbLeft + deltaX * direction + 'px',
+                        width: dojo.position('tempMark',true).w - deltaX * direction + 'px'
                     });
                 }
                 this.startMouseDown = this.currMouseDown;

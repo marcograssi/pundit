@@ -1306,16 +1306,16 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
             w = dojo.position("pundit-timeline-container").w;
             
         //TODO move this in a css
-        var srcMarker, srcMarkerL, srcSelected;
-        if (typeof(color) === 'undefined'){
-            srcMarker = this.srcMarker + '.png';
-            srcMarkerL = this.srcMarkerL + '.png';
-            srcSelected = this.srcSelected + '.png';
-        }else{
-            srcMarker = this.srcMarker + '_' + color + '.png';
-            srcMarkerL = this.srcMarkerL +  '_'  + color + '.png';
-            srcSelected = this.srcSelected + '_' + color + '.png';
-        }
+        // var srcMarker, srcMarkerL, srcSelected;
+        // if (typeof(color) === 'undefined'){
+        //     srcMarker = this.srcMarker + '.png';
+        //     srcMarkerL = this.srcMarkerL + '.png';
+        //     srcSelected = this.srcSelected + '.png';
+        // }else{
+        //     srcMarker = this.srcMarker + '_' + color + '.png';
+        //     srcMarkerL = this.srcMarkerL +  '_'  + color + '.png';
+        //     srcSelected = this.srcSelected + '_' + color + '.png';
+        // }
         
         dojo.destroy('semtube-timeline-fragment-marker');
 
@@ -1378,10 +1378,11 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
             this.currMouseDown = e.pageX,
             deltaX = Math.abs(this.startMouseDown - this.currMouseDown);
 
+            if (this.currMouseDown < this.startMouseDown){
+                direction = -1;
+            }
+
             if (this.isMovingRightMarker == true){
-                if (this.currMouseDown < this.startMouseDown){
-                    direction = -1;
-                }
                 if ((mrLeft + deltaX*direction < pbLeft + w) && (mrLeft + deltaX*direction > mlLeft + 10)){
                     dojo.style("semtube-timeline-fragment-marker", {
                         width: dojo.position("semtube-timeline-fragment-marker").w + deltaX*direction + 'px'
@@ -1391,9 +1392,6 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
                 semlibVideoPlayer.updateSelectedFragment(self.getFragmentTime());
             }
             if (this.isMovingLeftMarker == true){
-                if (this.currMouseDown < this.startMouseDown){
-                    direction = -1;
-                }
                 if ((mlLeft + deltaX*direction + 10 > pbLeft) && (mlLeft + deltaX*direction + 10 < mrLeft)){
                     dojo.style('semtube-timeline-fragment-marker', {
                         left: dojo.position('semtube-timeline-fragment-marker').x + deltaX * direction + 'px',

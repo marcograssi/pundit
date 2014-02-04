@@ -397,7 +397,7 @@ body .pundit-draw-polygon-icon-medium {
     width:600px;
     box-shadow: 0 1px 0 0 rgba(255,255,255,0.05),inset 0 1px 0 0 rgba(0,0,0,0.2);
 }
-#semtube-player-control * div{
+#semtube-player-control{
     border-radius: 7px 7px 7px 7px;
     -webkit-border-radius: 7px 7px 7px 7px;
     -moz-border-radius: 7px 7px 7px 7px;
@@ -433,7 +433,8 @@ span.markRight{
     height:20px;
     width:10px;
     overflow: visible;
-    right:0px;
+    right:-10px;
+    margin-top: -3px;
 }
 span.markLeft{
     position:absolute;
@@ -446,14 +447,8 @@ span.markLeft{
     height:20px;
     width:10px;
     overflow: visible;
-    left:0px;
-}
-span.segment{
-    z-index:99999999;
-    position:absolute;
-    height:12px;
-    top:4px;
-    background:darkred;
+    left:-10px;
+    margin-top: -3px;
 }
 
 #semtube-timeline-fragment-marker{
@@ -462,13 +457,12 @@ span.segment{
     background: darkred;
     opacity: 1;
 }
-#semtube-timeline-fragment-marker span.markLeft{
-    left:-10px;
-    margin-top: -3px;
-}
-#semtube-timeline-fragment-marker span.markRight{
-    right:-10px;
-    margin-top: -3px;
+#tempMark{
+    height:14px;
+    margin-top: 3px;
+    background: darkred;
+    opacity: 1;
+    border-radius: 0px;
 }
 /*********** PANEL ****************/
 body #pundit-fp-commentTag{
