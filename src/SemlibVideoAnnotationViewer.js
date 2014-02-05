@@ -1383,7 +1383,7 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
             }
 
             if (this.isMovingRightMarker == true){
-                if ((mrLeft + deltaX*direction < pbLeft + w) && (mrLeft + deltaX*direction > mlLeft + 10)){
+                if ((mrLeft + deltaX*direction < pbLeft + w) && (mrLeft + deltaX*direction > mlLeft)){
                     dojo.style("semtube-timeline-fragment-marker", {
                         width: dojo.position("semtube-timeline-fragment-marker").w + deltaX*direction + 'px'
                     });
@@ -1392,7 +1392,7 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
                 semlibVideoPlayer.updateSelectedFragment(self.getFragmentTime());
             }
             if (this.isMovingLeftMarker == true){
-                if ((mlLeft + deltaX*direction + 10 > pbLeft) && (mlLeft + deltaX*direction + 10 < mrLeft)){
+                if ((mlLeft + deltaX*direction > pbLeft) && (mlLeft + deltaX*direction < mrLeft)){
                     dojo.style('semtube-timeline-fragment-marker', {
                         left: dojo.position('semtube-timeline-fragment-marker').x + deltaX * direction + 'px',
                         width: dojo.position('semtube-timeline-fragment-marker').w - deltaX * direction + 'px'
