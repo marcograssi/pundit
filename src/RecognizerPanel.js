@@ -232,7 +232,8 @@ dojo.declare("pundit.RecognizerPanel", pundit.ResourcesPanel, {
     show:function(x,y, params){
         this.inherited(arguments);
         var self = this,
-            item;
+            item,
+            isVideo;
         self.tempItemAdded = false;//Track if the added temp item has to be removed
         self.saved = false;
         self.target = params.target.value;
@@ -243,7 +244,14 @@ dojo.declare("pundit.RecognizerPanel", pundit.ResourcesPanel, {
             self.tempItemAdded = true;
             previewer.buildPreviewForItem(item);
         }
-                
+        
+        for (i=item.rdftype.length -1; i>=0; i--){
+            if (item.rdftype[i] === ns.video_fragment)
+                isVideo = true;
+        }
+        if (isVideo) return;
+
+
         if (!tooltip_viewer.isTempXpointer(self.target)){
             if (self.target !== window.location.href)
                 tooltip_viewer.tempXpointers.push(self.target);

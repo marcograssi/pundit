@@ -6,17 +6,16 @@
         <!-- Get SEMLib + Dojo, Init! -->
         <link rel="stylesheet" href="../css/pundit.css" type="text/css" media="screen" title="no title" charset="utf-8">
         <script src="../dojo/dojo/dojo.js.uncompressed.js" type="text/javascript" charset="utf-8"></script>
-        <script src="pundit-conf.js" type="text/javascript" charset="utf-8"></script>
         <script>
             semtubeEnabled = true;
             dojo.registerModulePath("pundit", "../../src"); 
             dojo.require('pundit.Init');
+            // TODO Register semtube path to separate the library
         </script>
         <link type="text/css" href="../semtube/css/semtube.css" rel="stylesheet"/>
         <link type="text/css" href="../semtube/css/positioning.css" rel="stylesheet"/>
         <script type="text/javascript" src="../semtube/js/swfobject.js"></script>
         <script src="http://www.google.com/jsapi" type="text/javascript"></script> 
-
         <style>
             span.easy_RDFa_bookmarklet a {
                 font-size: 14px;
@@ -37,6 +36,7 @@
     <!--Fix bookmarklet bug which happen for some url-->
     <body class="disable_annotation">
         <div id="content" class="content">
+            <!-- TODO Put back this somewhere! -->
             <div id="header" class="horizontalCenter" style="display:none">
                 <ul class="horizontal">
                     <li><img id="semtubeLogo" src="../semtube/SemTubeLogo.png"/></li>
@@ -92,10 +92,6 @@
                         </span>
                     </li>
                 </ul>
-
-
-
-
             </div>
 
             <div>
@@ -106,30 +102,10 @@
                 <div id="videoDiv" style="background:black;margin-left:3px" > 
 				  You need Flash player 9+ and JavaScript enabled to view this video.
                 </div>
-
-                <!-- <div width="640" height="360">
-                    <canvas id="canvas" width="640" height="360" style=" position:absolute; top:0px; left:0px; z-index: 12;"></canvas>
-                    <canvas width="640" height="360" id="ghostcanvas" style="position:absolute; top:0px; left:0px; z-index: 10;"></canvas>
-                    <canvas width="640" height="360" id="canvasAnnotation" style="position:absolute; top:0px; left:0px; z-index: 9;"></canvas>
-                    <canvas id="gcanvas" width="640" height="360" style=" position:absolute; top:0px; left:0px; z-index: 11;"></canvas>
-                </div> -->
             </figure>
             <div class="pundit-disable-annotation" style="display:none;" >
-                <!-- <div id='progressBar' class="lateralBord" style="margin-left:auto;margin-right:auto;">
-                    <img id="playerLoaded"  class="playerImage" src="../semtube/playerico/loaded.jpg"/>
-                    <img id="playerCursor" class="playerImage" src="../semtube/playerico/cursore.jpg"/>
-                </div> -->
                 <div id="annotationBar" class="lateralBord hidden" style="margin-left:auto;margin-right:auto;"></div>
                 <div id='controlBar' class="bordBottom" style="height:50px;">
-                    <!-- <ul class="horizontal" >
-                        <li>
-                            <div id="play">
-                                <img title="play/pause" class="play" src="../semtube/playerico/play.png">
-                                <img title="play/pause" class="pause" src="../semtube/playerico/pause.png">
-                            </div>
-                        </li>
-                        <li style="float:right"><div id="videoCurrentTime">--:--</div></li>
-                    </ul> -->
                 </div>
             </div>
         </div>
@@ -147,15 +123,15 @@
                         <ul class="horizontal" style="width:600px;height:40px">
                                 <li style="float:left;">
                                     <div id="play" style="width:30px;float:left;">
-                                        <img title="play/pause" class="play" src="../semtube/playerico/play.png" style="width:40px;">
-                                        <img title="play/pause" class="pause" src="../semtube/playerico/pause.png" style="width:40px;">
+                                        <img title="play/pause" class="play" src="../semtube/playerico/play_1.png" style="width:25px;margin-top:8px;margin-left:12px">
+                                        <img title="play/pause" class="pause" src="../semtube/playerico/pause_1.png" style="width:25px;margin-top:8px;margin-left:12px">
                                     </div>
                                 </li>
                                 <li style="float:left; margin-left:30px"><div id="videoCurrentTime">--:--</div></li>
                                 <li>
                                     <div id='progressBar' style="margin-left:auto;margin-right:auto;width:450px;">
                                         <img id="playerLoaded"  class="playerImage" src="../semtube/playerico/loaded.jpg"/>
-                                        <img id="playerCursor" class="playerImage" src="../semtube/playerico/cursore.jpg"/>
+                                        <img id="playerCursor"/>
                                     </div>
                                 </li>
                                 <li style="float:right; margin-right:10px"><div id="videoTotalTime">--:--</div></li>
@@ -173,34 +149,15 @@
                     </div>
                 </div>
             </div>
-            <!-- <div id="annotate" class="semtube-tool" style="float:left;diplay:inline-block">
-                        <span class="semtube-select-fragment-icon semtube-tool-icon"></span>
-                        <span class="semtube-tool-text">Select Fragment</span>     
-                    </div>
-                    <div id="selRegion" class="semtube-tool" style="diplay:inline-block">
-                        <span class="pundit-draw-polygon-icon semtube-tool-icon"></span>
-                        <span class="semtube-tool-text">Draw Polygon</span>
-                    </div>
-                    <div id="deleteSelected" class="semtube-tool" style="diplay:inline-block">
-                        <span class="pundit-delete-icon semtube-tool-icon"></span>
-                        <span class="semtube-tool-text">Delete Selected</span>
-                    </div>    
-                    <div id="saveMarker" class="semtube-tool" style="diplay:inline-block">
-                        <span class="pundit-favorite-icon semtube-tool-icon"></span>
-                        <span class="semtube-tool-text">Add to My Item</span>
-                    </div>
-                    <div id="addTag" class="semtube-tool" style="diplay:inline-block">
-                        <span class="pundit-tag-icon semtube-tool-icon"></span>
-                        <span class="semtube-tool-text">Add Comment/Tag</span>
-                    </div>   -->
-            
             <div id="wrapper">
-                <div id="pundit-timeline-scroller" style="position:absolute;top:50px;width:100%;height:100px;background:#f1f1f1; overflow-x: auto, z-index:1000000000;">
-                    <span id="semtube-timeline-time-marker" style="position:absolute;top:0px;display:block;background:red;width:3px;height:200px;z-index:1000000011;left:-1px"></span>
-                    <span id="semtube-timeline-loaded-marker" style="position:absolute;top:0px;display:block;background:black;width:0px;height:20px;z-index:1000000001;left:-0px"></span>
-                    <div id="pundit-timeline-scale" style="background:darkgrey;position:absolute;top:0px;height:20px;z-index:1000000010;opacity:0.9;width:100%;">
+                <div id="pundit-timeline-scroller" style="position:absolute;top:50px;width:100%;height:40px;background:#444; overflow-x: auto, z-index:1000000000;">
+                    <div id="semtube-timeline-timebar" style="width:100%;height:20px;background:darkgray;border-bottom:1px solid black;">
+                        <span id="semtube-timeline-time-marker" style="position:absolute;top:0px;display:block;background:red;width:3px;height:200px;z-index:1000000011;left:-1px"></span>
+                        <span id="semtube-timeline-loaded-marker" style="position:absolute;top:0px;display:block;background:gray;width:0px;height:20px;z-index:1000000001;left:-0px"></span>
+                        <div id="pundit-timeline-scale">
+                        </div>
                     </div>
-                    <div id="pundit-timeline-container" style="position:absolute;top:20px;left:0px;width:100%;height:200px;background:#f1f1f1; overflow-x: auto, z-index:10000000000000000;"></div>
+                    <div id="pundit-timeline-container" style="position:absolute;top:40px;left:0px;width:100%;height:200px;background:#f1f1f1; overflow-x: auto, z-index:10000000000000000;border-top:1px solid black"></div>
                 </div>
             </div>
         </div>

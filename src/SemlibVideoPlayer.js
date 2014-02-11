@@ -377,8 +377,8 @@ dojo.declare("pundit.SemlibVideoPlayer", pundit.BaseComponent, {
             time;
         if (typeof(ytPlayer) !== 'undefined'){
             time = ytPlayer._player.getCurrentTime();
-            self.insertMarker(time, time);
-            semlibVideoAnnotationViewer.insertTimelineMarker(time, time);
+            self.insertMarker(time, time + 1);
+            semlibVideoAnnotationViewer.insertTimelineMarker(time, time +1);
             dojo.addClass(dojo.byId('tempMark'), 'unsaved');
             dojo.query('#canvasTools button').forEach(function(item){
                 item.disabled = false
@@ -571,7 +571,7 @@ dojo.declare("pundit.SemlibVideoPlayer", pundit.BaseComponent, {
                 w = dojo.position("pundit-timeline-container").w,
                 left = w*(currentTime / duration);;
 
-            dojo.style('playerCursor', 'margin-left', offset + "px")
+            dojo.style('playerCursor', 'margin-left', offset -1 + "px")
 
             //Update Timeline
             dojo.style('semtube-timeline-time-marker', 'left', left + "px");

@@ -11,9 +11,9 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
         self.other = {};
         self.panelXpointers = [];
         self.videoFragments = {};
-        self.srcMarker = "../semtube/playerico/Marker";
-        self.srcMarkerL = "../semtube/playerico/MarkerL";
-        self.srcSelected = "../semtube/playerico/selected";
+        // self.srcMarker = "../semtube/playerico/Marker";
+        // self.srcMarkerL = "../semtube/playerico/MarkerL";
+        // self.srcSelected = "../semtube/playerico/selected";
         
         //Parameters
         self.rows = 2;
@@ -984,7 +984,7 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
             left = t.startTime*(timelineWidth/duration),
             width = (t.endTime -t.startTime)*(timelineWidth/duration);
         //console.log("Add annotation to timeline. URI: " + uri);
-        dojo.place('<div about="'+uri+'" class="timelineFragment" style="position:absolute;background:black;height:22px;left:'+ left +'px; width:'+ width +'px;"></div>','pundit-timeline-container');
+        dojo.place('<div about="'+uri+'" class="timelineFragment" style="left:'+ left +'px; width:'+ width +'px;"></div>','pundit-timeline-container');
         self.repositionAnnotations();
         dojo.behavior.apply();
     },
@@ -1086,17 +1086,13 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
             var times = semlibVideoPlayer.getFragmentTime();
 
 
-            var markerPosition = w * (times[0] / duration); //dovrebbe andare indietro di 10
-            // var w = w * (timeEnd - timeStart) / duration;
-            
+            var markerPosition = w * (times[0] / duration);
             
             //Positionate the div and the image
             dojo.style(dojo.query('#' + name)[0],'left', markerPosition + 'px');
             
             
             w = w * (times[1]- times[0]) / duration;
-            // var ls = mleftX +10;
-            // var lr = ls + w;
             
             dojo.style('semtube-timeline-fragment-marker',{
                 left: markerPosition + 'px',
@@ -1302,21 +1298,8 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
         var self = this,
             tempMarkDiv,
             zin = 10000000000000000000,
-            name = "semtube-timeline-fragment-marker",
             w = dojo.position("pundit-timeline-container").w;
             
-        //TODO move this in a css
-        // var srcMarker, srcMarkerL, srcSelected;
-        // if (typeof(color) === 'undefined'){
-        //     srcMarker = this.srcMarker + '.png';
-        //     srcMarkerL = this.srcMarkerL + '.png';
-        //     srcSelected = this.srcSelected + '.png';
-        // }else{
-        //     srcMarker = this.srcMarker + '_' + color + '.png';
-        //     srcMarkerL = this.srcMarkerL +  '_'  + color + '.png';
-        //     srcSelected = this.srcSelected + '_' + color + '.png';
-        // }
-        
         dojo.destroy('semtube-timeline-fragment-marker');
 
         tempMarkDiv  = '<div id="semtube-timeline-fragment-marker" class="mark" style="position:absolute; z-index:'+zin+'">';
@@ -1326,20 +1309,15 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
         tempMarkDiv += '</div></div>';
         
         var duration = ytPlayer.getDuration();
-        var markerPosition = w * (timeStart / duration); //dovrebbe andare indietro di 10
-        // var w = w * (timeEnd - timeStart) / duration;
+        var markerPosition = w * (timeStart / duration);
         dojo.place(tempMarkDiv, dojo.byId('pundit-timeline-scale'), 'first');
         
-        //Positionate the div and the image
-        dojo.style(dojo.query('#' + name)[0],'left', markerPosition + 'px');
-        
-        var mleftX = dojo.position(dojo.query('#' + name)[0],false).x - dojo.position(dojo.query('#' + name)[0],false).x - 10;
+        dojo.style("semtube-timeline-fragment-marker",'left', markerPosition + 'px');        
+        var mleftX = dojo.position("semtube-timeline-fragment-marker",false).x - dojo.position("semtube-timeline-fragment-marker",false).x - 10;
         
         var w = w * (timeEnd - timeStart) / duration;
-        // var ls = mleftX +10;
-        // var lr = ls + w;
         
-        dojo.style(dojo.query('#' + name)[0],{
+        dojo.style("semtube-timeline-fragment-marker",{
             left: markerPosition + 'px',
             width: w + 'px'
         });
@@ -1354,6 +1332,7 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
         this.movingMarkLeft = dojo.query('#semtube-timeline-fragment-marker span.markLeft')[0];
         this.movingMarkRight = dojo.query('#semtube-timeline-fragment-marker span.markRight')[0];
         this.movingSegment = dojo.query('#semtube-timeline-fragment-marker span.segment')[0];
+        this._w = dojo.position("pundit-timeline-container").w;
     },
     
     fmarkerLeftMouseDown:function(e){
@@ -1363,27 +1342,25 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
         this.movingMarkLeft = dojo.query('#semtube-timeline-fragment-marker span.markLeft')[0];
         this.movingMarkRight = dojo.query('#semtube-timeline-fragment-marker span.markRight')[0];
         this.movingSegment = dojo.query('#semtube-timeline-fragment-marker span.segment')[0];
-        
+        this._w = dojo.position("pundit-timeline-container").w;
     },
     WindowMouseMove:function(e){
-        if (this.markerMouseDown==true){
+        if (this.markerMouseDown===true){
             var self = this,
-            direction = 1,
-            deltaX,
-            w = dojo.position("pundit-timeline-container").w,
-            mrLeft = dojo.position("semtube-timeline-fragment-marker",true).x + dojo.position("semtube-timeline-fragment-marker",true).w,
-            mlLeft = dojo.position("semtube-timeline-fragment-marker",true).x,
-            divLeft = dojo.position(dojo.query('#semtube-timeline-fragment-marker')[0]).x,   
-            pbLeft = dojo.position(dojo.query('#pundit-timeline-scale')[0]).x;
-            this.currMouseDown = e.pageX,
-            deltaX = Math.abs(this.startMouseDown - this.currMouseDown);
+                direction = 1,
+                deltaX,
+                mrLeft = dojo.position("semtube-timeline-fragment-marker",true).x + dojo.position("semtube-timeline-fragment-marker",true).w,
+                mlLeft = dojo.position("semtube-timeline-fragment-marker",true).x, 
+                pbLeft = dojo.position("pundit-timeline-scale").x;
+                this.currMouseDown = e.pageX;
+                deltaX = Math.abs(this.startMouseDown - this.currMouseDown);
 
             if (this.currMouseDown < this.startMouseDown){
                 direction = -1;
             }
 
             if (this.isMovingRightMarker == true){
-                if ((mrLeft + deltaX*direction < pbLeft + w) && (mrLeft + deltaX*direction > mlLeft)){
+                if ((mrLeft + deltaX*direction < pbLeft + self._w) && (mrLeft + deltaX*direction > mlLeft)){
                     dojo.style("semtube-timeline-fragment-marker", {
                         width: dojo.position("semtube-timeline-fragment-marker").w + deltaX*direction + 'px'
                     });
@@ -1423,21 +1400,20 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
             w = dojo.position("pundit-timeline-container").w;
             
         //TODO move this in a css
-        var srcMarker, srcMarkerL, srcSelected;
-        if (typeof(color) === 'undefined'){
-            srcMarker = this.srcMarker + '.png';
-            srcMarkerL = this.srcMarkerL + '.png';
-            srcSelected = this.srcSelected + '.png';
-        }else{
-            srcMarker = this.srcMarker + '_' + color + '.png';
-            srcMarkerL = this.srcMarkerL +  '_'  + color + '.png';
-            srcSelected = this.srcSelected + '_' + color + '.png';
-        }
+        // var srcMarker, srcMarkerL, srcSelected;
+        // if (typeof(color) === 'undefined'){
+        //     srcMarker = this.srcMarker + '.png';
+        //     srcMarkerL = this.srcMarkerL + '.png';
+        //     srcSelected = this.srcSelected + '.png';
+        // }else{
+        //     srcMarker = this.srcMarker + '_' + color + '.png';
+        //     srcMarkerL = this.srcMarkerL +  '_'  + color + '.png';
+        //     srcSelected = this.srcSelected + '_' + color + '.png';
+        // }
 
         tempMarkDiv  = '<div id="semtube-timeline-fragment-marker" class="mark" style="position:absolute; z-index:'+zin+'">';
         tempMarkDiv += '<div style="position:relative;width:100%">';
         tempMarkDiv += '<span class="markLeft"></span>';
-        // tempMarkDiv += '<span class="segment"></span>';
         tempMarkDiv += '<span class="markRight"></span>';
         tempMarkDiv += '</div></div>';
         

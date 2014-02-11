@@ -72,7 +72,9 @@ body {
     position:absolute;
     margin-left:-3px;
     height:20px;
-    z-index:2;
+    width:3px;
+    background: lightgray;
+    z-index:10;
 }
 
 #imgPlaySmall{
@@ -294,46 +296,4 @@ body {
     margin-left: 0;
     vertical-align:middle;
     /* padding-right: 20px; */
-}
-
-
-
-/*/* Change image for ajax and query */
-li.autocomplete.image{
-    width :20px;
-    height : 20px;
-} 
-li.autocomplete.image img{
-    display:inline;;
-    width: 20px;
-    height: 20px;
-}
-li.autocomplete input{
-    width: 180px;
-}
-
-
-li.autocomplete.image.unchecked img.checked {
-    display: none;
-}
-li.autocomplete.image.unchecked img.unchecked {
-    visibility: visible;
-}
-li.autocomplete.image.checked img.checked {
-    visibility: visible;
-}
-li.autocomplete.image.checked img.unchecked {
-    display: none;
-}
-ul.loading li.autocomplete.image img.loading {
-    display: block;
-}
-ul li.autocomplete.image img.loading {
-    display: none;
-}
-ul.loading li.autocomplete.image img.checked {
-    display: none;
-}
-ul.loading li.autocomplete.image img.unchecked {
-    display: none;
 }
