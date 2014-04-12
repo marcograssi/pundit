@@ -19,7 +19,7 @@
 *//**
     Provides the base GUI a of floating panel. Different parameters 
     can be specified to enable draggability and preview. Basic methods can be inherited 
-    to extend it features
+    to extend loit features
     @class pundit.BasePanel
     @extends pundit.baseComponent
     @constructor

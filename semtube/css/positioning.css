@@ -1,13 +1,18 @@
 body {
-    background: #f1f1f1;
+    background: white;
+    margin: 0px;
+    padding: 0px;
+}
+figure{
+    padding: 0px;
+    margin-top: 0px;
 }
 #content {
     position:relative;
-/*    background: #CCC;*/
+    background: white;
     width: 100%;
     margin-left: auto ;
     margin-right: auto ;
-    min-height: 800px;
 } 
 #containerPlayer{
     text-align: center;

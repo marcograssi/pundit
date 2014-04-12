@@ -29,42 +29,86 @@ dojo.declare("pundit.TimelineAnnotationPanel", pundit.BasePanel, {
         self.maxHeight = options.maxHeight || 300;
         // self.initHTML();
         dojo.addClass(self._id, 'pundit-timeline-annotation-panel');
+        self.initBehaviors(); 
+    },
+    initBaseHTML:function(){
+        var self = this;
+        self.log('Init HTML Base Panel');
+        if (typeof self.name !== 'undefined')
+            self._id = 'pundit-fp-' + self.name;
+        else
+            self._id = 'pundit-fp-' + Math.rand(100);
+        
+        var c ='<div id="' + self._id + '" class="pundit-base pundit-fp pundit-hidden pundit-disable-annotation pundit-stop-wheel-propagation">';
+        c += '  <div class="pundit-fp-header"><span class="pundit-fp-title">' + self.title + '</span><span class="pundit-fp-close pundit-icon-close"></span></div>';
+        c += '  <ul class="pundit-fp-content-list pundit-horizontal-list">';
+        c += '      <li>';
+        c += '          <div class="pundit-fp-content-container pundit-fp-container">';
+        c += '          </div>';
+        c += '      </li>';
+        c += '      <li class="pundit-fp-preview-list pundit-stop-wheel-propagation fillheight">';
+        c += '          <div class="pundit-fp-container fillheight pundit-stop-wheel-propagation">';
+        c += '              <span id="' + self._id + '-preview-hide" style="cursor: pointer">- [hide preview]</span><div id ="' + self._id + '-preview" class="pundit-fp-preview pundit-moreinfo-panel pundit-stop-wheel-propagation fillheight"></div>';
+        c += '          </div>';
+        c += '      </li>';
+        c += '  </ul>';
+        c += '  <div class=".pundit-fp-footer" style="width:100%; height:30px"><span class="semtube-annotate-button pundit-gui-button">Annotate</span><span class="semtube-play-button pundit-gui-button">Play</span></div>';
+        c += '</div>';
+        
+        dojo.query(self.container).append(c);
     },
     addHTMLContent:function(){
         var self = this;
         self.emptyContent();
         this.inherited(arguments);
         //TODO Set a parameter for this
+        //Move somewhere else>
         dojo.addClass(dojo.query('#' + self._id + ' .pundit-fp-content-list.pundit-horizontal-list')[0], 'pundit-stop-wheel-propagation');
     },
-    show:function(x,y){
+    initBehaviors: function() {
+        var self = this;
+        this.inherited(arguments);
+        dojo.behavior.add({
+            "#pundit-fp-timelineAnnotationPanel .semtube-play-button":{
+                'onclick':function(e){
+                    semlibVideoPlayer.playFragment(self._uri);
+                }
+            },
+            "#pundit-fp-timelineAnnotationPanel .semtube-annotate-button":{
+                'onclick':function(e){
+                    var item = _PUNDIT.items.getItemByUri(self._uri);
+                    _PUNDIT['commentTag'].initPanel(item, 'Comment Tag');
+                }
+            }
+        });
+    },
+    show:function(x,y,mfUri){
         this.inherited(arguments);
         var self = this,
             h = dojo.position(dojo.query('#' + self._id + ' .pundit-fp-content-container')[0]).h;
-        
+        self._uri = mfUri;
         dojo.removeClass(self._id, 'pundit-smooth');
         if (h > self.maxHeight){
             h = self.maxHeight;
         }
-
-        dojo.style(self._id, 'min-height', h + 20 +'px');
+        dojo.style(self._id, 'min-height', h + 20 + 30 +'px');
         dojo.style(self._id, 'max-height', self.maxHeight + 'px');
-        dojo.style(dojo.query('#' + self._id + ' .pundit-fp-content-list.pundit-horizontal-list')[0], 'height', h +'px');    
-        dojo.style(self._id, 'top', y - 15 - h + 'px');
-        if (x < dojo.window.getBox().w/2){
+        
+        dojo.style(dojo.query('#' + self._id + ' .pundit-fp-content-list.pundit-horizontal-list')[0], 'height', h - 30 + 30 +'px');    
+        dojo.style(self._id, 'top', y + 5 - h - 30 + 'px');
+        if (x + semlibVideoAnnotationViewer.myScroll.x < dojo.window.getBox().w/2){
             dojo.removeClass(self._id, 'pundit-right-panel');
             dojo.style(self._id, 'left', x - 16 + 'px');
         }
         else{
             dojo.addClass(self._id, 'pundit-right-panel');
             dojo.style(self._id, 'left', x - 300 + 14 + 'px');
-            //dojo.style(self._id, 'left', x - 16 + 'px');
         }
         self.setPanelTime(x);
         setTimeout(function() {
             dojo.addClass(self._id, 'pundit-smooth');
         }, 1000);
-                //Add the arrow
+        //Add the arrow
         //Resize according to the size of the screen
     },
     hide:function(){
@@ -82,10 +126,10 @@ dojo.declare("pundit.TimelineAnnotationPanel", pundit.BasePanel, {
 
         //TODO Fix top because something goes wrong when expanding the panel
         if (p.h >= 280){
-            dojo.style(dojo.query('#' + self._id + ' .pundit-fp-content-list')[0], 'height', '280px');
+            dojo.style(dojo.query('#' + self._id + ' .pundit-fp-content-list')[0], 'height', 280 - 30  +'px');
             dh = 300 - panelpos.h;
         }else{
-            dojo.style(dojo.query('#' + self._id + ' .pundit-fp-content-list')[0], 'height', p.h + 'px');
+            dojo.style(dojo.query('#' + self._id + ' .pundit-fp-content-list')[0], 'height', p.h - 30 + 'px');
             dh = p.h + 20 - panelpos.h;
         }
         dojo.style(self._id, 'top', panelposY - dh  + 'px');

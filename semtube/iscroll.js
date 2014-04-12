@@ -523,7 +523,8 @@ iScroll.prototype = {
 			that.x = that.originX - that.originX * that.lastScale + that.x;
 			that.y = that.originY - that.originY * that.lastScale + that.y;
 			
-			that.scroller.style[transitionDuration] = '200ms';
+			//that.scroller.style[transitionDuration] = '200ms';
+			that.scroller.style[transitionDuration] = '500ms';
 			that.scroller.style[transform] = 'translate(' + that.x + 'px,' + that.y + 'px) scale(' + that.scale + ')' + translateZ;
 			
 			that.zoomed = false;
@@ -657,12 +658,16 @@ iScroll.prototype = {
 			deltaScale;
 
 		if ('wheelDeltaX' in e) {
+			// wheelDeltaX = e.wheelDeltaX / 12;
+			// wheelDeltaY = e.wheelDeltaY / 12;
 			wheelDeltaX = e.wheelDeltaX / 12;
 			wheelDeltaY = e.wheelDeltaY / 12;
 		} else if('wheelDelta' in e) {
+			//wheelDeltaX = wheelDeltaY = e.wheelDelta / 12;
 			wheelDeltaX = wheelDeltaY = e.wheelDelta / 12;
 		} else if ('detail' in e) {
-			wheelDeltaX = wheelDeltaY = -e.detail * 3;
+			// wheelDeltaX = wheelDeltaY = -e.detail * 3;
+			wheelDeltaX = wheelDeltaY = -e.detail * 6;
 		} else {
 			return;
 		}
@@ -687,7 +692,8 @@ iScroll.prototype = {
 			return;
 		}
 		
-		deltaX = that.x + wheelDeltaX;
+		//deltaX = that.x + wheelDeltaX;
+		deltaX = that.x + wheelDeltaY;
 		deltaY = that.y + wheelDeltaY;
 
 		if (deltaX > 0) deltaX = 0;
@@ -697,7 +703,8 @@ iScroll.prototype = {
 		else if (deltaY < that.maxScrollY) deltaY = that.maxScrollY;
     
 		if (that.maxScrollY < 0) {
-			that.scrollTo(deltaX, deltaY, 0);
+			//that.scrollTo(deltaX, deltaY, 0);
+			that.scrollTo(deltaX, deltaY, 500);
 		}
 	},
 	

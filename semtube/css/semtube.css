@@ -15,15 +15,90 @@ root {
     display: block;
 }
 
+#semtube-header{
+    width:100%;
+    background: #f1f1f1;
+    text-align: center;
+}
+
+#semtube-header-left{
+    float:left;
+    width:300px;
+    text-align: left;
+    margin-left: 20px
+}
+#semtube-header-center{
+    display: inline-block;
+    text-align: center;
+    vertical-align: center;
+}
+#semtube-header-right{
+    text-align: right;
+    float:right;
+    width:300px;
+    margin-right: 20px;
+}
+
 #semtubeLogo{
-    width:224px;
-    height:69px;
+    height:50px;
+    margin-top: 5px;
+}
+
+div.semtube-button-container{
+    display: inline-block;
+    width:80px;
+    height: 30px;
+    border: 1px solid #d3d3d3;
+    background: #f8f8f8;
+    color: #333;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.05);
+    text-align: center;
+    margin-top: 15px;
+}
+
+#semtube-header-right div.semtube-button-container{
+    width: 120px;
+}
+
+#btnLoadVideo{
+    font-family: arial, sans-serif;
+    font-size: 20px;
+    line-height: 30px;
+}
+#btnLoad{
+    font-family: arial, sans-serif;
+    font-size: 20px;
+    line-height: 30px;    
+}
+
+div.semtube-bookmarklet-container{
+    display: inline-block;
+    height: 30px;
+    border: 1px solid #d3d3d3;
+    background: #f8f8f8;
+    color: #333;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.05);
+    text-align: center;
+    vertical-align: middle;
+    margin-top: -6px;
+    margin-left: 10px;
+}
+div.semtube-bookmarklet-container span{
+    line-height: 30px;
+    display: inline-block;
+    background: #f8f8f8 url(http://metasound.dibet.univpm.it/swnweb/images/Annotate-icon.png) no-repeat;
+    color: #2E2C2C;
+    width: 30px;
+    height: 30px;
+    font-size: 20px;
+    margin: 0px;
+    padding: 0px;
 }
 
 .horizontalCenter{
     width:900px;
     margin-left:auto;
-        margin-right:auto;
+    margin-right:auto;
 }
 
 #header{
@@ -52,7 +127,6 @@ ul.horizontal li{
     vertical-align:middle;
 }
 #videoTitle{
-    margin-top:40px; 
     text-align:center;
     font-style:arial, sans-serif;
     font-size:24px;
@@ -168,7 +242,12 @@ body .pundit-draw-polygon-icon-medium {
     display: inline-block;
     margin-top: 3px;
 }
-
+.semtube-timeline-tool:hover{
+    cursor: pointer;
+}
+.semtube-timeline-tool.semtube-disabled:hover{
+    cursor: auto;
+}
 
 /************ TIMELINE ************************/
 
@@ -181,46 +260,54 @@ body .pundit-draw-polygon-icon-medium {
     z-index:1000000010;
     opacity: 1;
     width:100%;
-    border-bottom: 1px solid black;
+    /*border-bottom: 1px solid black;*/
 }
 
 .semtube-timeline-scale-level-0{
     position:absolute; 
     z-index:100000000000; 
-    top:17px;
-    height:3px;
+    top:19px;
+    height:1px;
     width:1px;
     background:black;
 }
 .semtube-timeline-scale-level-1{
     position:absolute; 
     z-index:1000000000000; 
-    top:15px;
-    height:5px;
+    top:18px;
+    height:2px;
     width:1px;
     background:black;
 }
 .semtube-timeline-scale-level-2{
     position:absolute; 
     z-index:1000000000001; 
-    top:12px;
-    height:8px;
+    top:16px;
+    height:4px;
     width:1px;
     background:black;
 }
 .semtube-timeline-scale-level-3{
     position:absolute; 
     z-index:1000000000002; 
-    top:8px;
-    height:12px;
+    top:14px;
+    height:6px;
     width:1px;
     background:black;
 }
 .semtube-timeline-scale-level-4{
     position:absolute; 
     z-index:1000000000003; 
-    top:4px;
-    height:16px;
+    top:12px;
+    height:8px;
+    width:1px;
+    background:black;
+}
+.semtube-timeline-scale-level-5{
+    position:absolute; 
+    z-index:1000000000003; 
+    top:10px;
+    height:10px;
     width:1px;
     background:black;
 }
@@ -229,34 +316,31 @@ body .pundit-draw-polygon-icon-medium {
     z-index:1000000000013; 
     top:0px;
     height:10px;
-    width:10px;
-    font-size: 8px;
+    width:40px;
+    font-size: 2px;
     text-align: center;
 }
 .semtube-timeline-time-level-1{
     position:absolute; 
     z-index:1000000000013; 
-    top:0px;
-    height:10px;
-    width:10px;
-    font-size: 8px;
+    top:4px;
+    width:40px;
+    font-size: 6px;
     text-align: center;
 }
 .semtube-timeline-time-level-2{
     position:absolute; 
     z-index:1000000000013; 
-    top:0px;
-    height:10px;
-    width:10px;
-    font-size: 8px;
+    top:3px;
+    width:40px;
+    font-size: 7px;
     text-align: center;
 }
 .semtube-timeline-time-level-3{
     position:absolute; 
     z-index:1000000000013; 
-    top:0px;
-    height:10px;
-    width:10px;
+    top:2px;
+    width:40px;
     font-size: 8px;
     text-align: center;
 }
@@ -264,12 +348,21 @@ body .pundit-draw-polygon-icon-medium {
     position:absolute; 
     z-index:1000000000013; 
     top:0px;
-    height:10px;
-    width:10px;
-    font-size: 8px;
+    width:40px;
+    font-size: 10px;
     text-align: center;
 }
-
+.semtube-timeline-time-level-5{
+    position:absolute; 
+    z-index:1000000000013; 
+    top:0px;
+    height:10px;
+    width:40px;
+    font-size: 12px;
+    text-align: center;
+    margin-top: -2px;
+    font-weight: bold;
+}
 .semtube-tool-container{
     background: rgb(69, 69, 69);
     border-radius: 7px 7px 7px 7px;
@@ -285,7 +378,7 @@ body .pundit-draw-polygon-icon-medium {
 
 /********************** TIMELINE ANNOTATION PANEL ***************/
 #pundit-fp-timelineAnnotationPanel {
-    z-index: 100000000000000;
+    z-index: 100000000000000111111;
     -webkit-transition-property: opacity;
     -webkit-transition-duration: 1s;
     border: none;
@@ -364,12 +457,53 @@ body .pundit-draw-polygon-icon-medium {
     border-top: none;
 }
 
-.timelineFragment{
-    -webkit-transition-property: left, width;
-    -webkit-transition-duration: 1s, 1s;
+#pundit-fp-timelineAnnotationPanel .pundit-gui-button{
+    margin-right: 5px;
+    margin-top: 4px;
+    background: darkgray;
+    color: #333;
+    float: right;
+}
+#pundit-fp-timelineAnnotationPanel .pundit-gui-button:hover{
+    background: lightgray;
+}
+
+div.timelineFragment{
+    -webkit-transition-property: left, width, opacity;
+    -webkit-transition-duration: 1s, 1s, .5s;
     position:absolute;
     background:#2c2c2c;
     height:22px;
+}
+
+div.timelineFragment span.semtube-close{
+    display: none;
+}
+
+#tempMark.playing span.semtube-close{
+    display: block;
+    position: absolute;
+    top: -5px;
+    right: -10px;
+    width: 20px;
+    height: 20px;
+    z-index: 10000000;
+    background: url('img/cross-white.png') no-repeat 0px 0px;
+}
+
+div.timelineFragment.semtube-playing span.semtube-close{
+    display: block;
+    position: absolute;
+    top: -5px;
+    right: -10px;
+    width: 20px;
+    height: 20px;
+    z-index: 10000000;
+    background: url('img/cross-white.png') no-repeat 0px 0px;
+}
+
+div.timelineFragment.semtube-disabled{
+    opacity: 0.15
 }
 
 #pundit-timeline-box{
@@ -439,35 +573,41 @@ body .pundit-draw-polygon-icon-medium {
 
 span.markRight{
     /*background: url('../playerico/Marker.png') no-repeat 0px 0px;*/
-    background: transparent;
+    background: #800000;
     border-radius: 0px 10px 10px 0px;
     -webkit-border-radius: 0px 10px 10px 0px;
     -moz-border-radius: 0px 10px 10px 0px;  
     position:absolute;
     z-index:99999999;
-    height:20px;
+    height:26px;
     width:10px;
     overflow: visible;
     right:-10px;
     margin-top: -3px;
 }
+span.markRight:hover{
+    cursor: col-resize;
+}
 span.markLeft{
     position:absolute;
-    background: transparent;
+    background: #800000;
     border-radius: 10px 0px 0px 10px;
     -webkit-border-radius: 10px 0px 0px 10px;
     -moz-border-radius: 10px 0px 0px 10px;
     /*background: url('../playerico/MarkerL.png') no-repeat 0px 0px;*/
     z-index:99999999;
-    height:20px;
+    height:26px;
     width:10px;
     overflow: visible;
     left:-10px;
     margin-top: -3px;
 }
-span.markRight:before{
+span.markLeft:hover{
+    cursor: col-resize;
+}
+/*span.markRight:before{
     content: "";
-    display: block; /* reduce the damage in FF3.0 */
+    display: block; 
     position: absolute;
     top: -11px;
     left: -0px;
@@ -478,7 +618,7 @@ span.markRight:before{
 }
 #tempMark span.markRight:before{
     content: "";
-    display: block; /* reduce the damage in FF3.0 */
+    display: block; 
     position: absolute;
     top: -7px;
     left: -0px;
@@ -500,7 +640,7 @@ span.markRight:before{
 }
 span.markLeft:before{
     content: "";
-    display: block; /* reduce the damage in FF3.0 */
+    display: block; 
     position: absolute;
     top: -11px;
     left: -4px;
@@ -533,7 +673,7 @@ span.markRigth.spaced:before{
     border-left: 12px solid transparent;
     border-bottom: 0px solid transparent;
     border-style: solid;
-}
+}*/
 
 #semtube-timeline-fragment-marker{
     height: 20px;
@@ -548,20 +688,208 @@ span.markRigth.spaced:before{
     opacity: 1;
     border-radius: 0px;
 }
+
+#pundit-timeline-scroller{
+    position:absolute;
+    top:50px;
+    width:100%;
+    height:40px;
+    /*background:#444;*/
+    background: transparent;
+}
+
+#semtube-timeline-timebar{
+    width:100%;
+    height:20px;
+    background:darkgray;
+    border-bottom:1px solid black;
+}
+
+#semtube-timeline-time-marker{
+    position:absolute;
+    top:0px;
+    display:block;
+    background:#222;
+    width:3px;
+    height:200px;
+    z-index:1000000011;
+    left:-1px;
+}
+
+#semtube-timeline-loaded-marker{
+    position:absolute;
+    top:0px;
+    display:block;
+    background:gray;
+    width:0px;
+    height:20px;
+    z-index:1000000001;
+    left:0px;
+}
+
+#pundit-timeline-container{
+    position:absolute;
+    top:40px;
+    left:0px;
+    width:100%;
+    height:200px;
+    background:#f1f1f1; 
+    border-top:1px solid black;
+}
+
+
+
 /*********** PANEL ****************/
 body #pundit-fp-commentTag{
     z-index:100000;
 }
 
 span.semtube-disabled{
-    opacity: 0.5;
+    opacity: 0.3;
 }
 body div.pundit-fp{
     border: 1px solid darkgrey;
     -webkit-box-shadow: 0 5px 10px #adadad;
 }
+
+#pundit-fp-semtube-load-video-panel{
+    position: absolute;
+    top: 75px;
+    right: 65px;
+    left: inherit;
+    width: 500px;
+    border: none;
+    border-radius: 5px;
+}
+
+#pundit-fp-semtube-load-video-panel:before {
+  content: "";
+  display: block; /* reduce the damage in FF3.0 */
+  position: absolute;
+  top: -15px;
+  right: 45px;
+  width: 0;
+  border-width: 0px 15px 15px;
+  border-style: solid;
+  border-color: #f2f2f2 transparent;
+}
+
+#pundit-fp-semtube-load-video-panel div.pundit-fp-header{
+    display: none;
+}
+
+#pundit-fp-semtube-load-video-panel span.pundit-icon-close{
+    float: left;
+    margin-left: -3px;
+}
+
 /****************/
 span.pundit-moreinfo,
 span.pundit-moreinfo-subpanel{
     display:block;
 }
+
+
+
+/********* Colors */
+#tempMark.semtube-col0,
+div.timelineFragment.semtube-col0{
+    background:#83BF83;
+}
+#tempMark.semtube-col1,
+div.timelineFragment.semtube-col1{
+    background:#9D4E4E;
+}
+#tempMark.semtube-col2,
+div.timelineFragment.semtube-col2{
+    background:#9D8F4E;
+}
+#tempMark.semtube-col3,
+div.timelineFragment.semtube-col3{
+    background:#43366C;
+}
+#tempMark.semtube-col4,
+div.timelineFragment.semtube-col4{
+    background:#3F7D3F;
+}
+#tempMark.semtube-col5,
+div.timelineFragment.semtube-col5{
+    background:#A04545;
+}
+#tempMark.semtube-col6,
+div.timelineFragment.semtube-col6{
+    background:#784545;
+}
+#tempMark.semtube-col7,
+div.timelineFragment.semtube-col7{
+    background:#681616;
+}
+#tempMark.semtube-col8,
+div.timelineFragment.semtube-col8{
+    background:#CF7777;
+}
+#tempMark.semtube-col9,
+div.timelineFragment.semtube-col9{
+    background:#CF8E8E;
+}
+#tempMark.semtube-col10,
+div.timelineFragment.semtube-col10{
+    background:#A09045;
+}
+#tempMark.semtube-col11,
+div.timelineFragment.semtube-col11{
+    background:#786F45;
+}
+#tempMark.semtube-col12,
+div.timelineFragment.semtube-col12{
+    background:#685A16;
+}    
+#tempMark.semtube-col13,
+div.timelineFragment.semtube-col13{
+    background:#CFC077;
+}
+#tempMark.semtube-col14,
+div.timelineFragment.semtube-col14{
+    background:#CFC48E;
+}
+#tempMark.semtube-col15,
+div.timelineFragment.semtube-col15{
+    background:#44366E;
+}   
+#tempMark.semtube-col16,
+div.timelineFragment.semtube-col16{
+    background:#3B3353;
+}
+#tempMark.semtube-col17,
+div.timelineFragment.semtube-col17{
+    background:#1E1248;
+}   
+#tempMark.semtube-col18,
+div.timelineFragment.semtube-col18{
+    background:#8271B7;
+}   
+#tempMark.semtube-col19,
+div.timelineFragment.semtube-col19{
+    background:#9084B7;
+}
+#tempMark.semtube-col20,
+div.timelineFragment.semtube-col20{
+    background:#378038;
+}   
+#tempMark.semtube-col21,
+div.timelineFragment.semtube-col21{
+    background:#378037;
+}   
+#tempMark.semtube-col22,
+div.timelineFragment.semtube-col22{
+    background:#376037  ;
+}
+#tempMark.semtube-col23,
+div.timelineFragment.semtube-col23{
+    background:#125312  ;
+}
+#tempMark.semtube-col24,
+div.timelineFragment.semtube-col24{
+    background:#6DBF6D  ;
+}
+

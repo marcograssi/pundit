@@ -16,86 +16,73 @@
         <link type="text/css" href="../semtube/css/positioning.css" rel="stylesheet"/>
         <script type="text/javascript" src="../semtube/js/swfobject.js"></script>
         <script src="http://www.google.com/jsapi" type="text/javascript"></script> 
-        <style>
-            span.easy_RDFa_bookmarklet a {
-                font-size: 14px;
-                font-family: "Candara", "Lucida Grande", "Trebuchet MS", sans-serif;
-                background: #BFB1B1 url(http://metasound.dibet.univpm.it/swnweb/images/Annotate-icon.png) no-repeat 0px 50%;
-                color: #2E2C2C;
-                padding: 8px 8px 8px 30px;
-                text-align:right;
-                border: 1px #ccc solid;
-                text-decoration: none;
-                line-height: 30px;
-            }
-        </style>
         <!-- LAZY LOAD THIS AND THE TIMELINE -->
         <script type="application/javascript" src="iscroll.js"></script>
     </head>
     
     <!--Fix bookmarklet bug which happen for some url-->
-    <body class="disable_annotation">
+    <body class="pundit-disable-annotation">
         <div id="content" class="content">
-            <!-- TODO Put back this somewhere! -->
-            <div id="header" class="horizontalCenter" style="display:none">
-                <ul class="horizontal">
-                    <li><img id="semtubeLogo" src="../semtube/SemTubeLogo.png"/></li>
-                    <li><input id="inputMediaUri" type="text" style="display: inline;width:350px" /><input id="btnLoad" type="button" style="display:inline;margin-left:10px" value="Load"/></li>
-                    <li>
-                        <span class="easy_RDFa_bookmarklet">
-                            <a title="Bookmark this link" href="javascript:(function(){
-						var videoId='';
-                               var loc = 'http://metasound.dibet.univpm.it/asclient/semtube/examples/semtube.html';
-						var a=document.location.href;
+            <div id="semtube-header" class="pundit-disable-annotation">
+                <div id="semtube-header-left">
+                    <img id="semtubeLogo" src="../semtube/SemTubeLogo.png"/>
+                </div>
+                <div id="semtube-header-center">
+                    <h1 id="videoTitle"></h1>
+                </div>
+
+                <div id="semtube-header-right">
+                     <!-- <input id="inputMediaUri" type="text" style="display: inline-block;width:250px" /><input id="btnLoad" type="button" style="display:inline;margin-left:10px" value="Load"/></li> -->
+                    <div class="semtube-button-container"><span id="btnLoadVideo">Load Video</span></div>
+                    <div class="semtube-bookmarklet-container easy_RDFa_bookmarklet">
+                        <a title="Bookmark this link" href="javascript:(function(){
+                        var videoId='';
+                        var loc = 'http://localhost/~marco/pundit/pundit/semtube/semtube.html';
+                        var a=document.location.href;
                                                     if(a.indexOf('www.youtube.com') !=-1){
-							if(a.indexOf('?') !=-1){
-							addrParts = a.split('?');
-								queryPart = addrParts[1];
-								var params = new Array();
-								params =  queryPart.split('&amp;');
-								for (i=0; i< params.length; i++)
-								{
-									var s= String(params[i]);
-									if (s.substr(0,2) =='v='){
-										videoId = s.substring(2);
-									}
+                            if(a.indexOf('?') !=-1){
+                            addrParts = a.split('?');
+                                queryPart = addrParts[1];
+                                var params = new Array();
+                                params =  queryPart.split('&amp;');
+                                for (i=0; i< params.length; i++)
+                                {
+                                    var s= String(params[i]);
+                                    if (s.substr(0,2) =='v='){
+                                        videoId = s.substring(2);
+                                    }
 
-								}
-									if (videoId != ''){
-										window.location = loc + '?id=' + videoId;
-									}else{
-										window.location = loc;
-									}
+                                }
+                                    if (videoId != ''){
+                                        window.location = loc + '?id=' + videoId;
+                                    }else{
+                                        window.location = loc;
+                                    }
 
-								}else{
-									window.location = loc;
-									}
+                                }else{
+                                    window.location = loc;
+                                    }
 
-							}else{
-								window.location = loc;	
-								}
+                            }else{
+                                window.location = loc;  
+                                }
 
-						})()"> 
+                        })()"><img alt="Semtube" src="http://metasound.dibet.univpm.it/swnweb/images/Annotate-icon.png">
                                 <!-- Se sono su una pagina non di youtube vado su semtube
-					 Se sono in una pagina di youtube invece devo anche caricare il video
-				     Bisogna mettere la funzionee che permette di prendere l'id del video e naviga nella nostra pagina
-					 Per prenderlo splittare l'uri della pagina secondo il "?" 
-					 Poi splittare la parte a destra secondo & per prendere i parametri
-					 Questo vale partendo da youtube, potrebbe non valere in altri casi
-					 Ad esempio non vale per l'uri di per l'embedd che è del tipo: 
-					 http://www.youtube.com/embed/8e6zIeCaxxU
-					 E nemmeno per l'url di riferimento (credo sia quello stabile)
-					 http://www.youtube.com/v/8e6zIeCaxxU
-				 -->
-                                <span>SemTube</span>
+                     Se sono in una pagina di youtube invece devo anche caricare il video
+                     Bisogna mettere la funzionee che permette di prendere l'id del video e naviga nella nostra pagina
+                     Per prenderlo splittare l'uri della pagina secondo il "?" 
+                     Poi splittare la parte a destra secondo & per prendere i parametri
+                     Questo vale partendo da youtube, potrebbe non valere in altri casi
+                     Ad esempio non vale per l'uri di per l'embedd che è del tipo: 
+                     http://www.youtube.com/embed/8e6zIeCaxxU
+                     E nemmeno per l'url di riferimento (credo sia quello stabile)
+                     http://www.youtube.com/v/8e6zIeCaxxU
+                 -->
                             </a>
-                        </span>
-                    </li>
-                </ul>
-            </div>
+                        </div>
 
-            <div>
-                <h1 id="videoTitle"></h1>
+                </div>
             </div>
 
             <figure id="containerPlayer" class="THCContent pundit-disable-annotation" about="http://metasound.dibet.univpm.it/release_bot/build/examples/dante-1.html">
@@ -114,8 +101,8 @@
             <div id="semtube-timeline-action-bar" class="horizontal">
                 <div id="semtube-timeline-control">
                     <div id="semtube-timeline-tools" class="semtube-tool-container">
-                        <span id="pundit-timeline-zoom" class="semtube-icon-zoom-in semtube-timeline-tool" style="margin-left:5px;"></span>
-                        <span id="pundit-timeline-pan" class="semtube-icon-zoom-out semtube-timeline-tool"></span>
+                        <span id="pundit-timeline-zoom" class="semtube-icon-zoom-in semtube-timeline-tool" style="margin-left:5px;" title="Zoom In Timeline"></span>
+                        <span id="pundit-timeline-pan" class="semtube-icon-zoom-out semtube-timeline-tool" title="Zoom Out Timeline"></span>
                     </div>
                 </div>
                 <div id="semtube-player-control">
@@ -141,23 +128,23 @@
 
                 <div id="semtube-annotation-control">
                     <div id="semtube-annotation-tools" class="semtube-tool-container">
-                        <span id="annotate" class="semtube-select-fragment-icon semtube-timeline-tool" style="margin-left:5px;"></span>
+                        <span id="annotate" class="semtube-select-fragment-icon semtube-timeline-tool" style="margin-left:5px;" title="Select Video Fragment"></span>
                         <!-- <span id="selRegion" class="pundit-draw-polygon-icon-medium semtube-timeline-tool"></span> -->
-                        <span id="deleteSelected" class="pundit-delete-icon-medium semtube-timeline-tool semtube-disabled"></span>
-                        <span id="saveMarker" class="pundit-favorite-icon-medium semtube-timeline-tool semtube-disabled"></span>
-                        <span id="addTag" class="pundit-tag-icon-medium semtube-timeline-tool semtube-disabled"></span>
+                        <span id="deleteSelected" class="pundit-delete-icon-medium semtube-timeline-tool semtube-disabled" title="Clear Selected Fragment"></span>
+                        <span id="saveMarker" class="pundit-favorite-icon-medium semtube-timeline-tool semtube-disabled" title="Save Fragment to Favorites"></span>
+                        <span id="addTag" class="pundit-tag-icon-medium semtube-timeline-tool semtube-disabled" title="Add Comments/Tags to Fragment"></span>
                     </div>
                 </div>
             </div>
-            <div id="wrapper">
-                <div id="pundit-timeline-scroller" style="position:absolute;top:50px;width:100%;height:40px;background:#444; overflow-x: auto, z-index:1000000000;">
-                    <div id="semtube-timeline-timebar" style="width:100%;height:20px;background:darkgray;border-bottom:1px solid black;">
-                        <span id="semtube-timeline-time-marker" style="position:absolute;top:0px;display:block;background:red;width:3px;height:200px;z-index:1000000011;left:-1px"></span>
-                        <span id="semtube-timeline-loaded-marker" style="position:absolute;top:0px;display:block;background:gray;width:0px;height:20px;z-index:1000000001;left:-0px"></span>
+            <div id="wrapper" style="margin-left:10px">
+                <div id="pundit-timeline-scroller">
+                    <div id="semtube-timeline-timebar">
+                        <span id="semtube-timeline-time-marker"></span>
+                        <span id="semtube-timeline-loaded-marker"></span>
                         <div id="pundit-timeline-scale">
                         </div>
                     </div>
-                    <div id="pundit-timeline-container" style="position:absolute;top:40px;left:0px;width:100%;height:200px;background:#f1f1f1; overflow-x: auto, z-index:10000000000000000;border-top:1px solid black"></div>
+                    <div id="pundit-timeline-container"></div>
                 </div>
             </div>
         </div>

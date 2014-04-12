@@ -7,6 +7,16 @@ dojo.declare("pundit.SemlibVideoPlayer", pundit.BaseComponent, {
         var self = this;
         self.videoInfo={};
         this.initContextMenu();
+        this.loadVideoPanel = new pundit.BasePanel({
+                name: 'semtube-load-video-panel',
+                title: 'Insert Video URI',
+                width: 500,
+                height: 50,
+                drag: true,
+                container: '#content'
+        });
+        this.loadVideoPanel.addHTMLContent('<span class="pundit-fp-close-inside pundit-icon-close"></span><div class="semtube-button-container" style="float:right;margin-top:10px;"><span id="btnLoad">Load</span></div><input id="inputMediaUri" placeholder="Insert a YouTube Video URI" type="text" style="display: inline-block;width:370px;line-height:28px;margin-right:10px;font-size:16px;float:right;margin-top:10px" />');
+        dojo.place(dojo.byId('pundit-fp-semtube-load-video-panel'), 'semtube-header');
         this.initBehaviors();
         
         //TODO Pass this parameters as options
@@ -37,7 +47,9 @@ dojo.declare("pundit.SemlibVideoPlayer", pundit.BaseComponent, {
         _PUNDIT['commentTag'].onSaveItems(function(){
             dojo.destroy('tempMark');
             dojo.destroy('semtube-timeline-fragment-marker');
+            self.setFragmentDeselected();
         });
+
 
         this.init(); 
     },
@@ -140,6 +152,16 @@ dojo.declare("pundit.SemlibVideoPlayer", pundit.BaseComponent, {
         var self = this;
         
         //BUTTONS
+        dojo.connect(dojo.byId("btnLoadVideo"), 'onclick', function(e){
+            self.loadVideoPanel.show(100,100);
+            //self.loadVideoFromInput();
+        });
+
+        dojo.connect(dojo.query('#pundit-fp-semtube-load-video-panel .pundit-fp-close-inside')[0], 'onclick', function(){
+           dojo.byId('inputMediaUri').value = "";
+           self.loadVideoPanel.hide();
+        });
+
         dojo.connect(dojo.byId("btnLoad"), 'onclick', function(e){
             self.loadVideoFromInput();
         });
@@ -195,7 +217,8 @@ dojo.declare("pundit.SemlibVideoPlayer", pundit.BaseComponent, {
         });
         
         dojo.connect(dojo.byId('addTag'), 'onclick', function(){
-            var itemInfo = self.getFragmentInfo(),
+            if (self.isFragmentSelected){
+                var itemInfo = self.getFragmentInfo(),
                 selectors = [],
                 parentItemXP = 'http://www.youtube.com/v/' + itemInfo.isPartOf,
                 item = {};
@@ -206,38 +229,45 @@ dojo.declare("pundit.SemlibVideoPlayer", pundit.BaseComponent, {
                     type : 'timeFragment'
                 });
                 
-            if (typeof(itemInfo) !== 'undefined'){
-                dojo.query('#canvasTools button').forEach(function(item){
-                    item.disabled = true;
-                });
-                item.data = itemInfo;
-                item.data.selectors = selectors;
-                item.data.parentItemXP = parentItemXP;
-                item.data.rdfData = semlibItems.createBucketForVideo(item).bucket;
-                previewer.buildPreviewForItem(item.data);
-                semlibItems.addItem(item.data);
-            }
+                if (typeof(itemInfo) !== 'undefined'){
+                    dojo.query('#canvasTools button').forEach(function(item){
+                        item.disabled = true;
+                    });
+                    item.data = itemInfo;
+                    item.data.selectors = selectors;
+                    item.data.parentItemXP = parentItemXP;
+                    item.data.rdfData = semlibItems.createBucketForVideo(item).bucket;
+                    previewer.buildPreviewForItem(item.data);
+                    semlibItems.addItem(item.data);
+                }
                 _PUNDIT['commentTag'].initPanel(item.data, 'Comment Tag');
+            }
         });
         
         dojo.connect(dojo.byId('saveMarker'), 'onclick', function(){
-            var fragmentInfo = self.getFragmentInfo(),
-                item = {};
-            if (typeof(fragmentInfo) !== 'undefined'){
-                dojo.query('#canvasTools button').forEach(function(item){
-                    item.disabled = true;
-                });
-                dojo.destroy('tempMark');
-                item.data = fragmentInfo;
-                item.data.rdfData = semlibItems.createBucketForVideo(item).bucket;
-                previewer.buildPreviewForItem(item.data);
-                semlibMyItems.addItem(item.data);
+            if (self.isFragmentSelected){
+                var fragmentInfo = self.getFragmentInfo(),
+                    item = {};
+                if (typeof(fragmentInfo) !== 'undefined'){
+                    dojo.query('#canvasTools button').forEach(function(item){
+                        item.disabled = true;
+                    });
+                    dojo.destroy('tempMark');
+                    dojo.destroy('semtube-timeline-fragment-marker');
+                    item.data = fragmentInfo;
+                    item.data.rdfData = semlibItems.createBucketForVideo(item).bucket;
+                    previewer.buildPreviewForItem(item.data);
+                    semlibMyItems.addItem(item.data);
+                }
             }
         });
 
         dojo.connect(dojo.byId('deleteSelected'), 'onclick', function(){
-            dojo.destroy('tempMark');
-            dojo.destroy('semtube-timeline-fragment-marker');
+            if (self.isFragmentSelected){
+                dojo.destroy('tempMark');
+                dojo.destroy('semtube-timeline-fragment-marker');
+                self.setFragmentDeselected();
+            }
         });
     },
 
@@ -245,7 +275,7 @@ dojo.declare("pundit.SemlibVideoPlayer", pundit.BaseComponent, {
         var self= this,
             video = dojo.query("object")[0],
             vs = dojo.window.getBox(),
-            h = vs.h - 100 - self.timelineHeight,
+            h = vs.h - 85 - self.timelineHeight,
             //TODO We use fixed ratio as it is not available from YouTube
             ratio = 16 / 9;
         
@@ -350,15 +380,27 @@ dojo.declare("pundit.SemlibVideoPlayer", pundit.BaseComponent, {
             pos_x;
         
         //Remove the current player marker
-        if (dojo.query('.mark.playing').length > 0){
-            dojo.destroy(dojo.query('.mark.playing')[0]);
-        }
-        
+        // if (dojo.query('.mark.playing').length > 0){
+        //     dojo.destroy(dojo.query('.mark.playing')[0]);
+        // }
+        self.removeSelectedFragments();
+        self._isPlayingFragment = true;
+        dojo.query('div.timelineFragment').addClass('semtube-disabled');
+
+        //TODO Why this does not work?
+        // dojo.query('div.timelineFragment[about="' + mediaFragment + '"]').removeClass('semtube-disabled');
+        dojo.query('div.timelineFragment').forEach(function(item){
+            if (dojo.attr(item, 'about') === mediaFragment){
+                dojo.removeClass(item, 'semtube-disabled');
+                dojo.addClass(item, 'semtube-playing');
+
+            }
+        });
         if (typeof(times) !== 'undefined'){
             //DEBUG MARCO
             //Now selected marker is no more shown on mouse over
             //dojo.addClass(dojo.query('.mark.fixed')[0], 'playing');
-            self.insertMarker(times.startTime, times.endTime, null, 'lightgray', 'playing');
+            self.insertMarker(times.startTime, times.endTime, null, semlibVideoAnnotationViewer.mediaFragments[mediaFragment].color, 'playing');
             
             ytPlayer.seekTo(times.startTime, true);
             ytPlayer.play();
@@ -375,17 +417,39 @@ dojo.declare("pundit.SemlibVideoPlayer", pundit.BaseComponent, {
     InsertFrameAnnotation:function(){
         var self  = this,
             time;
+        if (self._isPlayingFragment){
+            self.stopPlayingFragment();
+        }
+            
         if (typeof(ytPlayer) !== 'undefined'){
             time = ytPlayer._player.getCurrentTime();
             self.insertMarker(time, time + 1);
             semlibVideoAnnotationViewer.insertTimelineMarker(time, time +1);
             dojo.addClass(dojo.byId('tempMark'), 'unsaved');
+            //TODO DEBUG Do we need this?
             dojo.query('#canvasTools button').forEach(function(item){
                 item.disabled = false
             });
+            self.setFragmentSelected();
         }
-    
     },
+
+    setFragmentSelected:function(){
+        var self = this;
+        dojo.query('#semtube-annotation-tools span.semtube-timeline-tool').forEach(function(item){
+            dojo.removeClass(item, 'semtube-disabled')
+        });
+        self.isFragmentSelected = true;
+    },
+
+    setFragmentDeselected:function(){
+        var self = this;
+        dojo.addClass('deleteSelected', 'semtube-disabled');
+        dojo.addClass('saveMarker', 'semtube-disabled');
+        dojo.addClass('addTag', 'semtube-disabled');
+        self.isFragmentSelected = true;
+    },
+
     setTitle:function(title){
         dojo.html.set('videoTitle', title);
     },
@@ -466,7 +530,7 @@ dojo.declare("pundit.SemlibVideoPlayer", pundit.BaseComponent, {
     loadVideoFromInput:function(e){  	
         var vId = "",	
             location = ns.semtubeUri,
-            uri = dojo.byId("inputMediaUri").value;
+            uri = dojo.byId("inputMediaUri").value,
             uriParts, queryPart, params,
             s;
         if (uri.indexOf('www.youtube.com') != -1){		
@@ -707,10 +771,21 @@ dojo.declare("pundit.SemlibVideoPlayer", pundit.BaseComponent, {
         // }
         dojo.destroy(name);
 
-        tempMarkDiv  = '<div id="' + name + '" class="mark" style="position:absolute; z-index:9">';
+        if (typeof color === 'undefined')
+            color = "";
+
+        if (typeof classname === 'undefined')
+            classname = "";
+
+        tempMarkDiv  = '<div id="' + name + '" class="mark ' + color + " " + classname + '" style="position:absolute; z-index:9">';
         tempMarkDiv += '<div style="position:relative;width:100%">';
-        tempMarkDiv += '<span class="markLeft"></span>';
-        tempMarkDiv += '<span class="markRight"></span>';
+        if (classname === 'playing'){
+            tempMarkDiv += '<span class="semtube-close"></span>';    
+        }else{
+            tempMarkDiv += '<span class="markLeft"></span>';
+            tempMarkDiv += '<span class="markRight"></span>';    
+        }
+        
         tempMarkDiv += '</div></div>';
         
         //Positionate the div and the image
@@ -827,5 +902,23 @@ dojo.declare("pundit.SemlibVideoPlayer", pundit.BaseComponent, {
         var self = this;
         dojo.destroy('tempMark');
         self.insertMarker(times[0], times[1]);
+    },
+
+    showLoadPanel:function(){
+
+    },
+    stopPlayingFragment:function(){
+        var self = this;
+        self._isPlayingFragment = false;
+        dojo.query('div.timelineFragment').removeClass('semtube-disabled');
+        dojo.query('div.timelineFragment').removeClass('semtube-playing');
+        self.removePlayerFragment();
+    },
+    removePlayerFragment:function(){
+        dojo.destroy('tempMark');
+    },
+    removeSelectedFragments:function(){
+        dojo.destroy('tempMark');
+        dojo.destroy('semtube-timeline-fragment-marker');    
     }
 });

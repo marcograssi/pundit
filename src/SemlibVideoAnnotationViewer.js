@@ -21,6 +21,11 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
         self.rowHeight = 25;
         self.resizeTimeout = null;
 
+        self._fragmentMouseDown = false;
+        self._timelineDragging = false;
+
+        self.nFragments = 0;
+
         //refresh all
         self.refreshPageItems = false;
 
@@ -45,6 +50,13 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
         tripleComposer.onSave(function() {
             dojo.destroy('semtube-timeline-fragment-marker');
             self.refreshAnnotations();
+            console.log("triple composer has saved");
+        });
+
+        dojo.ready(function(){
+            dojo.style('pundit-timeline-scroller', 'width', dojo.window.getBox().w + 'px');
+            dojo.style('pundit-timeline-container', 'width', dojo.window.getBox().w - 20 + 'px');
+            dojo.style('semtube-timeline-timebar', 'width', dojo.window.getBox().w - 20 + 'px');
         });
 
         //TODO This should be move elsewhere and do not use DOM level 1 event
@@ -53,6 +65,10 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
                 clearTimeout(self.resizeTimeout)
             }
             self.resizeTimeout = setTimeout(function(){
+                // dojo.style('pundit-timeline-container', 'width', dojo.window.getBox().w - 20 +px);
+                dojo.style('pundit-timeline-scroller', 'width', dojo.window.getBox().w + 'px');
+                dojo.style('pundit-timeline-container', 'width', dojo.window.getBox().w - 20 + 'px');
+                dojo.style('semtube-timeline-timebar', 'width', dojo.window.getBox().w - 20 + 'px');
                 self.resizeTimeline();
                 semlibVideoPlayer.resizeVideo();
                 self.addTimelineScale();
@@ -84,9 +100,10 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
         // self.wipe();
         _PUNDIT.init.onInitDone(function() {
             _PUNDIT['commentTag'].onSaveItems(function(){
+                console.log('Comment tag panel has saved its items');
                 self.refreshAnnotations();    
             });
-            self.refreshAnnotations();
+            // self.refreshAnnotations();
             self.myScroll = new iScroll('wrapper', {vScroll:false});
         });
 
@@ -244,11 +261,39 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
                     });
                 }
             },
-            '.timelineFragment': {
+            '#tempMark span.semtube-close': {
                 'onclick': function (e) {
-                    var mfUri = dojo.attr(dojo.query(e.target)[0], 'about');
+                    dojo.stopEvent(e);
+                    semlibVideoPlayer.stopPlayingFragment();
+                },
+            },
+            '.timelineFragment span.semtube-close': {
+                'onclick': function (e) {
+                    dojo.stopEvent(e);
+                    semlibVideoPlayer.stopPlayingFragment();
+                },
+            },
+            '.timelineFragment': {
+                'onmousedown': function (e) {
+                    self._fragmentMouseDown = true;
+                },
+                'onmousemove': function (e) {
+                    if (self._fragmentMouseDown){
+                        self._timelineDragging = true;
+                    }
+                },
+                'onmouseup': function (e) {
+                    var mfUri = "";
+                    //Clicking on the close button
+                    if (!dojo.hasAttr(dojo.query(e.target)[0], 'about')){
+                        return;
+                    }
+                    mfUri = dojo.attr(dojo.query(e.target)[0], 'about');
                     anns =  self.mediaFragments[mfUri].anns;
-                    self.showAnnotationPanelTimeline(anns, dojo.style(e.target, 'left') + e.offsetX, dojo.style(e.target, 'top') + e.offsetY)
+                    if (self._timelineDragging === false)
+                        self.showAnnotationPanelTimeline(anns, dojo.style(e.target, 'left') + e.offsetX, dojo.style(e.target, 'top') + e.offsetY, mfUri);
+                    self._fragmentMouseDown = false;
+                    self._timelineDragging = false;
                 }
             },
             '#pundit-timeline-scale div span.markLeft': {
@@ -259,6 +304,28 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
             '#pundit-timeline-scale div span.markRight': {
                 'onmousedown': function(e){
                     self.fmarkerMouseDown(e);
+                }
+            },
+            '#pundit-fp-timelineAnnotationPanel span.semtube-delete': {
+                'click': function(e) {
+                    var ann_id = dojo.attr(e.currentTarget, 'about'),
+                        deleteJobId = _PUNDIT.loadingBox.addJob('Deleting annotation ');
+                    self.tmpMF2Del = dojo.attr(e.currentTarget, 'about-fragment');
+                    // dojo.query('#dialog_'+ann_id+'_content').addClass('pundit-panel-loading');
+                    // dojo.query('#dialog_'+ann_id+'_content .pundit-gui-button.delete').style('display', 'none');
+                    self.refreshPageItems = true;
+                    self.writer.deleteAnnotation(ann_id, function() {
+                        // TODO: how to intercept errors? 
+                        // TODO: on error, hide loading, show delete button again
+                        
+                        // On succesful delete: close the panel, refresh
+                        // annotations
+                        // Don't close it (it fire a repositioning panel. Destroy it
+                        // semlibWindow.destroyPanelById(ann_id);
+                        self.deleteAnnotation(ann_id, self.tmpMF2Del);
+                        self.refreshAnnotations();
+                        _PUNDIT.loadingBox.setJobOk(deleteJobId);
+                    });
                 }
             },
             //TODO The click event are added by tooltip annotation viewer so here we just update the annoation panel...
@@ -361,9 +428,26 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
         });
     },
     
+    deleteAnnotation:function(annId, mfUri){
+        var self = this,
+            anns = self.mediaFragments[mfUri].anns,
+            index = dojo.indexOf(anns, annId);
+        if (index >= 0){
+            anns.splice(index, 1);
+            delete self.annotations[annId];
+            if (anns.length === 0){
+                delete self.mediaFragments[mfUri];
+                self.removeFragmentFromTimeline(mfUri);
+            }
+        }else{
+            self.log("Something has gone wrong");
+        }
+    },
+
     addAnnotations:function(graph){
         var self = this,
-        i=0;
+            i=0,
+            color;
         for (var ann_uri in graph) {
             var a = graph[ann_uri],
             
@@ -389,13 +473,14 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
                             var newAnn = true;
                             if (typeof(self.mediaFragments[j]['anns']) != "undefined"){
                                 for (var k in self.mediaFragments[j]['anns']){
-                                if (self.mediaFragments[j][k] === ann_id)
-                                    newAnn = false;
-                                break;
+                                    if (self.mediaFragments[j]['anns'][k] === ann_id){
+                                        newAnn = false;
+                                        break;
+                                    }
                                 }
                                 if (newAnn)
                                     self.mediaFragments[j]['anns'].push(ann_id)
-                                break;
+                                    
                             }
                         }
                     }
@@ -404,7 +489,10 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
                         self.mediaFragments[val]['anns'] = [ann_id] ;
                         self.mediaFragments[val]['times'] = self.getAnnotationTime(val);
                         self.mediaFragments[val]['uri'] = val;
-                        self.addFragmentToTimeline(val);
+                        color = "semtube-col" + (self.nFragments % 24);
+                        self.nFragments += 1;
+                        self.mediaFragments[val]['color'] = color;
+                        self.addFragmentToTimeline(val, color);
                     }
                     
                     self.annotations[ann_id] = {
@@ -820,7 +908,7 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
         // DEBUG: if we remove a line here, the min-height of the whole annotation box gets in the
         // way and messes it up a bit .......
         // TODO: this is the right place to insert notebook or other infos
-        panel_content += "<span class='author'><em>Created by</em> : "+author_name+"</span>";
+        panel_content += "<span class='author'><em></em> : "+author_name+"</span>";
         panel_content += "<span class='date'><em>On</em> : "+ annotation_date.split('T')[0] +", "+annotation_date.split('T')[1]+"</span>"
         panel_content += "</div>";
 
@@ -941,14 +1029,18 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
 
         return tp;
     }, // getTriplePartHTML()
-
+    wipe:function(){
+        var self = this;
+        self.annoations = {};
+        self.mediaFragments = {};
+    },
     refreshAnnotations:function(){
         var self = this;
-        dojo.query('.video_annotation_icon').forEach(function(item){
+        dojo.query('.timelineFragment').forEach(function(item){
             dojo.destroy(item);
         });
         //console.log('http://www.youtube.com/v/' + semlibVideoPlayer.videoId);
-        
+        self.wipe();
         self.reader.getAnnotationMetadataFromUri(['http://www.youtube.com/v/' + semlibVideoPlayer.videoId]);
     },
     highlightVideoFragmentByUri:function(uri){
@@ -976,7 +1068,7 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
     },
     
     //TIMELINE EXPERIMENT
-    addFragmentToTimeline:function(uri){
+    addFragmentToTimeline:function(uri, color){
         var self = this,
             t = self.getAnnotationTime(uri),
             duration = semlibVideoPlayer.videoInfo.entry.media$group.media$content[0].duration,
@@ -984,7 +1076,7 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
             left = t.startTime*(timelineWidth/duration),
             width = (t.endTime -t.startTime)*(timelineWidth/duration);
         //console.log("Add annotation to timeline. URI: " + uri);
-        dojo.place('<div about="'+uri+'" class="timelineFragment" style="left:'+ left +'px; width:'+ width +'px;"></div>','pundit-timeline-container');
+        dojo.place('<div about="'+uri+'" class="timelineFragment ' + color + '" style="left:'+ left +'px; width:'+ width +'px;"><span class="semtube-close"></span></div>','pundit-timeline-container');
         self.repositionAnnotations();
         dojo.behavior.apply();
     },
@@ -1070,6 +1162,8 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
             left,
             width;
 
+
+
         //Repositionate the fragment
         for (var i in self.mediaFragments){
             t = self.mediaFragments[i].times,
@@ -1107,9 +1201,11 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
     zoomTimeline:function(){
         var self = this,
             w = dojo.position("pundit-timeline-scroller").w +200;//TODO FIX THIS IS HARDCODED
-
+        
         //self.originalTimelineWidth = dojo.style(dojo.byId('pundit-timeline-container'), 'width');
         dojo.style("pundit-timeline-scroller", "width", w + "px");
+        dojo.style('pundit-timeline-container', 'width', dojo.style('pundit-timeline-container', 'width') + 200 + 'px');
+        dojo.style('semtube-timeline-timebar', 'width', dojo.style('semtube-timeline-timebar', 'width') + 200 + 'px');
         self.timelineAction = "zoom";
         self.addTimelineScale();
         self.myScroll.refresh();
@@ -1126,6 +1222,9 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
             w = ww;
         }
         dojo.style("pundit-timeline-scroller", "width", w + "px");
+
+        dojo.style('pundit-timeline-container', 'width', w - 20 + 'px');
+        dojo.style('semtube-timeline-timebar', 'width', w - 20 + 'px');
         // TODO Fix position of timeline to avoid blank space on the left
         // Something is wrong here!
         self.addTimelineScale();
@@ -1134,17 +1233,20 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
         self.resizeTimeline(w,'pan');
     },
 
-    showAnnotationPanelTimeline: function(ann_id,x,y) {
-        var r = document.createRange();
-        r.selectNode(document.getElementById('containerPlayer'));
-        var xpPlayer = fragmentHandler.range2xpointer(r);
-                
+    showAnnotationPanelTimeline: function(ann_id,x,y, mfUri) {
         var self = this,
-            finalContent = "";
-            
+            r = document.createRange(),
+            finalContent = "",
+            xpPlayer = "";
+
+        //TODO Debug: Do we need this?
+        r.selectNode(document.getElementById('containerPlayer'));
+        xpPlayer = fragmentHandler.range2xpointer(r);
+        
+        dojo.empty(dojo.query("#pundit-fp-timelineAnnotationPanel div.pundit-fp-content-container")[0]);
 
         if (typeof ann_id === "string"){
-            ann_id = [ann_id]
+            ann_id = [ann_id];
         }
 
         //DUBUG Marco Add check on annotation existance
@@ -1179,8 +1281,8 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
             // TODO: ACL on the annotation? On the notebook?
             // TODO: add again the EDIT button
 
-            if (author_uri === myPundit.user.uri)
-                panel_buttons += "<span class='pundit-gui-button delete' about='"+ann_id+"'>Delete</span>";
+            // if (author_uri === myPundit.user.uri)
+            //     panel_buttons += "<span class='pundit-gui-button delete' about='"+ann_id+"'>Delete</span>";
                 
             if (typeof(m[ns.pundit_authorName]) !== 'undefined' && m[ns.pundit_authorName][0].value !== '') 
                 author_name = m[ns.pundit_authorName][0].value;
@@ -1192,8 +1294,12 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
             // DEBUG: if we remove a line here, the min-height of the whole annotation box gets in the
             // way and messes it up a bit .......
             // TODO: this is the right place to insert notebook or other infos
-            panel_content += "<span class='author'><em>Created by</em> : "+author_name+"</span>";
-            panel_content += "<span class='date'><em>On</em> : "+ annotation_date.split('T')[0] +", "+annotation_date.split('T')[1]+"</span>"
+            // panel_content += "<span class='author'><em>Created by</em> : "+author_name+"</span>";
+            // panel_content += "<span class='date'><em>On</em> : "+ annotation_date.split('T')[0] +", "+annotation_date.split('T')[1]+"</span>"
+            panel_content += "<span class='author'>"+author_name+"</span>";
+            panel_content += "<span class='date'>"+ annotation_date.split('T')[0] +", "+annotation_date.split('T')[1]+"</span>"
+            if (author_uri === myPundit.user.uri)
+                panel_content += "<span class='semtube-delete' about='"+ann_id[i]+"' about-fragment='"+ mfUri +"' style='float:right'>D</span>";
             panel_content += "</div>";
 
             // Content has all the xpointers associated to this annotation
@@ -1211,11 +1317,10 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
             panel_content="<div class='semtube-annotation'>"+ panel_content + "</div>";
             finalContent += panel_content;
         }
-        console.log(finalContent);
 
         //TODO Why this variable is global???
         annotationPanel.addHTMLContent(finalContent);
-        annotationPanel.show(x,y);
+        annotationPanel.show(x,y,mfUri);
 
         dojo.behavior.apply();
         setTimeout(function() {
@@ -1225,11 +1330,11 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
     addTimelineTime:function(){
         
     },
-    addTimelineScale:function(){
+    addTimelineScaleOld:function(){
         //dojo.empty('pundit-timeline-scale');
         dojo.query(".semtube-scale-marker").forEach(dojo.destroy);
         var self = this,
-            minDistance = 1,
+            minDistance = 3,
             minTextDistance = 50,
             w = dojo.position("pundit-timeline-container").w,
             ww = dojo.window.getBox().w,
@@ -1266,6 +1371,59 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
             l += 1;
         }
     },
+
+    addTimelineScale:function(){
+        //dojo.empty('pundit-timeline-scale');
+        dojo.query(".semtube-scale-marker").forEach(dojo.destroy);
+        var self = this,
+            minDistance = 4,
+            minTextDistance = 25,
+            w = dojo.position("pundit-timeline-container").w,
+            ww = dojo.window.getBox().w,
+            duration = semlibVideoPlayer.videoInfo.entry.media$group.media$content[0].duration,
+            secondSpace = w / duration,
+            timelineWidth =dojo.style(dojo.byId('pundit-timeline-container'), 'width'),
+            timeWindow = (duration / w) * ww,
+            times = [1, 5, 10, 30, 60, 600],
+            spaces = [secondSpace, secondSpace * 5, secondSpace * 10, secondSpace *30, secondSpace *60, secondSpace *600];
+
+        var l = 0;
+        for (var i = spaces.length -1; i >=0; i--){
+            if (duration > times[i]){
+                if (spaces[i] > minDistance){
+                    position = spaces[i];
+                    ctime = times[i];
+                    var t = 0;
+                    while (position < w){
+                        if (i < times.length -1){
+                            if ((ctime % times[i+1]) === 0){
+                                position += spaces[i];
+                                ctime += times[i];
+                                t += 1;
+                                continue;
+                            }
+                        }
+                        // STYLE MUST CHANGE ACCORDING TO THE ORDER
+                        var marker = '<span class="semtube-scale-marker semtube-timeline-scale-level-' + (5 -l) + '" style="left:' + position +'px"></span>';
+                        dojo.query("#pundit-timeline-scale").append(marker);
+                        if (spaces[i] > minTextDistance){
+                            var time = '<span class="semtube-scale-marker semtube-timeline-time-level-' + (5-l) + '" style="left:' + (position - 20) +'px;">' + self._secToTime((t +1)*times[i]) + '</span>';
+                            dojo.query("#pundit-timeline-scale").append(time);
+                        }
+                        position += spaces[i];
+                        ctime += times[i];
+                        t += 1;
+                    }
+                }else{
+                    break;
+                }
+            }else{
+                
+            }
+            l += 1;
+        }
+    },
+
     _secToTime:function(s){
         if (s === 0)
            return "0";
@@ -1354,7 +1512,6 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
                 pbLeft = dojo.position("pundit-timeline-scale").x;
                 this.currMouseDown = e.pageX;
                 deltaX = Math.abs(this.startMouseDown - this.currMouseDown);
-
             if (this.currMouseDown < this.startMouseDown){
                 direction = -1;
             }
@@ -1370,8 +1527,9 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
             }
             if (this.isMovingLeftMarker == true){
                 if ((mlLeft + deltaX*direction > pbLeft) && (mlLeft + deltaX*direction < mrLeft)){
+                    console.log(dojo.position('semtube-timeline-fragment-marker').x + deltaX * direction + 'px');
                     dojo.style('semtube-timeline-fragment-marker', {
-                        left: dojo.position('semtube-timeline-fragment-marker').x + deltaX * direction + 'px',
+                        left: dojo.position('semtube-timeline-fragment-marker').x - 10 + deltaX * direction + 'px',
                         width: dojo.position('semtube-timeline-fragment-marker').w - deltaX * direction + 'px'
                     });
                 }
