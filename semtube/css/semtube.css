@@ -506,6 +506,13 @@ div.timelineFragment.semtube-disabled{
     opacity: 0.15
 }
 
+div.timelineFragment:hover{
+    cursor: pointer;
+}
+div.timelineFragment.semtube-disabled:hover{
+    cursor: auto;
+}
+
 #pundit-timeline-box{
     position:fixed; 
     left:0px; 
@@ -514,6 +521,9 @@ div.timelineFragment.semtube-disabled{
     height:250px; 
     background: #333; 
     z-index:10000;
+    -webkit-transition-property: bottom, height;
+    -webkit-transition-duration: 1s, 1s; 
+
 }
 
 /********************** TIMELINE ACTION BOX *****************/
@@ -789,7 +799,27 @@ span.pundit-moreinfo-subpanel{
     display:block;
 }
 
+/**********  Resize handler  *******************/
+#semtube-timeline-resize-handler{
+    width:100%;
+    height:5px;
+    z-index: 999999999999999999999999;
+    background: transparent;
+    -webkit-transition-property: height;
+    -webkit-transition-duration: 1s;
+}
 
+#semtube-timeline-container{
+    -webkit-transition-property: height;
+    -webkit-transition-duration: 1s;    
+}
+
+#semtube-timeline-resize-handler:hover {
+    cursor: ns-resize;
+}
+#semtube-timeline-resize-handler.dragging {
+    border-top: 2px dashed #999;
+ }
 
 /********* Colors */
 #tempMark.semtube-col0,

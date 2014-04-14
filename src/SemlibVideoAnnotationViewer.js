@@ -21,6 +21,10 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
         self.rowHeight = 25;
         self.resizeTimeout = null;
 
+        //Timeline Params
+        self._minTmlHeight = 250;
+        self._maxTmlHeight = 500;
+
         self._fragmentMouseDown = false;
         self._timelineDragging = false;
 
@@ -327,7 +331,9 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
                         _PUNDIT.loadingBox.setJobOk(deleteJobId);
                     });
                 }
-            },
+            }
+            
+
             //TODO The click event are added by tooltip annotation viewer so here we just update the annoation panel...
             //Find a better way to do this
             // '#pundit-fp-timelineAnnotationPanel div.pundit-statement span.pundit-moreinfo': {
@@ -341,6 +347,58 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
         });
         dojo.behavior.apply();
         
+        dojo.connect(dojo.byId('semtube-timeline-resize-handler'), "mousedown", function(evt){
+            if (evt.button === dojo.mouseButtons.LEFT) {
+                evt.stopPropagation();
+
+                dojo.addClass('semtube-timeline-resize-handler', 'dragging');
+                // b = dojo.query('body')[0];
+                // dojo.style(b, '-webkit-user-select', 'none');
+                // dojo.style(b, 'user-select', 'none');
+                
+                self._isResizingTimeline = true;
+
+                //Fix IT
+                self._pY = evt.pageY;
+                self._timelineMoveListener = dojo.connect(dojo.doc, "mousemove", function (e) {
+                    e.stopPropagation();
+                    dojo.style('semtube-timeline-resize-handler','top', e.pageY - self._pY + "px");
+                    if (!self._isResizingTimeline) {
+                        // DEBUG: does this disconnect work? .. mah.
+                        dojo.disconnect(self._timelineMoveListener);
+                        return false;
+                    }
+                });
+            }
+        });
+
+        dojo.connect(dojo.doc, "mouseup", function(evt){
+            if (self._isResizingTimeline) {
+                var dy = self._pY - evt.clientY,
+                    timelineH = dojo.style('pundit-timeline-box','height');
+                dojo.removeClass('semtube-timeline-resize-handler', 'dragging');
+                
+                timelineH = timelineH + dy;
+                if (timelineH > self._maxTmlHeight){
+                    timelineH = self._maxTmlHeight;
+                } 
+                if (timelineH < self._minTmlHeight){
+                    timelineH = self._minTmlHeight;
+                }
+
+                dojo.style('pundit-timeline-box', 'height', timelineH + "px");
+                dojo.style('semtube-timeline-resize-handler', 'top', '0px');
+                semlibVideoPlayer.timelineHeight = timelineH;
+                dojo.style('pundit-timeline-container', 'height', timelineH - 90 +'px');
+                dojo.style('semtube-timeline-time-marker', 'height', timelineH - 50 +'px');
+                semlibVideoPlayer.resizeVideo();
+                
+                // DEBUG: Does this disconnect work? .. mah
+                dojo.disconnect(self._timelineMoveListener);
+                self._isResizingTimeline = false;
+            }
+        });
+
         self.timelineMarginLeft = 10;
         
         dojo.connect(dojo.byId('pundit-timeline-zoom'), 'onmouseup',function(e){
