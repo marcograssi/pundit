@@ -61,6 +61,8 @@ div.pundit-fp *
 	margin: 0px;
 	padding: 2px;
 	border-radius: 0px 0px 4px 4px;
+    -webkit-border-radius: 0px 0px 4px 4px;
+    -moz-border-radius: 0px 0px 4px 4px;
 	min-height: 116px;
 }
 .pundit-moreinfo-panel img {
@@ -155,9 +157,11 @@ div.pundit-fp *
 }
 
 #pundit-gui #pundit-gui-left {
+    transition-property: opacity, height;
     -webkit-transition-property: opacity, height;
-    -webkit-transition-duration: 1s, 1s;
     -moz-transition-property: opacity, height;
+    transition-duration: 1s, 1s;
+    -webkit-transition-duration: 1s, 1s;
     -moz-transition-duration: 1s, 1s;
 }
 #pundit-gui.pundit-hidden #pundit-gui-left {
@@ -207,6 +211,8 @@ ul.pundit-item-filter-list li {
     margin-right: 1px;
     font-size: 0.9.em;
     border-radius: 4px 4px 0px 0px;
+    -webkit-border-radius: 4px 4px 0px 0px;
+    -moz-border-radius: 4px 4px 0px 0px;
     background: rgba(17, 169, 254, 0.5);
     color: white;
 }
@@ -240,9 +246,13 @@ ul.pundit-items li {
     opacity: 0;
     vertical-align: baseline;
     border-radius: 2px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
     line-height: 24px;
     border: 1px solid #fff;
+    transition-property: opacity;
     -webkit-transition-property: opacity;
+    transition-duration: 1s;
     -webkit-transition-duration: 1s;
     -moz-transition-property: opacity;
     -moz-transition-duration: 1s;
@@ -253,6 +263,8 @@ ul.pundit-items.pundit-small-items li {
     padding: 0px;
     vertical-align: baseline;
     border-radius: 2px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
     line-height: 16px;
     border: 1px solid #fff;
 }
@@ -284,6 +296,8 @@ ul.pundit-items li span.pundit-icon-context-button {
 	float: left;
     opacity: 0.5;
     border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
     background: #009bff url('img/gear-medium.png') no-repeat 2px 4px;
     text-indent: -900px;
 } 
@@ -547,9 +561,11 @@ ul.pundit-items li.dojoDndItemOver, ul.pundit-items li.pundit-items-selected {
     overflow-x: hidden;
     border: 0px solid white;
     cursor: pointer;
+    border-radius: 3px;
     -webkit-border-radius: 3px;
-    -webkit-box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
     -moz-border-radius: 3px;
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
+    -webkit-box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
     -moz-box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
 }
 .pundit-tc-dnd-container ul.pundit-tc-dnd.sub {
@@ -601,25 +617,29 @@ ul.pundit-items li.dojoDndItemOver, ul.pundit-items li.pundit-items-selected {
  ****** Zoom on text fragment effect
  *********************************************************************/
 #pundit-zoomed-fragment {
-	-webkit-transition-property: opacity, box-shadow, margin-top, margin-left;
-	-webkit-transition-duration: 1s, 1s;
+	transition-property: opacity, box-shadow, margin-top, margin-left;
+    -webkit-transition-property: opacity, box-shadow, margin-top, margin-left;
     -moz-transition-property: opacity, box-shadow, margin-top, margin-left;
+	transition-duration: 1s, 1s;
+    -webkit-transition-duration: 1s, 1s;
 	-moz-transition-duration: 1s, 1s;
 	border: 1px solid #009BFF;
 	position: fixed;
-        pointer-events: none;
-        z-index: 1990;
+    pointer-events: none;
+    z-index: 1990;
 }
 #pundit-zoomed-fragment.pundit-hidden {
 	opacity: 0;
 	box-shadow: 0 0 0px 0px #333;
+    -webkit-box-shadow: 0 0 0px 0px #333;
+    -moz-box-shadow: 0 0 0px 0px #333;
 }
 
 #pundit-zoomed-fragment.pundit-shown {
 	opacity: 0.75;	
+    box-shadow: 0 0 100px 100px #333;
 	-moz-box-shadow: 0 0 100px 100px #333;
 	-webkit-box-shadow: 0 0 100px 100px #333;
-	box-shadow: 0 0 200px 100px #333;
 }
 #pundit-zoomed-fragment span.pundit-icon-close {
     pointer-events: auto;
@@ -633,6 +653,8 @@ ul.pundit-items li.dojoDndItemOver, ul.pundit-items li.pundit-items-selected {
 	top: -10px;
 	left: -10px;
 	border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
 }
 #pundit-zoomed-fragment span.pundit-icon-close:hover {
 	opacity: 1.0;
@@ -649,9 +671,11 @@ ul.pundit-items li.dojoDndItemOver, ul.pundit-items li.pundit-items-selected {
 	height: 100%;
 	z-index: 1995;
 	border-left: 1px dotted #000;
+    transition-property: width, box-shadow, margin-top;
 	-webkit-transition-property: width, box-shadow, margin-top;
-	-webkit-transition-duration: 1s, 1s, 1s;
-    -moz-transition-property: width, box-shadow, margin-top;
+	-moz-transition-property: width, box-shadow, margin-top;
+    transition-duration: 1s, 1s, 1s;
+    -webkit-transition-duration: 1s, 1s, 1s;
 	-moz-transition-duration: 1s, 1s, 1s;
 }
 
@@ -678,9 +702,11 @@ body.pundit-gui-hidden #pundit-aw {
 }
 
 #pundit-aw div.pundit-shown-content {
+    transition-property: opacity;
     -webkit-transition-property: opacity;
-    -webkit-transition-duration: 1s;
     -moz-transition-property: opacity;
+    transition-duration: 1s;
+    -webkit-transition-duration: 1s;
     -moz-transition-duration: 1s;
     opacity: 1.0;
     position: absolute;
@@ -710,6 +736,8 @@ body.pundit-gui-hidden #pundit-aw {
     position: absolute;
     display: block;
 	box-shadow: 10px 5px 15px #222;
+    -webkit-box-shadow: 10px 5px 15px #222;
+    -moz-box-shadow: 10px 5px 15px #222;
 }
 
 #pundit-aw .pundit-aw-panel-content span {
@@ -731,6 +759,8 @@ body.pundit-gui-hidden #pundit-aw {
     width: 65px;
     padding-bottom: 5px;
     border-radius: 10px 0px 3px 0px;
+    -webkit-border-radius: 10px 0px 3px 0px;
+    -moz-border-radius: 10px 0px 3px 0px;
 }
 #pundit-aw .pundit-aw-panel .pundit-aw-panel-buttons span {
     float: right;
@@ -753,6 +783,8 @@ body.pundit-gui-hidden #pundit-aw {
 	cursor: pointer;
 	color: #009bff;
 	border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
 	text-indent:-999px;
 	overflow: hidden;
 }
@@ -805,16 +837,20 @@ body.pundit-gui-hidden #pundit-aw {
 	opacity: 1.0;
 }
 #pundit-aw .pundit-aw-panel {
+    transition-property: height, top;
 	-webkit-transition-property: height, top;
-	-webkit-transition-duration: 0.5s, 1s;
     -moz-transition-property: height, top;
-	-moz-transition-duration: 0.5s, 1s;
+	transition-duration: 0.5s, 1s;
+    -webkit-transition-duration: 0.5s, 1s;
+    -moz-transition-duration: 0.5s, 1s;
 }
 #pundit-aw .pundit-aw-panel .pundit-aw-panel-content {
-	-webkit-transition-property: height, opacity, min-height;
-	-webkit-transition-duration: 1s, 1s, 1s;
+	transition-property: height, opacity, min-height;
+    -webkit-transition-property: height, opacity, min-height;
     -moz-transition-property: height, opacity, min-height;
-	-moz-transition-duration: 1s, 1s, 1s;
+	transition-duration: 1s, 1s, 1s;
+    -webkit-transition-duration: 1s, 1s, 1s;
+    -moz-transition-duration: 1s, 1s, 1s;
     min-height: 80px;
     opacity: 1.0;
     padding: 0em 0px 0em 0px;    
@@ -889,6 +925,8 @@ div.pundit-statement .pundit-moreinfo-subpanel {
 	border-left: 1px solid #ccc;
 	border-bottom: 1px solid #ccc;
 	border-radius: 0pc 0px 0px 4px;
+    -webkit-border-radius: 0pc 0px 0px 4px;
+    -moz-border-radius: 0pc 0px 0px 4px;
 }
 
 div.pundit-statement .pundit-moreinfo-subpanel img {
@@ -936,10 +974,14 @@ div.pundit-statement a.go_to {
     color: #009BFF;
     text-decoration: none;
     box-shadow: 0px 1px 0px 0px #009BFF
+    -webkit-box-shadow: 0px 1px 0px 0px #009BFF
+    -moz-box-shadow: 0px 1px 0px 0px #009BFF
 }
 
 div.pundit-statement a.go_to:hover {
     box-shadow: 0px 2px 0px 0px #fc0;
+    -webkit-box-shadow: 0px 2px 0px 0px #fc0;
+    -moz-box-shadow: 0px 2px 0px 0px #fc0;
 }
 div.pundit-statement a.zoom {
     color: black;
@@ -958,7 +1000,9 @@ span.cons img {
     border: 1px solid black;
 }
 span.cons.active img {
+    transition: opacity 250ms linear;
  	-webkit-transition: opacity 250ms linear;
+    -moz-transition: opacity 250ms linear;
      border: 1px solid #fc0; 
      opacity: 0.4;
 }
@@ -1221,9 +1265,11 @@ span.cons.active.col25 img { border: 4px solid rgba(255, 192, 203, 0.5); }
 span.cons.active {
     background: #fc0;
     opacity: 1.0;
+    transition-property: background;
 	-webkit-transition-property: background;
-	-webkit-transition-duration: 1s;
     -moz-transition-property: background;
+	transition-duration: 1s;
+    -webkit-transition-duration: 1s;
 	-moz-transition-duration: 1s;
     border-bottom: 1px solid #fd0;
 }
@@ -1269,20 +1315,26 @@ span.cons.green.blue { background: #B3E680; }
 	background-color: #666;
 /*  background-color: #CCC; */
 	box-shadow: 0;
+    -webkit-box-shadow: 0;
+    -moz-box-shadow: 0;
 }
 #pundit-gui.pundit-hidden .pundit-gui-button.pundit-selected{
     padding-bottom: 0px;
 }
 #pundit-gui.pundit-shown {
 	box-shadow: 0px 10px 35px #666;
+    -webkit-box-shadow: 0px 10px 35px #666;
+    -moz-box-shadow: 0px 10px 35px #666;
 	background-color: #cccccc;
 }
 
 /* Things resized when resizing the semlib window */
 #pundit-gui, #pundit-gui-panel-container, #pundit-gui-left, #pundit-gui-center, #pundit-gui-right, .pundit-tab-content {
-	-webkit-transition-property: height, box-shadow, top, background-color;
-	-webkit-transition-duration: 1s, 1s, 1s, 1s;
-    -moz-transition-property: height, box-shadow, top, background-color;
+	transition-property: height, box-shadow, top, background-color;
+    -webkit-transition-property: height, box-shadow, top, background-color;
+	-moz-transition-property: height, box-shadow, top, background-color;
+    transition-duration: 1s, 1s, 1s, 1s;
+    -webkit-transition-duration: 1s, 1s, 1s, 1s;
 	-moz-transition-duration: 1s, 1s, 1s, 1s;
 }
 
@@ -1327,18 +1379,21 @@ body #pundit-gui-footer {
 }
 
 body #pundit-gui-footer .pundit-gui-button {
+    transition-property: padding-bottom;
     -webkit-transition-property: padding-bottom;
-    -webkit-transition-duration: 1s;
     -moz-transition-property: padding-bottom;
+    transition-duration: 1s;
+    -webkit-transition-duration: 1s;
     -moz-transition-duration: 1s;
 }
 
 span.pundit-gui-button {
     padding: 2px 10px; 
-
+    transition-property: padding-bottom;
     -webkit-transition-property: padding-bottom;
-    -webkit-transition-duration: 1s;
     -moz-transition-property: padding-bottom;
+    transition-duration: 1s;
+    -webkit-transition-duration: 1s;
     -moz-transition-duration: 1s;
 
     background-color: #333;
@@ -1347,6 +1402,8 @@ span.pundit-gui-button {
     cursor: pointer;
     color: #009bff;
     border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
     background: #45484d; /* Old browsers */
     background: -moz-linear-gradient(top,  #45484d 0%, #000000 100%); /* FF3.6+ */
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#45484d), color-stop(100%,#000000)); /* Chrome,Safari4+ */
@@ -1387,7 +1444,6 @@ span.pundit-gui-button.pundit-button-disabled {
 span.pundit-gui-button.pundit-button-disabled:hover {
     color: #009bff;
 }
-
 
 span.pundit-gui-button .pundit-bicon {
     margin: -4px;
@@ -1447,7 +1503,11 @@ body .pundit-ifh-annotate-image {
     height: 28px;
     cursor: pointer;
     border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
 	box-shadow: 3px 3px 5px #333;
+    -webkit-box-shadow: 3px 3px 5px #333;
+    -moz-box-shadow: 3px 3px 5px #333;
     z-index: 1000;
 }
 body .pundit-ifh-annotate-image:hover {
@@ -1518,6 +1578,8 @@ body #pundit-gui-panel-container {
     padding-top: 5px;
     padding-bottom: 10px;
     border-radius: 0px 0px 5px 5px;
+    -webkit-border-radius: 0px 0px 5px 5px;
+    -moz-border-radius: 0px 0px 5px 5px;
 }
 
 #pundit-tab-page-items{
@@ -1539,7 +1601,7 @@ body #pundit-gui-panel-container {
 	width: 450px;*/
 /*        min-width: 400px;
             max-width:800px;*/
-width:34.5%;
+    width:34.5%;
 }
 
 #pundit-gui.pundit-hidden #pundit-gui-resize-handler {
@@ -1630,9 +1692,11 @@ div.pundit-tab-content.semlibnoscrolly{
 
 /** Body + pundit-gui **/
 body {
+    transition-property: margin-top, background-position-y, margin-right, scroll-top, scrollTop;
 	-webkit-transition-property: margin-top, background-position-y, margin-right, scroll-top, scrollTop;
-	-webkit-transition-duration: 1s, 1s, 1s, 1s;
     -moz-transition-property: margin-top, background-position-y, margin-right, scroll-top, scrollTop;
+	transition-duration: 1s, 1s, 1s, 1s;    
+    -webkit-transition-duration: 1s, 1s, 1s, 1s;    
 	-moz-transition-duration: 1s, 1s, 1s, 1s;
 }
 body.pundit-gui-hidden {
@@ -1755,12 +1819,16 @@ body.pundit-aw-shown {
 	color: #009bff;
 	margin-right: 2px;
 	border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
 	line-height: 17px;
 	display: inline-block;
     font-size: 14px;
-	-webkit-transition-property: background-color;
-	-webkit-transition-duration: 0.4s;
+	transition-property: background-color;
+    -webkit-transition-property: background-color;
     -moz-transition-property: background-color;
+	transition-duration: 0.4s;
+    -webkit-transition-duration: 0.4s;
 	-moz-transition-duration: 0.4s;
 }
 #pundit-login-popup-content div#pundit-login-popup-buttons span:hover {
@@ -1780,6 +1848,8 @@ body.pundit-aw-shown {
     padding: 2px;
     background: rgba(204, 204, 204, 0.9);
     box-shadow: 5px 10px 15px #333;
+    -webkit-box-shadow: 5px 10px 15px #333;
+    -moz-box-shadow: 5px 10px 15px #333;
 }
 
 #pundit-cm span.pundit-cm-header {
@@ -1813,8 +1883,6 @@ body.pundit-aw-shown {
     line-height: 17px;
 }
 
-
-
 #pundit-cm.pundit-cm-bottom:after {
     content: "";
     position: absolute;
@@ -1827,8 +1895,6 @@ body.pundit-aw-shown {
     border-width: 12px 12px 12px 12px;
     border-color: transparent transparent #333 transparent;
 }
-
-
 
 #pundit-cm.pundit-cm-right:after {
     content:"";
@@ -1856,9 +1922,11 @@ div.pundit-fp div.pundit-rp-container-suggestions.pundit-visible{
     display: block;
 }
 div.pundit-fp div.pundit-rp-container-suggestions ul{
+    transition-property: height;
     -webkit-transition-property: height;
-    -webkit-transition-duration: 1s;
     -moz-transition-property: height;
+    transition-duration: 1s;
+    -webkit-transition-duration: 1s;
     -moz-transition-duration: 1s;
     height:0px;
     margin:0px;
@@ -1882,6 +1950,8 @@ div.pundit-fp div.pundit-rp-container-suggestions ul{
     background: rgba(204, 204, 204, 0.9);
     border-top: 3px solid #333; /* rgba(204, 204, 204, 0.0);*/
     box-shadow: 5px 10px 15px #333;
+    -webkit-box-shadow: 5px 10px 15px #333;
+    -moz-box-shadow: 5px 10px 15px #333;
     width:400px;
 }
 
@@ -2095,6 +2165,8 @@ div.pundit-fp div.pundit-rp-panel-tags-container ul.pundit-rp-tags{
     margin-right: 5px;
     opacity: 0.5;
     border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
     background: #009bff url('img/gear-medium.png') no-repeat 2px 4px;
 }
 #vocabSelectorContent .pundit-vocabs-icon:hover {
@@ -2108,14 +2180,18 @@ div.pundit-fp div.pundit-rp-panel-tags-container ul.pundit-rp-tags{
 **********************************************/
 div.pundit-floating-panel{
     opacity: 0;
+    transition-property: opacity;
     -webkit-transition-property: opacity;
-    -webkit-transition-duration: 1s;
     -moz-transition-property: opacity;
+    transition-duration: 1s;
+    -webkit-transition-duration: 1s;
     -moz-transition-duration: 1s;
     display: block;
     position:static;
     background: transparent;
     box-shadow: 5px 10px 15px #333;
+    -webkit-box-shadow: 5px 10px 15px #333;
+    -moz-box-shadow: 5px 10px 15px #333;
 }
 div.pundit-floating-panel-header{
     background: #CCC;
@@ -2152,9 +2228,11 @@ ul.pundit-horizontal-list{
     overflow-y:auto;
     overflow-x:display;
     display:block;
+    transition-property: width;
     -webkit-transition-property: width;
-    -webkit-transition-duration: 1s;
     -moz-transition-property: width;
+    transition-duration: 1s;
+    -webkit-transition-duration: 1s;
     -moz-transition-duration: 1s;
     /*width:310px;*/
 }
@@ -2366,6 +2444,8 @@ section.pundit-rp-literal-text {
     width: 450px;
     border: 1px solid #ccc;
     border-radius: 4px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
 }
 .pundit-contact-form textarea {
     padding: 4px 6px;
@@ -2373,6 +2453,8 @@ section.pundit-rp-literal-text {
     height: 100px;
     border: 1px solid #ccc;
     border-radius: 4px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
 }
 
 .tundra .dijitDialogPaneContent.pundit-panel-loading {
@@ -2503,16 +2585,20 @@ section.pundit-rp-literal-text {
     font-size: 17px;
     text-shadow: 1px 2px 4px #999;
     line-height: 25px;
+    transition-property: opacity;
     -webkit-transition-property: opacity;
-    -webkit-transition-duration: 2.5s;
     -moz-transition-property: opacity;
+    transition-duration: 2.5s;
+    -webkit-transition-duration: 2.5s;
     -moz-transition-duration: 2.5s;
     opacity: 1;
 }
 #pundit-gui-topbar-title.pundit-hidden {
+    transition-property: opacity;
     -webkit-transition-property: opacity;
-    -webkit-transition-duration: 0s;
     -moz-transition-property: opacity;
+    transition-duration: 0s;
+    -webkit-transition-duration: 0s;
     -moz-transition-duration: 0s;
     opacity: 0;
 }
@@ -2524,9 +2610,11 @@ section.pundit-rp-literal-text {
 /* Loading Box */
 
 #pundit-lbw-box.pundit-hidden .pundit-lbw-box-message { 
+    transition-property: opacity;
     -webkit-transition-property: opacity;
-    -webkit-transition-duration: 1.5s;
     -moz-transition-property: opacity;
+    transition-duration: 1.5s;
+    -webkit-transition-duration: 1.5s;
     -moz-transition-duration: 1.5s;
     opacity: 0;
 }
@@ -2543,6 +2631,8 @@ section.pundit-rp-literal-text {
     height: 25px;
     cursor: pointer;
     border-radius: 9px 0px;
+    -webkit-border-radius: 9px 0px;
+    -moz-border-radius: 9px 0px;
 }
 .pundit-state-ko .pundit-lbw-box-icon {
     background: #555 url('img/exclamation-button.png') no-repeat 13px 5px;
@@ -2567,9 +2657,11 @@ section.pundit-rp-literal-text {
 
 /* LoadingBoxWindow */
 #pundit-lbw {
+    transition-property: opacity;
     -webkit-transition-property: opacity;
-    -webkit-transition-duration: 1.5s;
     -moz-transition-property: opacity;
+    transition-duration: 1.5s;
+    -webkit-transition-duration: 1.5s;
     -moz-transition-duration: 1.5s;
     position: fixed;
     left: 0px;
@@ -2579,8 +2671,13 @@ section.pundit-rp-literal-text {
     background: #555;
     opacity: 0.95;
     border-radius: 0px 0px 5px 0px;
+    -webkit-border-radius: 0px 0px 5px 0px;
+    -moz-border-radius: 0px 0px 5px 0px;
     z-index: 9999;
     box-shadow: 2px 3px 6px #333;
+    -webkit-box-shadow: 2px 3px 6px #333;
+    -moz-box-shadow: 2px 3px 6px #333;
+
 }
 #pundit-lbw .pundit-lbw-box-icon {
     display: inline-block;
@@ -2615,9 +2712,11 @@ section.pundit-rp-literal-text {
 }
 
 #pundit-lbw li.pundit-hidden {
+    transition-property: opacity, height;
     -webkit-transition-property: opacity, height;
-    -webkit-transition-duration: 1.5s, 2s;
     -moz-transition-property: opacity, height;
+    transition-duration: 1.5s, 2s;
+    -webkit-transition-duration: 1.5s, 2s;
     -moz-transition-duration: 1.5s, 2s;
     opacity: 0;
     height: 0px;
@@ -2636,13 +2735,17 @@ section.pundit-rp-literal-text {
     z-index:1998;
     border:groove 3px;
     opacity:0;
+    transition-property: opacity, width;
     -webkit-transition-property: opacity, width;
-    -webkit-transition-duration: 1s;
     -moz-transition-property: opacity, width;
+    transition-duration: 1s;
+    -webkit-transition-duration: 1s;
     -moz-transition-duration: 1s;
     display: block;
     background: #F2F2F2;
     box-shadow: 5px 10px 15px #333;
+    -webkit-box-shadow: 5px 10px 15px #333;
+    -moz-box-shadow: 5px 10px 15px #333;
 }
 .pundit-fp.pundit-hidden{
     display:none;
@@ -2693,9 +2796,11 @@ section.pundit-rp-literal-text {
 .pundit-fp .pundit-fp-content-list li.pundit-fp-preview-list{
     width: 0px;
     display:none;
+    transition-property: width;
     -webkit-transition-property: width;
-    -webkit-transition-duration: 1s;
     -moz-transition-property: width;
+    transition-duration: 1s;
+    -webkit-transition-duration: 1s;
     -moz-transition-duration: 1s;
     position:absolute;
     left:400px;
