@@ -144,8 +144,12 @@ ANNOTATION BAR
 ********************************************************************/
 #annotationBar {
     height: 20px;
+    transition-property: height;
     -webkit-transition-property: height;
+    -moz-transition-property: height;
+    transition-duration: 1s;
     -webkit-transition-duration: 1s;
+    -moz-transition-duration: 1s;
 }
 #annotationBar.hidden{
     height: 0px;
@@ -207,6 +211,7 @@ li.semtube-tool-box{
     width:85px;
     background: gray;
     float: left;
+    border-radius: 10px 0px 0px 10px;
     -webkit-border-radius: 10px 0px 0px 10px;
     -moz-border-radius: 10px 0px 0px 10px;
 }
@@ -393,6 +398,7 @@ body .pundit-draw-polygon-icon-medium {
 .semtube-tool-container{
     background: rgb(69, 69, 69);
     border-radius: 7px 7px 7px 7px;
+    border-radius: 7px 7px 7px 7px;
     -webkit-border-radius: 7px 7px 7px 7px;
     -moz-border-radius: 7px 7px 7px 7px;
     box-shadow: 0 1px 1px 0 rgba(0,0,0,0.05),inset 0 1px 0 0 rgba(255,255,255,0.2);
@@ -445,38 +451,49 @@ body .pundit-draw-polygon-icon-medium {
 /********************** TIMELINE ANNOTATION PANEL ***************/
 #pundit-fp-timelineAnnotationPanel {
     z-index: 100000000000000111111;
+    transition-property: opacity;
+    -moz-transition-property: opacity;
     -webkit-transition-property: opacity;
+    transition-duration: 1s;
     -webkit-transition-duration: 1s;
+    -moz-transition-duration: 1s;
     border: none;
 }
 #pundit-fp-timelineAnnotationPanel.pundit-smooth{
+    transition-property: top, left;
     -webkit-transition-property: top, left;
+    -moz-transition-property: top, left;
+    transition-duration: 1s, 1s;
     -webkit-transition-duration: 1s, 1s;
-
+    -moz-transition-duration: 1s, 1s;
 }
  
 #pundit-fp-timelineAnnotationPanel.pundit-hidden{
+    transition-property: top, left;
     -webkit-transition-property: top, left;
+    -moz-transition-property: top, left;
+    transition-duration: 0s, 0s;
     -webkit-transition-duration: 0s, 0s;
+    -moz-transition-duration: 0s, 0s;
 }
 #pundit-fp-timelineAnnotationPanel:after {
-/*    bottom: -37px;
-    left: -4px;
-    content: '';
-    width: 36px;
-    height: 36px;
-    background: url("img/triangle36x36.png") no-repeat;
-    position: absolute;
-    display: block;*/
-  content: "";
-  display: block; /* reduce the damage in FF3.0 */
-  position: absolute;
-  bottom: -15px;
-  left: 0px;
-  width: 0;
-  border-width: 15px 15px 0;
-  border-style: solid;
-  border-color: #f2f2f2 transparent;
+    /*    bottom: -37px;
+        left: -4px;
+        content: '';
+        width: 36px;
+        height: 36px;
+        background: url("img/triangle36x36.png") no-repeat;
+        position: absolute;
+        display: block;*/
+      content: "";
+      display: block; /* reduce the damage in FF3.0 */
+      position: absolute;
+      bottom: -15px;
+      left: 0px;
+      width: 0;
+      border-width: 15px 15px 0;
+      border-style: solid;
+      border-color: #f2f2f2 transparent;
 }
 #pundit-fp-timelineAnnotationPanel.pundit-right-panel:after{
 /*    bottom: -37px;
@@ -499,8 +516,12 @@ body .pundit-draw-polygon-icon-medium {
 }
 
 #pundit-fp-timelineAnnotationPanel.pundit-smooth .pundit-fp-content-list{
+    transition-property: height, min-height;
     -webkit-transition-property: height, min-height;
+    -moz-transition-property: height, min-height;
+    transition-duration: 1s, 1s;
     -webkit-transition-duration: 1s, 1s;
+    -moz-transition-duration: 1s, 1s;
 }
 
 #pundit-fp-timelineAnnotationPanel div.pundit-fp-header{
@@ -535,8 +556,12 @@ body .pundit-draw-polygon-icon-medium {
 }
 
 div.timelineFragment{
+    transition-property: left, width, opacity;
     -webkit-transition-property: left, width, opacity;
+    -moz-transition-property: left, width, opacity;
+    transition-duration: 1s, 1s, .5s;
     -webkit-transition-duration: 1s, 1s, .5s;
+    -moz-transition-duration: 1s, 1s, .5s;
     position:absolute;
     background:#2c2c2c;
     height:22px;
@@ -587,9 +612,12 @@ div.timelineFragment.semtube-disabled:hover{
     height:250px; 
     background: #333; 
     z-index:10000;
+    transition-property: bottom, height;
     -webkit-transition-property: bottom, height;
+    -moz-transition-property: bottom, height;
+    transition-duration: 1s, 1s; 
     -webkit-transition-duration: 1s, 1s; 
-
+    -moz-transition-duration: 1s, 1s; 
 }
 
 /********************** TIMELINE ACTION BOX *****************/
@@ -828,7 +856,9 @@ span.semtube-disabled{
 }
 body div.pundit-fp{
     border: 1px solid darkgrey;
+    box-shadow: 0 5px 10px #adadad;
     -webkit-box-shadow: 0 5px 10px #adadad;
+    -moz-box-shadow: 0 5px 10px #adadad;
 }
 
 #pundit-fp-semtube-load-video-panel{
@@ -874,8 +904,12 @@ span.pundit-moreinfo-subpanel{
     height:5px;
     z-index: 999999999999999999999999;
     background: transparent;
+    transition-property: height;
     -webkit-transition-property: height;
+    -moz-transition-property: height;
+    transition-duration: 1s;
     -webkit-transition-duration: 1s;
+    -moz-transition-duration: 1s;
     position:absolute;
     top:0px;
 }
@@ -885,8 +919,12 @@ span.pundit-moreinfo-subpanel{
 }
 
 #semtube-timeline-container{
+    transition-property: height;
     -webkit-transition-property: height;
+    -moz-transition-property: height;
+    transition-duration: 1s;
     -webkit-transition-duration: 1s;    
+    -moz-transition-duration: 1s;
 }
 
 #semtube-timeline-resize-handler:hover {
