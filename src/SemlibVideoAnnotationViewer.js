@@ -294,8 +294,10 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
                     }
                     mfUri = dojo.attr(dojo.query(e.target)[0], 'about');
                     anns =  self.mediaFragments[mfUri].anns;
-                    if (self._timelineDragging === false)
-                        self.showAnnotationPanelTimeline(anns, dojo.style(e.target, 'left') + e.offsetX, dojo.style(e.target, 'top') + e.offsetY, mfUri);
+                    p = dojo.position(dojo.query(e.target)[0], true);
+                    if (self._timelineDragging === false){
+                        self.showAnnotationPanelTimeline(anns, dojo.style(e.target, 'left') + e.pageX - p.x, dojo.style(e.target, 'top') + e.pageY - p.y, mfUri);
+                    }
                     self._fragmentMouseDown = false;
                     self._timelineDragging = false;
                 }
@@ -315,6 +317,9 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
                     var ann_id = dojo.attr(e.currentTarget, 'about'),
                         deleteJobId = _PUNDIT.loadingBox.addJob('Deleting annotation ');
                     self.tmpMF2Del = dojo.attr(e.currentTarget, 'about-fragment');
+                    annotationPanel.hide();
+                    self.deactivateTimeline();
+
                     // dojo.query('#dialog_'+ann_id+'_content').addClass('pundit-panel-loading');
                     // dojo.query('#dialog_'+ann_id+'_content .pundit-gui-button.delete').style('display', 'none');
                     self.refreshPageItems = true;
@@ -327,8 +332,9 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
                         // Don't close it (it fire a repositioning panel. Destroy it
                         // semlibWindow.destroyPanelById(ann_id);
                         self.deleteAnnotation(ann_id, self.tmpMF2Del);
-                        self.refreshAnnotations();
+                        //self.refreshAnnotations();
                         _PUNDIT.loadingBox.setJobOk(deleteJobId);
+                        self.activateTimeline();
                     });
                 }
             }
@@ -494,14 +500,34 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
             anns.splice(index, 1);
             delete self.annotations[annId];
             if (anns.length === 0){
-                delete self.mediaFragments[mfUri];
+                //This is already done by the other function
+                //delete self.mediaFragments[mfUri];
                 self.removeFragmentFromTimeline(mfUri);
+                //Redraw 
+                // dojo.query('.timelineFragment').forEach(function(item){
+                //     dojo.destroy(item);
+                // });
+                // for (var fr in self.mediaFragments){
+                //     self.addFragmentToTimeline(fr, self.mediaFragments[fr].color);
+                // }
+                self.repositionAnnotations();
             }
         }else{
             self.log("Something has gone wrong");
         }
+
     },
 
+    deactivateTimeline:function(){
+        dojo.query('div.timelineFragment').forEach(function(item){
+            dojo.addClass(item, 'semtube-disabled');
+        });
+    },
+    activateTimeline:function(){
+        dojo.query('div.timelineFragment').forEach(function(item){
+            dojo.removeClass(item, 'semtube-disabled');
+        });
+    },
     addAnnotations:function(graph){
         var self = this,
             i=0,
@@ -1142,8 +1168,8 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
     removeFragmentFromTimeline:function(uri){
         var self = this;
         if (uri in self.mediaFragments){
-            dojo.destroy(dojo.query('#pundit-timeline-container > div[about="'+uri+'"]'[0]));
-            delete self.mediaFragments['uri'];
+            dojo.destroy(dojo.query('#pundit-timeline-container > div[about="'+uri+'"]')[0]);
+            delete self.mediaFragments[uri];
         }else{
             console.log("Trying to delete a fragment that does not existi")
         }
@@ -1357,7 +1383,7 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
             panel_content += "<span class='author'>"+author_name+"</span>";
             panel_content += "<span class='date'>"+ annotation_date.split('T')[0] +", "+annotation_date.split('T')[1]+"</span>"
             if (author_uri === myPundit.user.uri)
-                panel_content += "<span class='semtube-delete' about='"+ann_id[i]+"' about-fragment='"+ mfUri +"' style='float:right'>D</span>";
+                panel_content += "<span class='semtube-delete-icon semtube-delete' title='Delete Annotation' about='"+ann_id[i]+"' about-fragment='"+ mfUri +"' style='float:right'></span>";
             panel_content += "</div>";
 
             // Content has all the xpointers associated to this annotation

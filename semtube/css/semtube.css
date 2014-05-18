@@ -15,6 +15,13 @@ root {
     display: block;
 }
 
+.semtube-float-left{
+    float: left;
+}
+.semtube-float-right{
+    float: right;
+}
+
 #semtube-header{
     width:100%;
     background: #f1f1f1;
@@ -149,9 +156,16 @@ BUTTONS
 ********************************************************************/
 #play img.play{
     display:block;
+    width:25px;
+    margin-top:8px;
+    margin-left:12px;
+    float:left;
 }
 #play img.pause{
     display:none;
+    width:25px;
+    margin-top:8px;
+    margin-left:12px;
 }
 #play.playing img.play{
     display:none;
@@ -175,6 +189,12 @@ BUTTONS
 }
 .video_annotation_icon:hover {
     cursor: pointer;
+}
+
+/******** VIDEO AND PLAYER *********/
+#videoDiv {
+    background:black;
+    margin-left:3px;
 }
 
 /****************TOOL*********/
@@ -211,6 +231,7 @@ ul.semtube-video li.semtube-player-box{
     overflow: hidden;
 }
 
+
 /*TOOLS ICONS*/
 span.semtube-select-fragment-icon{
     background: url('img/video24x24.png') no-repeat 0px 0px;    
@@ -231,6 +252,12 @@ body .pundit-favorite-icon-medium {
 body .pundit-delete-icon-medium {
     /*background: url('img/bin-metal24x24.png') no-repeat 0px 0px;*/
     background: url('img/eraser.png') no-repeat 0px 0px;
+}
+body .semtube-delete-icon {
+    background: url('img/bin-metal-full.png') no-repeat 0px 0px;
+    width: 15px;
+    height: 15px;
+    display: inline-block;
 }
 body .pundit-draw-polygon-icon-medium {
     background: url('img/layer-shape-polygon24x24.png') no-repeat 0px 0px;
@@ -372,9 +399,48 @@ body .pundit-draw-polygon-icon-medium {
     border: solid 1px #111;
 }
 
+#semtube-player-control .semtube-tool-container{
+    width:600px;
+    height:40px;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+#semtube-player-control .semtube-tool-container ul{
+    width:600px;height:40px
+} 
+
+#semtube-player-control .semtube-tool-container ul li.semtube-play-container{
+
+}
+#semtube-player-control .semtube-tool-container ul li.semtube-current-time-container{
+    margin-left:30px
+}
+#semtube-player-control .semtube-tool-container ul li.semtube-time-container{
+    margin-right:10px
+}
+
+#progressBar{
+    position:relative;
+    background:#111;
+    opacity: 0.9;
+    height:20px;
+    margin-left:auto;
+    margin-right:auto;
+    width:450px;
+    text-align: start;
+    margin-top: 10px;
+}
+
 #annotationBar{
     display: none;
+    margin-left:auto;
+    margin-right:auto;
 }
+#controlBar{
+    height:50px;
+}
+
 
 /********************** TIMELINE ANNOTATION PANEL ***************/
 #pundit-fp-timelineAnnotationPanel {
@@ -550,6 +616,7 @@ div.timelineFragment.semtube-disabled:hover{
     height: 30px;
     margin-top: 5px; 
     float: right; 
+    padding-left: 5px;
 }
 #semtube-player-control{
     display:inline-block; 
@@ -738,8 +805,8 @@ span.markRigth.spaced:before{
 }
 
 #pundit-timeline-container{
-    position:absolute;
-    top:40px;
+    position:relative;
+    top:20px;
     left:0px;
     width:100%;
     height:200px;
@@ -747,7 +814,9 @@ span.markRigth.spaced:before{
     border-top:1px solid black;
 }
 
-
+#wrapper{
+    margin-left:10px;
+}
 
 /*********** PANEL ****************/
 body #pundit-fp-commentTag{
@@ -807,6 +876,12 @@ span.pundit-moreinfo-subpanel{
     background: transparent;
     -webkit-transition-property: height;
     -webkit-transition-duration: 1s;
+    position:absolute;
+    top:0px;
+}
+
+#pundit-timeline-zoom{
+    margin-left:5px;
 }
 
 #semtube-timeline-container{
