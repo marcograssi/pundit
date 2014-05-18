@@ -289,7 +289,7 @@ dojo.declare("pundit.SemlibVideoAnnotationViewer", pundit.BaseComponent, {
                 'onmouseup': function (e) {
                     var mfUri = "";
                     //Clicking on the close button
-                    if (!dojo.hasAttr(dojo.query(e.target)[0], 'about')){
+                    if (!dojo.hasAttr(dojo.query(e.target)[0], 'about') || dojo.hasClass(dojo.query(e.target)[0], 'semtube-disabled')){
                         return;
                     }
                     mfUri = dojo.attr(dojo.query(e.target)[0], 'about');
