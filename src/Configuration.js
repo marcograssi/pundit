@@ -115,7 +115,7 @@ dojo.declare("pundit.Configuration", pundit.BaseComponent, {
                     "rdftype": ["http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"],
                     "label": "has comment (free text)",
                     "description": "Any comment related to the selected fragment of text or image",
-                    "domain": ["http://purl.org/pundit/ont/ao#fragment-image", "http://purl.org/pundit/ont/ao#fragment-text", "http://xmlns.com/foaf/0.1/Image"],
+                    "domain": ["http://purl.org/pundit/ont/ao#fragment-image", "http://purl.org/pundit/ont/ao#fragment-text", "http://xmlns.com/foaf/0.1/Image", "http://www.semlibproject.eu/vocab/video-fragment"],
                     "range": ["http://www.w3.org/2000/01/rdf-schema#Literal"],
                     "value": "http://schema.org/comment"
                 },
@@ -124,7 +124,7 @@ dojo.declare("pundit.Configuration", pundit.BaseComponent, {
                     "rdftype": ["http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"],
                     "label": "depicts",
                     "description": "An image or part of an image depicts something",
-                    "domain": ["http://xmlns.com/foaf/0.1/Image", "http://purl.org/pundit/ont/ao#fragment-image"],
+                    "domain": ["http://xmlns.com/foaf/0.1/Image", "http://purl.org/pundit/ont/ao#fragment-image", "http://www.semlibproject.eu/vocab/video-fragment"],
                     "range": [],
                     "value": "http://xmlns.com/foaf/0.1/depicts"
                 },
@@ -142,7 +142,7 @@ dojo.declare("pundit.Configuration", pundit.BaseComponent, {
                     "rdftype": ["http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"],
                     "label": "has creator",
                     "description": "The selected text fragment has been created by a specific Person",
-                    "domain": ["http://purl.org/pundit/ont/ao#fragment-text", "http://purl.org/pundit/ont/ao#fragment-image", "http://xmlns.com/foaf/0.1/Image"],
+                    "domain": ["http://purl.org/pundit/ont/ao#fragment-text", "http://purl.org/pundit/ont/ao#fragment-image", "http://xmlns.com/foaf/0.1/Image","http://www.semlibproject.eu/vocab/video-fragment"],
                     "range": ["http://www.freebase.com/schema/people/person", "http://xmlns.com/foaf/0.1/Person", "http://dbpedia.org/ontology/Person"],
                     "value": "http://purl.org/dc/terms/creator"
                 },
@@ -191,7 +191,7 @@ dojo.declare("pundit.Configuration", pundit.BaseComponent, {
                     "rdftype": ["http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"],
                     "label": "is related to",
                     "description": "The selected text fragment is someway related to another text, Entity, Person or any other kind of concept",
-                    "domain": ["http://purl.org/pundit/ont/ao#fragment-text"],
+                    "domain": ["http://purl.org/pundit/ont/ao#fragment-text", "http://www.semlibproject.eu/vocab/video-fragment"],
                     "range": [],
                     "value": "http://purl.org/pundit/ont/oa#isRelatedTo"
                 },
